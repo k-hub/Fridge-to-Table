@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <form action="/search-results">
+        <label for="field-search"> Enter the ingredients you want to use: </label>
+        <input type="text" name="search" id="search">
+        <input type="submit">
+    </form>
+
+{% endblock %}
