@@ -31,8 +31,9 @@ def get_recipe(*ingredients):
     print "\nHEADERS:\n", response.headers  # The HTTP headers
     print "\nPARSED:"  # The parsed response
     pprint(response.body)
+    return response.body
     print "\nUNPARSED:\n", response.raw_body  # The unparsed response
-
+    # return response.raw_body
 
 
 

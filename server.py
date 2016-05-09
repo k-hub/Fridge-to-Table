@@ -3,12 +3,15 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
+from spoonacular import get_recipe
+
 
 app = Flask(__name__)
 
 app.secret_key = "FOOD123"  # Required to use Flask sessions and the debug toolbar.
 
 app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
+
 
 @app.route("/")
 def index():
@@ -17,11 +20,15 @@ def index():
     return render_template("homepage.html")
 
 
-@app.route("/search_results")  # Route needs to be revised.
+@app.route("/search-results")  # Route needs to be revised.
 def results():
     """Return search results for user's input ingredients."""
 
-    pass
+    search = request.args.get("search")
+    search_results = get_recipe(search)  # Returns a list of recipe dictionaries.
+
+    return render_template("search_results.html", search_results=search_results)
+
 
 
 @app.route("/recipe")  # Route needs to be revised.
@@ -31,17 +38,19 @@ def view_recipe():
     pass
 
 
-@app.route("/shopping_lists")  # Route needs to be revised.
+@app.route("/shopping-lists")  # Route needs to be revised.
 def show_shopping_lists():
     """Show user's shopping lists."""
 
     pass
+
 
 @app.route("/bookmarks")  # Route needs to be revised.
 def show_bookmarks():
     """Show user's bookmarked recipes."""
 
     pass
+
 
 @app.route("/profile")  # Route needs to be revised.
 def show_profile():

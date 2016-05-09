@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <ul>
+        {% for search in search_results %}  <!-- Iterate through a list of recipes-->
+            {% for key, value in search.items() %}
+                <li>{{ key }} : {{ value }}</li>
+            {% endfor%}
+        {% endfor%}
+    </ul>
+
+
+{% endblock %}
