@@ -3,7 +3,7 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, redirect, session
 from flask_debugtoolbar import DebugToolbarExtension
 
-from spoonacular import get_recipe
+from spoonacular import get_recipes
 
 
 app = Flask(__name__)
@@ -25,7 +25,7 @@ def results():
     """Return search results for user's input ingredients."""
 
     search = request.args.get("search")
-    search_results = get_recipe(search)  # Returns a list of recipe dictionaries.
+    search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
 
     return render_template("search_results.html", search_results=search_results)
 
@@ -65,7 +65,7 @@ def show_profile():
 
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
     app.run(debug = True)
 
     # connect_to_db(app)
