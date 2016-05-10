@@ -32,12 +32,14 @@ def get_recipes(*ingredients):
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
     print "\nPARSED:"  # The parsed response, a list of dictionaries.
-
     pprint(response.body)
 
     return response.body
-    # print "\nUNPARSED:\n", response.raw_body  # The unparsed response, a json string.
-    # return response.raw_body
+
+
+    # for item in response.body:  # Iterate through list of dictionaries.
+    #     item.pop('imageType')
+    # return response.body  # Returns title, image, missedIngredientCount, likes, usedIngredientCount, id but no imageType.
 
 
 def get_recipe_source(recipe_id):
