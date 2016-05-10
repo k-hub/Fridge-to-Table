@@ -4,7 +4,12 @@
     <ul>
         {% for search in search_results %}  <!-- Iterate through a list of recipes-->
             {% for key, value in search.items() %}
-                <li>{{ key }} : {{ value }}</li>
+                {% if key == 'title' %}
+                    <li>{{ value }}</li>
+                {% endif %}
+                {% if key == 'id' %}
+                    <p>{{ value }}<p>
+                {% endif %}
             {% endfor%}
         {% endfor%}
     </ul>
