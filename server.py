@@ -35,7 +35,11 @@ def results():
 def view_recipe():
     """Return recipe that user clicks on from /search_results."""
 
-    pass
+    # recipe_id = request.args.get("recipe_id")
+    # print recipe_id
+
+
+    return render_template("recipe.html")
 
 
 @app.route("/shopping-lists")  # Route needs to be revised.
