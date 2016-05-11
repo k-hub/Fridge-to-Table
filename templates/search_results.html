@@ -1,18 +1,36 @@
 {% extends 'base.html' %}
+"use strict";  <!-- For JS -->
+
 
 {% block content %}
-    <ul>
-        {% for search in search_results %}  <!-- Iterate through a list of recipes-->
-            {% for key, value in search.items() %}
-                {% if key == 'title' %}
-                    <li>{{ value }}</li>
-                {% endif %}
-                {% if key == 'id' %}
-                    <p>{{ value }}<p>
-                {% endif %}
-            {% endfor%}
-        {% endfor%}
-    </ul>
 
+    <form action="/recipe">
+        <ul>
+            {% for search in search_results %}  <!-- Iterate through a list of recipes-->
+                {% for key, value in search.items() %}
+                    {% if key == "id" %}
+                        <div name="recipe_id">{{ value }}</div><br>
+                    {% endif %}
+                    {% if key == "image" %}
+                        <img id="recipe_image" src="{{ value }}"></a>
+                    {% endif %}
+                    {% if key == "title" %}
+                        <li>{{ value }}</li>
+                    {% endif %}
+                {% endfor%}
+            {% endfor%}
+        </ul>
+    </form>
+
+<script src="https://code.jquery.com/jquery.js"></script>
+
+    <script>
+
+        function alertMe(evt) {
+          alert("Test");
+        }
+
+        $("#recipe_image").on('click', alertMe);
+    </script>
 
 {% endblock %}
