@@ -1,18 +1,15 @@
 {% extends 'base.html' %}
-"use strict";  <!-- For JS -->
 
 
 {% block content %}
-
+<!-- Display search results that contain title, image, and id. -->
+<!-- When user clicks a recipe image, send recipe id to server. -->
     <form action="/recipe">
         <ul>
-            {% for search in search_results %}  <!-- Iterate through a list of recipes-->
-                {% for key, value in search.items() %}
-                    {% if key == "id" %}
-                        <div name="recipe_id">{{ value }}</div><br>
-                    {% endif %}
+            {% for search in search_results %}  <!-- Iterate through a list of recipe dictionaries -->
+                {% for key, value in search.items() %} <!-- Search is a dictionary -->
                     {% if key == "image" %}
-                        <img id="recipe_image" src="{{ value }}"></a>
+                        <img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
                     {% endif %}
                     {% if key == "title" %}
                         <li>{{ value }}</li>
@@ -22,15 +19,14 @@
         </ul>
     </form>
 
+
+
+
+
 <script src="https://code.jquery.com/jquery.js"></script>
-
-    <script>
-
-        function alertMe(evt) {
-          alert("Test");
-        }
-
-        $("#recipe_image").on('click', alertMe);
-    </script>
+    
+    <script src="/static/ajax-click-recipe.js"></script>
 
 {% endblock %}
+
+
