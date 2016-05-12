@@ -1,9 +1,9 @@
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from spoonacular import get_recipes
+from spoonacular import get_recipes, get_recipe_source
 
 
 app = Flask(__name__)
@@ -31,15 +31,15 @@ def results():
 
 
 
-@app.route("/recipe")  # Route needs to be revised.
-def view_recipe():
+@app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
+def show_recipe(recipe_id):
     """Return recipe that user clicks on from /search_results."""
 
-    # recipe_id = request.args.get("recipe_id")
-    # print recipe_id
+    # recipe = request.args.get("recipe_id") ## To make alert pop up from AJAX.
+    # print "TEST: ", recipe
+    recipe = get_recipe_source(recipe_id)  # Get the recipe instructions.
 
-
-    return render_template("recipe.html")
+    return render_template("recipe.html", recipe=recipe)
 
 
 @app.route("/shopping-lists")  # Route needs to be revised.

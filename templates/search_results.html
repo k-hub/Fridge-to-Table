@@ -9,7 +9,7 @@
             {% for search in search_results %}  <!-- Iterate through a list of recipe dictionaries -->
                 {% for key, value in search.items() %} <!-- Search is a dictionary -->
                     {% if key == "image" %}
-                        <img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
+                        <a href="/recipe/{{ search["id"] }}"><img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
                     {% endif %}
                     {% if key == "title" %}
                         <li>{{ value }}</li>
