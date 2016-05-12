@@ -20,15 +20,25 @@ def index():
     return render_template("homepage.html")
 
 
+# @app.route("/search-results")  # Route needs to be revised.
+# def results():
+#     """Return search results for user's input ingredients."""
+
+#     search = request.args.get("search")
+#     search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
+
+#     return render_template("search_results.html", search_results=search_results)
+
 @app.route("/search-results")  # Route needs to be revised.
 def results():
     """Return search results for user's input ingredients."""
 
-    search = request.args.get("search")
+    search = request.args.get("search")  # Get ingredients that user put into text-field.
+    intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
+    diet = request.args.get("diet")  # Get diet selected.
     search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
 
-    return render_template("search_results.html", search_results=search_results)
-
+    return render_template("search_results.html", search_results=search_results, intolerances=intolerances, diet=diet)
 
 
 @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
