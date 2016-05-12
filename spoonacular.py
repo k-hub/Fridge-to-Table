@@ -103,13 +103,15 @@ def get_recipe_instructions(source_url):
     return source_url
 
 
-def get_restricted_recipes(diet=None, includeIngredients=None, query=None):
+def get_restricted_recipes(diet=None, excludeIngredients= None, includeIngredients=None, intolerances=None, query=None):
     """Get recipes based on user input ingredients and any diet or intolerances they select."""
 
     payload = {
                 "diet" : diet,
+                "excludeIngredients" : excludeIngredients,
                 "fillIngredients" : "false",
                 "includeIngredients" : includeIngredients,
+                "intolerances" : intolerances,
                 "limitLicense" : "false",
                 "number" : "5", # Change back to 100
                 "offset" : "0", # Change back to 101
@@ -144,6 +146,7 @@ def get_restricted_recipes(diet=None, includeIngredients=None, query=None):
 
 
 # diet=vegan
+# &excludeIngredients=chicken
 # &fillIngredients=false
 # &includeIngredients=cauliflower%2C+ketchup%2C+zucchini
 # &intolerances=peanut
@@ -153,7 +156,12 @@ def get_restricted_recipes(diet=None, includeIngredients=None, query=None):
 # &query=<required>
 # &ranking=2
 
-
+# These code snippets use an open-source library.
+response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?diet=vegan&excludeIngredients=chicken&fillIngredients=false&includeIngredients=cheese&intolerances=peanut&limitLicense=false&number=100&offset=101&query=tofu&ranking=2",
+  headers={
+    "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC"
+  }
+)
 
 
 
