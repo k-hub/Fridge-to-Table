@@ -3,21 +3,23 @@
 {% block content %}
 
     <form action="/search-results">
+        
         <label for="field-search"> Enter the ingredients you want to use: </label><br>
             <input type="text" name="search" id="search"><br>
-        <label for="dropdown-intolerances"> Intolerances: </label><br>
-            <select name="intolerances">
-                <option value="none">None</option>
-                <option value="dairy">Dairy</option>
-                <option value="egg">Egg</option>
-                <option value="gluten">Gluten</option>
-                <option value="peanut">Peanut</option>
-                <option value="seafood">Seafood</option>
-                <option value="sesame">Sesame</option>
-                <option value="soy">Soy</option>
-                <option value="tree-nut">Tree Nut</option>
-                <option value="wheat">Wheat</option>
-            </select><br>
+
+        <label for="checkbox-intolerances"> Intolerances: </label><br>
+            <input type="checkbox" name="intolerance" value="none">None
+            <input type="checkbox" name="intolerance" value="dairy">Dairy
+            <input type="checkbox" name="intolerance" value="egg">Egg
+            <input type="checkbox" name="intolerance" value="gluten">Gluten
+            <input type="checkbox" name="intolerance" value="peanut">Peanut
+            <input type="checkbox" name="intolerance" value="seafood">Seafood
+            <input type="checkbox" name="intolerance" value="sesame">Sesame
+            <input type="checkbox" name="intolerance" value="soy">Soy
+            <input type="checkbox" name="intolerance" value="tree-nut">Tree Nut
+            <input type="checkbox" name="intolerance" value="wheat">Wheat
+        <br>
+
         <label for="dropdown-diet"> Diet: </label><br>
             <select name="diet">
                 <option value="any">Any</option>
@@ -34,3 +36,18 @@
     </form>
 
 {% endblock %}
+
+
+<!--         <label for="dropdown-intolerances"> Intolerances: </label><br>
+            <select name="intolerances">
+                <option value="none">None</option>
+                <option value="dairy">Dairy</option>
+                <option value="egg">Egg</option>
+                <option value="gluten">Gluten</option>
+                <option value="peanut">Peanut</option>
+                <option value="seafood">Seafood</option>
+                <option value="sesame">Sesame</option>
+                <option value="soy">Soy</option>
+                <option value="tree-nut">Tree Nut</option>
+                <option value="wheat">Wheat</option>
+            </select><br> -->
