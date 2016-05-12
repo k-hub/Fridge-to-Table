@@ -43,7 +43,7 @@ def get_recipes(*ingredients):
 
 
 def get_recipe_source(recipe_id):
-    """Get the source URL of a recipe."""
+    """Get the source URL of a recipe and call get_recipe_instructions to get recipe instructions."""
 
     recipe_id = str(recipe_id)
     response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + recipe_id + "/information?includeNutrition=false",
@@ -64,7 +64,7 @@ def get_recipe_source(recipe_id):
 
     source = response.body['sourceUrl'] # Get the source URL of the original recipe.
 
-    get_recipe_instructions(source)
+    return get_recipe_instructions(source)
 
 
 def get_recipe_instructions(source_url):
@@ -87,14 +87,22 @@ def get_recipe_instructions(source_url):
 
     # print "\nINSTRUCTIONS:\n", instructions
 
+    # Some recipes have None values for their instructions. If they are None, then return the source_url to redirect user to the original recipe.
+    if instructions is None:
+        return source_url
+
     return instructions
 
 
 
 
+    # text = response.body['text']
 
+    # print "\nTEXT HERE:\n", text
 
-
+    # # # if text is None:
+    # # #     return source_url
+    # return text
 
 # Code below is the original code I created that takes no parameters.
 
