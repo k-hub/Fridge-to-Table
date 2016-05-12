@@ -39,7 +39,7 @@ def get_recipes(*ingredients):
     #     headers=header()
     # )
 
-    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
+    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=2",
         headers=header()
     )
 
@@ -62,7 +62,7 @@ def get_recipe_source(recipe_id):
     """Get the source URL of a recipe and call get_recipe_instructions to get recipe instructions."""
 
     recipe_id = str(recipe_id)
-    response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + recipe_id + "/information?includeNutrition=false",
+    response = unirest.get(prefix_url() + recipe_id + "/information?includeNutrition=false",
         headers=header()
     )
 
@@ -85,10 +85,8 @@ def get_recipe_instructions(source_url):
 
     encode_source = quote(source_url, safe='')  # Encode source URL to be concatentated with get request.
 
-    response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?forceExtraction=false&url=" + encode_source,
+    response = unirest.get(prefix_url() + "extract?forceExtraction=false&url=" + encode_source,
         headers=header()
-
-        
     )
 
     print "\nNEW PARSED:\n"  # The parsed response, returns a dictionary.
@@ -99,17 +97,38 @@ def get_recipe_instructions(source_url):
     # print "\nINSTRUCTIONS:\n", instructions
 
     # Some recipes have None values for their instructions. If they are None, then return the source_url to redirect user to the original recipe.
-    if instructions is None:
-        return source_url
+    if instructions:  # If true
+        return instructions
 
-    return instructions
+    return source_url
 
 
+def get_restricted_recipes(diet=None, includeIngredients=None, query=None):
+    """Get recipes based on user input ingredients and any diet or intolerances they select."""
 
-# def get_restricted_recipes():
-#     """Get recipes based on user input ingredients and any diet or intolerances they select."""
+    payload = {
+                "diet" : diet,
+                "fillIngredients" : "false",
+                "includeIngredients" : includeIngredients,
+                "limitLicense" : "false",
+                "number" : "5", # Change back to 100
+                "offset" : "0", # Change back to 101
+                "query" : query,
+                "ranking" : "2"
+                }
 
-#     response = 
+    response = unirest.get(prefix_url() + "searchComplex", params=payload,
+            headers=header()
+    )
+    print "\nSTATUS:\n", response.code  # The HTTP status code.
+
+    print "\nHEADERS:\n", response.headers  # The HTTP headers.
+
+    print "\nPARSED:"  # The parsed response, returns a dictionary.
+    pprint(response.body)
+
+    # return response.body
+
 
 
 
