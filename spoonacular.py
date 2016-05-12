@@ -6,9 +6,24 @@ import os
 from urllib import quote
 
 
+### Make a function for these when I refactor code: ###
+# start_unirest = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+
+def prefix_url():
+    """Return beginning of URL for API calls."""
+    prefix = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+    return prefix
+
+
+def header():
+    """Return header information for API calls."""
+
+    header = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
+    return header
+
+
 def parse_ingredients(*ingredients):  # Function can take more than one parameter with *.
     """Parse ingredients."""
-
 
     ingredients = list(ingredients)
 
@@ -20,11 +35,12 @@ def parse_ingredients(*ingredients):  # Function can take more than one paramete
 def get_recipes(*ingredients):
     """Get recipes for input ingredients."""
 
-    response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
-        headers={
-            "X-Mashape-Key": os.environ['X_MASHABLE_KEY'],  # Hide secret key.
-            "Accept": "application/json"
-        }
+    # response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
+    #     headers=header()
+    # )
+
+    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
+        headers=header()
     )
 
     print "\nSTATUS:\n", response.code  # The HTTP status code.
@@ -47,10 +63,7 @@ def get_recipe_source(recipe_id):
 
     recipe_id = str(recipe_id)
     response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/" + recipe_id + "/information?includeNutrition=false",
-        headers={
-            "X-Mashape-Key": os.environ['X_MASHABLE_KEY'],  # Hide secret key.
-            "Accept": "application/json"
-        }
+        headers=header()
     )
 
     print "\nSTATUS:\n", response.code  # The HTTP status code.
@@ -73,11 +86,9 @@ def get_recipe_instructions(source_url):
     encode_source = quote(source_url, safe='')  # Encode source URL to be concatentated with get request.
 
     response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/extract?forceExtraction=false&url=" + encode_source,
-        headers={
-            "X-Mashape-Key": os.environ['X_MASHABLE_KEY'],  # Hide secret key.
-            "Accept": "application/json"
+        headers=header()
 
-        }
+        
     )
 
     print "\nNEW PARSED:\n"  # The parsed response, returns a dictionary.
@@ -92,6 +103,44 @@ def get_recipe_instructions(source_url):
         return source_url
 
     return instructions
+
+
+
+# def get_restricted_recipes():
+#     """Get recipes based on user input ingredients and any diet or intolerances they select."""
+
+#     response = 
+
+
+
+
+
+
+
+
+# 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?'
+
+
+
+
+
+# diet=vegan
+# &fillIngredients=false
+# &includeIngredients=cauliflower%2C+ketchup%2C+zucchini
+# &intolerances=peanut
+# &limitLicense=false
+# &number=100
+# &offset=101
+# &query=<required>
+# &ranking=2
+
+
+
+
+
+
+
+
 
 
 
