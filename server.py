@@ -37,12 +37,11 @@ def results():
     """Return search results for user's input ingredients."""
 
     diet = request.args.get("diet")  # Get diet selected.
-    print "DIET: ", diet
-    # search_results = get_recipes(query)  # Returns a list of recipe dictionaries.
     intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
     intolerances = ','.join(intolerances)
     # intolerances = quote(intolerances)   # Encode intolerances to be passed into get_restricted_recipes.
-    print "INTOLERANCES: ", intolerances
+    # print "INTOLERANCES: ", intolerances
+    # print "DIET: ", diet
 
     query = request.args.get("query")  # Get ingredients that user put into text-field.
 
