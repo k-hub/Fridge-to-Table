@@ -3,7 +3,10 @@ from jinja2 import StrictUndefined
 from flask import Flask, render_template, request, redirect, session, jsonify
 from flask_debugtoolbar import DebugToolbarExtension
 
-from spoonacular import get_recipes, get_recipe_source
+from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
+
+from urllib import quote
+
 
 
 app = Flask(__name__)
@@ -33,12 +36,19 @@ def index():
 def results():
     """Return search results for user's input ingredients."""
 
-    search = request.args.get("search")  # Get ingredients that user put into text-field.
-    intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
     diet = request.args.get("diet")  # Get diet selected.
-    search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
+    print "DIET: ", diet
+    # search_results = get_recipes(query)  # Returns a list of recipe dictionaries.
+    intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
+    intolerances = ','.join(intolerances)
+    intolerances = quote(intolerances)  # Encode intolerances to be passed into get_restricted_recipes.
+    print "INTOLERANCES: ", intolerances
 
-    return render_template("search_results.html", search_results=search_results, intolerances=intolerances, diet=diet)
+    query = request.args.get("query")  # Get ingredients that user put into text-field.
+
+    results = get_restricted_recipes(query=query, intolerances=intolerances)
+
+    return render_template("search_results.html", search_results=results, intolerances=intolerances, diet=diet)
 
 
 @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.

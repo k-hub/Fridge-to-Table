@@ -103,7 +103,7 @@ def get_recipe_instructions(source_url):
     return source_url
 
 
-def get_restricted_recipes(diet=None, excludeIngredients= None, includeIngredients=None, intolerances=None, query=None):
+def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
     """Get recipes based on user input ingredients and any diet or intolerances they select."""
 
     payload = {
@@ -127,10 +127,11 @@ def get_restricted_recipes(diet=None, excludeIngredients= None, includeIngredien
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
     print "\nPARSED:"  # The parsed response, returns a dictionary.
-    pprint(response.body)
+    # pprint(response.body)
 
-    # return response.body
+    pprint(response.body['results'])
 
+    return response.body['results'] # Return the recipe results as a list of dictionaries.
 
 
 
@@ -157,11 +158,11 @@ def get_restricted_recipes(diet=None, excludeIngredients= None, includeIngredien
 # &ranking=2
 
 # These code snippets use an open-source library.
-response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?diet=vegan&excludeIngredients=chicken&fillIngredients=false&includeIngredients=cheese&intolerances=peanut&limitLicense=false&number=100&offset=101&query=tofu&ranking=2",
-  headers={
-    "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC"
-  }
-)
+# response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?diet=vegan&excludeIngredients=chicken&fillIngredients=false&includeIngredients=cheese&intolerances=peanut&limitLicense=false&number=100&offset=101&query=tofu&ranking=2",
+#   headers={
+#     "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC"
+#   }
+# )
 
 
 

@@ -8,11 +8,11 @@
         <ul>
             {% for search in search_results %}  <!-- Iterate through a list of recipe dictionaries -->
                 {% for key, value in search.items() %} <!-- Search is a dictionary -->
-                    {% if key == "image" %}
-                        <a href="/recipe/{{ search["id"] }}"><img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
-                    {% endif %}
                     {% if key == "title" %}
                         <li>{{ value }}</li>
+                    {% endif %}
+                    {% if key == "image" %}
+                        <a href="/recipe/{{ search["id"] }}"><img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
                     {% endif %}
                 {% endfor%}
             {% endfor%}
@@ -20,13 +20,9 @@
     </form>
 
 
-
-
-
 <script src="https://code.jquery.com/jquery.js"></script>
     
     <script src="/static/ajax-click-recipe.js"></script>
 
 {% endblock %}
-
 
