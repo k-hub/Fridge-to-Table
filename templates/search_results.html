@@ -5,7 +5,7 @@
 <!-- Display search results that contain title, image, and id. -->
 <!-- When user clicks a recipe image, send recipe id to server. -->
     <form action="/recipe">
-        <ul>
+        <ol>
             {% for search in search_results %}  <!-- Iterate through a list of recipe dictionaries -->
                 {% for key, value in search.items() %} <!-- Search is a dictionary -->
                     {% if key == "title" %}
@@ -16,7 +16,7 @@
                     {% endif %}
                 {% endfor%}
             {% endfor%}
-        </ul>
+        </ol>
     </form>
 
 

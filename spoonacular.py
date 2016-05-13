@@ -75,7 +75,7 @@ def get_recipe_source(recipe_id):
 
     # print "\nSOURCE URL:\n", response.body['sourceUrl']  # Get the source URL of the original recipe.
 
-    source = response.body['sourceUrl'] # Get the source URL of the original recipe.
+    source = response.body["sourceUrl"] # Get the source URL of the original recipe.
 
     return get_recipe_instructions(source)
 
@@ -92,7 +92,7 @@ def get_recipe_instructions(source_url):
     print "\nNEW PARSED:\n"  # The parsed response, returns a dictionary.
     pprint(response.body)
 
-    instructions = response.body['instructions']
+    instructions = response.body["instructions"]
 
     # print "\nINSTRUCTIONS:\n", instructions
 
@@ -106,6 +106,7 @@ def get_recipe_instructions(source_url):
 def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
     """Get recipes based on user input ingredients and any diet or intolerances they select."""
 
+
     payload = {
                 "diet" : diet,
                 "excludeIngredients" : excludeIngredients,
@@ -113,8 +114,8 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
                 "includeIngredients" : includeIngredients,
                 "intolerances" : intolerances,
                 "limitLicense" : "false",
-                "number" : "5", # Change back to 100
-                "offset" : "6", # Change back to 101
+                "number" : "100", # Change back to 100
+                "offset" : "101", # Change back to 101
                 "query" : query,
                 "ranking" : "2"
                 }
@@ -129,10 +130,14 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
     print "\nPARSED:"  # The parsed response, returns a dictionary.
     # pprint(response.body)
 
-    pprint(response.body['results'])
+    pprint(response.body["results"])
 
-    return response.body['results'] # Return the recipe results as a list of dictionaries.
+    return response.body["results"] # Return the recipe results as a list of dictionaries.
 
+    while response.body["totalResults"] != payload["number"]:  # Check this line. I want to keep making calls until no more results can be returned.
+            response = unirest.get(prefix_url() + "searchComplex", params=payload,
+            headers=header()
+    )
 
 
 
