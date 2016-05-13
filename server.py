@@ -1,7 +1,10 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, redirect, session, jsonify
+# import psycopg2
 from flask_debugtoolbar import DebugToolbarExtension
+
+from model import connect_to_db, db
 
 from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
@@ -89,11 +92,11 @@ def show_profile():
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.run(debug = True)
+    app.debug = True
 
-    # connect_to_db(app)
+    connect_to_db(app)
 
     # Use the DebugToolbar
     DebugToolbarExtension(app)
 
-    # app.run()
+    app.run()
