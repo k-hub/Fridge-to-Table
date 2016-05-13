@@ -114,7 +114,7 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
                 "intolerances" : intolerances,
                 "limitLicense" : "false",
                 "number" : "5", # Change back to 100
-                "offset" : "0", # Change back to 101
+                "offset" : "6", # Change back to 101
                 "query" : query,
                 "ranking" : "2"
                 }
@@ -137,32 +137,13 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
 
 
 
-
-
-
-# 'https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?'
-
-
-
-
-
-# diet=vegan
-# &excludeIngredients=chicken
-# &fillIngredients=false
-# &includeIngredients=cauliflower%2C+ketchup%2C+zucchini
-# &intolerances=peanut
-# &limitLicense=false
-# &number=100
-# &offset=101
-# &query=<required>
-# &ranking=2
-
 # These code snippets use an open-source library.
-# response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?diet=vegan&excludeIngredients=chicken&fillIngredients=false&includeIngredients=cheese&intolerances=peanut&limitLicense=false&number=100&offset=101&query=tofu&ranking=2",
+# response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?fillIngredients=false&intolerances=dairy%2C+egg&limitLicense=false&number=<required>&offset=0&query=tofu&ranking=2",
 #   headers={
 #     "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC"
 #   }
 # )
+
 
 
 

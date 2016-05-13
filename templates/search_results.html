@@ -12,7 +12,7 @@
                         <li>{{ value }}</li>
                     {% endif %}
                     {% if key == "image" %}
-                        <a href="/recipe/{{ search["id"] }}"><img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
+                    <a href="/recipe/{{ search["id"] }}"><img class="recipe_image" id={{ search["id"] }} src="{{ value }}"></a> <!-- IDS need to be unique, so used class -->
                     {% endif %}
                 {% endfor%}
             {% endfor%}

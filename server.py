@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
-from urllib import quote
+# from urllib import quote
 
 
 
@@ -41,12 +41,12 @@ def results():
     # search_results = get_recipes(query)  # Returns a list of recipe dictionaries.
     intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
     intolerances = ','.join(intolerances)
-    intolerances = quote(intolerances)  # Encode intolerances to be passed into get_restricted_recipes.
+    # intolerances = quote(intolerances)   # Encode intolerances to be passed into get_restricted_recipes.
     print "INTOLERANCES: ", intolerances
 
     query = request.args.get("query")  # Get ingredients that user put into text-field.
 
-    results = get_restricted_recipes(query=query, intolerances=intolerances)
+    results = get_restricted_recipes(query=query, intolerances=intolerances, diet=diet)
 
     return render_template("search_results.html", search_results=results, intolerances=intolerances, diet=diet)
 
