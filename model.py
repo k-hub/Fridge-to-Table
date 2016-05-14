@@ -19,6 +19,10 @@ class Recipe(db.Model):
     yield_amt = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(500), nullable=True)
 
+    ingredients = db.relationship("Ingredient", # Establish a relationship with ingredients.
+                                    secondary="recipes_ingredients",  # The association table is the secondary argument.
+                                    backref="recipes")  # Uses the secondary argument for the reverse relationship between recipes and ingredients.
+
     def __repr__(self):
         """Represent Recipe objects as recipe_id and recipe title."""
 
@@ -45,13 +49,8 @@ class RecipeIngredient(db.Model):
     __tablename__ = "recipes_ingredients"
 
     recipe_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'))
-    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.ingredient_id'))
-
-
-    ### Need to do backref.    
-
-
+    recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'), nullable=False)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey('ingredients.ingredient_id'), nullable=False)
 
     def __repr__(self):
         """Represent RecipeIngredient objects as recipe_ingredient_id, recipe_id, and ingredient_id."""
