@@ -7,11 +7,11 @@ db = SQLAlchemy()  # Instantiating a db oject of the class SQLAlchemy.
 
 
 class Recipe(db.Model):
-    """Recipes"""
+    """Recipes and recipe information."""
 
     __tablename__ = "recipes"
 
-    recipe_id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), unique=True, nullable=False)
     description = db.Column(db.String(2000), nullable=True)
     prep_time = db.Column(db.String(100), nullable=True)
@@ -30,7 +30,7 @@ class Recipe(db.Model):
 
 
 class Ingredient(db.Model):
-    """Ingredients"""
+    """Ingredients."""
 
     __tablename__ = "ingredients"
 
@@ -44,9 +44,9 @@ class Ingredient(db.Model):
 
 
 class RecipeIngredient(db.Model):
-    """Associative table for Recipe and Ingredient."""
+    """Association table for Recipe and Ingredient."""
 
-    __tablename__ = "recipes_ingredients"
+    __tablename__ = "recipe_ingredients"
 
     recipe_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey('recipes.recipe_id'), nullable=False)
@@ -58,8 +58,26 @@ class RecipeIngredient(db.Model):
         return "<RecipeIngredient recipe_ingredient_id={} recipe_id={} ingredient_id={}>".format(self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
 
 
-# class IngredientType(db.Model):
-#     pass
+class Type(db.Model):
+    """Type of ingredient ie. vegetable, fruit, grain, etc."""
+
+    __tablename__ = "types"
+
+    type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __repr__(self):
+        """Represent Type objects as type_id and name."""
+
+        return "<Type type_id={} name={}>".format(type_id, name)
+
+
+class IngredientType(db.Model):
+    """Association table for Ingredient and Type."""
+
+    __tablename__ = "ingredient_types"
+
+    ingredient_type_id = db.Column(db.String)  #### Change attr name
 
 # class Substitution(db.Model):
 #     pass
