@@ -26,31 +26,18 @@ def index():
     return render_template("homepage.html")
 
 
-# @app.route("/search-results")  # Route needs to be revised.
-# def results():
-#     """Return search results for user's input ingredients."""
-
-#     search = request.args.get("search")
-#     search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
-
-#     return render_template("search_results.html", search_results=search_results)
-
-@app.route("/search-results")  # Route needs to be revised.
+@app.route("/search-results")
 def results():
     """Return search results for user's input ingredients."""
 
     diet = request.args.get("diet")  # Get diet selected.
     intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
-    intolerances = ','.join(intolerances)
-    # intolerances = quote(intolerances)   # Encode intolerances to be passed into get_restricted_recipes.
-    # print "INTOLERANCES: ", intolerances
-    # print "DIET: ", diet
+    include_ingredients = request.args.getlist("include-ingredients")  # Get ingredients that user put into text-field.
+    print "INCLUDE: ", include_ingredients
 
-    query = request.args.get("query")  # Get ingredients that user put into text-field.
+    results = get_restricted_recipes(includeIngredients=include_ingredients, intolerances=intolerances, diet=diet)
 
-    results = get_restricted_recipes(query=query, intolerances=intolerances, diet=diet)
-
-    return render_template("search_results.html", search_results=results, intolerances=intolerances, diet=diet)
+    return render_template("search_results.html", search_results=results)
 
 
 @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
@@ -86,7 +73,26 @@ def show_profile():
 
 
 
+# @app.route("/search-results")  # Route needs to be revised.
+# def results():
+#     """Return search results for user's input ingredients."""
 
+#     search = request.args.get("search")
+#     search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
+
+#     return render_template("search_results.html", search_results=search_results)
+
+
+
+# @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
+# def show_recipe(recipe_id):
+#     """Return recipe that user clicks on from /search_results."""
+
+#     # recipe = request.args.get("recipe_id") ## To make alert pop up from AJAX.
+#     # print "TEST: ", recipe
+#     recipe = get_recipe_source(recipe_id)  # Get the recipe instructions.
+
+#     return render_template("recipe.html", recipe=recipe)
 
 
 

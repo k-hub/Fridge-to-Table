@@ -39,7 +39,7 @@ def get_recipes(*ingredients):
     #     headers=header()
     # )
 
-    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=2",
+    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
         headers=header()
     )
 
@@ -106,23 +106,27 @@ def get_recipe_instructions(source_url):
 def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
     """Get recipes based on user input ingredients and any diet or intolerances they select."""
 
+    intolerances = ','.join(intolerances)  # WHY CAN I NOT PASS INTOLERANCES AS A LIST BUT INCLUDE_INGREDIENTS CAN
+    print "INTOLERANCES: ", intolerances
 
     payload = {
-                "diet" : diet,
-                "excludeIngredients" : excludeIngredients,
-                "fillIngredients" : "false",
-                "includeIngredients" : includeIngredients,
-                "intolerances" : intolerances,
-                "limitLicense" : "false",
-                "number" : "100", # Change back to 100
-                "offset" : "101", # Change back to 101
-                "query" : query,
-                "ranking" : "2"
-                }
+            "diet" : diet,
+            "excludeIngredients" : excludeIngredients,
+            "fillIngredients" : "true",
+            "includeIngredients" : includeIngredients,
+            "intolerances" : intolerances,
+            "limitLicense" : "false",
+            "number" : 5, # Change back to 100
+            "offset" : 6, # Change back to 101
+            "query" : query,
+            "ranking" : 1
+            }
+
 
     response = unirest.get(prefix_url() + "searchComplex", params=payload,
             headers=header()
     )
+
     print "\nSTATUS:\n", response.code  # The HTTP status code.
 
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
@@ -130,22 +134,27 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
     print "\nPARSED:"  # The parsed response, returns a dictionary.
     # pprint(response.body)
 
-    pprint(response.body["results"])
+    # pprint(response.body["results"])
+
+    # if results
+
+
+
 
     return response.body["results"] # Return the recipe results as a list of dictionaries.
 
-    while response.body["totalResults"] != payload["number"]:  # Check this line. I want to keep making calls until no more results can be returned.
-            response = unirest.get(prefix_url() + "searchComplex", params=payload,
-            headers=header()
-    )
+    # while response.body["totalResults"] != payload["number"]:
+    #         response = unirest.get(prefix_url() + "searchComplex", params=payload, headers=header())
+    #         return response.body["results"]
+    #         payload["offset"] += 5
 
 
 
 
-# These code snippets use an open-source library.
-# response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/searchComplex?fillIngredients=false&intolerances=dairy%2C+egg&limitLicense=false&number=<required>&offset=0&query=tofu&ranking=2",
+# response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=true&ingredients=apples%2Cflour%2Csugar&limitLicense=false&number=5&ranking=1",
 #   headers={
-#     "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC"
+#     "X-Mashape-Key": "kfaZKeKraymshCHZYuCVP1gVtwyJp1OZ8GTjsn1H2A4JP5FAYC",
+#     "Accept": "application/json"
 #   }
 # )
 
