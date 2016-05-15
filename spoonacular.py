@@ -104,7 +104,7 @@ def get_recipe_instructions(source_url):
 
 
 def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
-    """Get recipes based on user input ingredients and any diet or intolerances they select."""
+    """Get recipes based on user input ingredients and any diet or intolerances they select. Recipe results are prioritized by recipes that include the most user input ingredients to the least user input ingredients."""
 
     intolerances = ','.join(intolerances)  # WHY CAN I NOT PASS INTOLERANCES AS A LIST BUT INCLUDE_INGREDIENTS CAN
     print "INTOLERANCES: ", intolerances
@@ -134,15 +134,16 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
     print "\nPARSED:"  # The parsed response, returns a dictionary.
     # pprint(response.body)
 
-    # pprint(response.body["results"])
+    pprint(response.body["results"])
 
-    # if results
-
-
-
+    for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
+        if recipe_dict['usedIngredientCount'] != len(list(intolerances)):
+            print "No recipes found with your criteria. Here are recipes you may be interested in."  ###DISPLAY THIS MESSAGE ON THE TEMPLATE # http://programminghistorian.org/lessons/creating-and-viewing-html-files-with-python
 
     return response.body["results"] # Return the recipe results as a list of dictionaries.
 
+
+    #### Code below will keep making calls to the API for results. If response.body["totalResults"] not equal to the payload["number"], then stop making calls. 
     # while response.body["totalResults"] != payload["number"]:
     #         response = unirest.get(prefix_url() + "searchComplex", params=payload, headers=header())
     #         return response.body["results"]

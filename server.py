@@ -8,7 +8,6 @@ from model import connect_to_db, db
 
 from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
-# from urllib import quote
 
 
 
@@ -33,7 +32,7 @@ def results():
     diet = request.args.get("diet")  # Get diet selected.
     intolerances = request.args.getlist("intolerance")  # Get list of all intolerances checked off.
     include_ingredients = request.args.getlist("include-ingredients")  # Get ingredients that user put into text-field.
-    print "INCLUDE: ", include_ingredients
+    # print "INCLUDE: ", include_ingredients
 
     results = get_restricted_recipes(includeIngredients=include_ingredients, intolerances=intolerances, diet=diet)
 
