@@ -19,7 +19,7 @@ class Recipe(db.Model):
     yield_amt = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(500), nullable=True)
     instructions = db. Column(db.String(20000), nullable=False)
-    diet = db.Column(db.String(100), db.ForeignKey("diets.diet_id", nullable=False)
+    diet = db.Column(db.String(100), db.ForeignKey("diets.diet_id"), nullable=False)
 
     ingredients = db.relationship("Ingredient", # Establish a relationship with ingredients.
                                     secondary="recipes_ingredients",  # The association table is the secondary argument.
