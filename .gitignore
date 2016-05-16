@@ -3,3 +3,5 @@ env/
 *secrets*
 recipe.py
 .DS_Store
+keep.html
+testquery.py
