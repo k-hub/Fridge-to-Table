@@ -1,6 +1,7 @@
 """Models and database functions."""
 
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import func
 
 
 db = SQLAlchemy()  # Instantiating a db oject of the class SQLAlchemy.
@@ -13,16 +14,16 @@ class Recipe(db.Model):
 
     recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), unique=True, nullable=False)
-    description = db.Column(db.String(2000), nullable=False)  # Recipe description 
-    prep_time = db.Column(db.String(100), nullable=False)
-    ready_in = db.Column(db.String(100), nullable=False)
+    # description = db.Column(db.String(2000), nullable=False)  # Recipe description \
+    prep_time = db.Column(db.String(100), nullable=True)  # Change back to nullable=False
+    ready_in = db.Column(db.String(100), nullable=True)  # Change back to nullable=False
     yield_amt = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(500), nullable=True)
-    instructions = db. Column(db.String(20000), nullable=False)
-    diet = db.Column(db.String(100), db.ForeignKey("diets.diet_id"), nullable=False)
+    instructions = db. Column(db.String(20000), nullable=True)  # Change back to nullable=False
+    # diet = db.Column(db.Integer, db.ForeignKey("diets.diet_id"), nullable=False)
 
     ingredients = db.relationship("Ingredient", # Establish a relationship with ingredients.
-                                    secondary="recipes_ingredients",  # The association table is the secondary argument.
+                                    secondary="recipe_ingredients",  # The association table is the secondary argument.
                                     backref="recipes")  # Uses the secondary argument for the reverse relationship between recipes and ingredients.
 
     def __repr__(self):
@@ -43,7 +44,7 @@ class Ingredient(db.Model):
     ingredient_name = db.Column(db.String(100), unique=True, nullable=False)
 
     types = db.relationship("Type",
-                            secondary="ingredient_types"
+                            secondary="ingredient_types",
                             backref="ingredients")
 
     def __repr__(self):
@@ -53,19 +54,20 @@ class Ingredient(db.Model):
 
 
 class RecipeIngredient(db.Model):
-    """Association table for Recipe and Ingredient."""
+    """"""
 
     __tablename__ = "recipe_ingredients"
 
     recipe_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
     ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
+    measurement = db.Column(db.String(50), nullable=True)  # Change back to nullable=False
 
     def __repr__(self):
         """Represent RecipeIngredient objects as recipe_ingredient_id, recipe_id, and ingredient_id."""
 
         return "<RecipeIngredient recipe_ingredient_id={} recipe_id={} ingredient_id={}>".format(self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
-    
+
 
 # class Measurment(db.Model):
 #     """Measurements."""
@@ -104,31 +106,31 @@ class IngredientType(db.Model):  ### Do I need this table? Ingredient can have m
         return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(ingredient_type_id, type_id, ingredient_id)
 
 
-class Diet(db.Model):
-    """Diets ie. vegetarian, vegan, etc."""
+# class Diet(db.Model):
+#     """Diets ie. vegetarian, vegan, etc."""
 
-    __tablename__ = "diets"
+#     __tablename__ = "diets"
 
-    diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    diet_name = db.Column(db.String(100), unique=True, nullable=False)
+#     diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+#     diet_name = db.Column(db.String(100), unique=True, nullable=False)
 
-    def __repr__(self):
-        """Represent Diet objects as diet_id and diet_name."""
+#     def __repr__(self):
+#         """Represent Diet objects as diet_id and diet_name."""
 
-        return "<Diet diet_id:{}, diet_name:{}>".format(diet_id, diet_name)
+#         return "<Diet diet_id:{}, diet_name:{}>".format(diet_id, diet_name)
 
 
 class Substitution(db.Model):
     """Ingredient substitutions."""
 
-     __tablename__ = "substitutions"
+    __tablename__ = "substitutions"
 
-     sub_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-     sub_name = db.Column(db.String(100), unique=True, nullable=False)
+    sub_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sub_name = db.Column(db.String(100), unique=True, nullable=False)
 
-     ingredients = db.relationship("Ingredient",
-                                    secondary="substitution_ingredients"
-                                    backref="substitutions")
+    ingredients = db.relationship("Ingredient",
+                                secondary="substitution_ingredients",
+                                backref="substitutions")
 
     def __repr__(self):
         """Represent Substitution object as substitution_id and sub_name."""
