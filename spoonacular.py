@@ -6,21 +6,19 @@ import os
 from urllib import quote
 
 
-### Make a function for these when I refactor code: ###
-# start_unirest = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
 
 def prefix_url():
     """Return beginning of URL for API calls."""
     prefix = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
     return prefix
-
+### DEFINE CONSTANT INSTEAD OF FUNCTION
 
 def header():
     """Return header information for API calls."""
 
     header = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
     return header
-
+### DEFINE CONSTANT INSTEAD OF FUNCTION
 
 def parse_ingredients(*ingredients):  # Function can take more than one parameter with *.
     """Parse ingredients."""
