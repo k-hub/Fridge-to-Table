@@ -31,11 +31,21 @@ def index():
 def results():
     """Return search results for user's input ingredients."""
 
-    ingredient = request.args.get("ingredients")
+    ingredient = request.args.get("ingredient")
     print "DEBUG INGRED: ", ingredient
 
     recipes = querydb.query_recipes_with_ingredient(ingredient)
     print "DEBUG RECIPES: ", recipes
+
+    # if len(ingredients) != 1:
+    #     recipes = querydb.query_recipes_with_all_ingredients(ingredients)
+    # else:
+    #     recipes = querydb.query_recipes_with_ingredient(ingredients)
+
+    # if len(ingredient) == 1:
+    #     recipes = querydb.query_recipes_with_ingredient(ingredient)
+    # else:
+    #     recipes = querydb.query_recipes_with_all_ingredients(ingredient)
 
     return render_template("search_resultsdb.html", ingredient=ingredient, recipes=recipes)
 
