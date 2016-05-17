@@ -16,15 +16,15 @@ def query_ingredients(ingredient):
         # print 'PRINT: ', ingred  # For debugging.
         return ingred
     except:
-        print "No recipes found."
-
+        # print "No recipes found."
+        return None
 
 def query_recipes_with_ingredients(ingredient):
     """Query recipes in the db that have the input ingredient. Only works for one ingredient."""
 
     ingred = query_ingredients(ingredient)  # Call query_ingredients and pass in input ingredient to get ingredient object.
 
-    # If there is an ingredient object matching the input ingredient, 
+    # If there is an ingredient object matching the input ingredient,
     # then get list of recipe objects that contain ingredient.
     if ingred:
         recipes = ingred.recipes  # Query db using .recipes attr to get list of recipe objects containing ingredient.
