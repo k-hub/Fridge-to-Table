@@ -3,7 +3,14 @@
 
 {% block content %}
     <form action="/search-results">
-        <label for="dropdown-ingredients">Choose an ingredient: </label><br>            
+        <label for="field-search">Enter ingredient(s): </label><br> 
+            <input type="text" name="ingredients" id="ingredients-search"><br>
+        <input type="submit">
+
+    </form>
+{% endblock %}
+
+<!--         <label for="dropdown-ingredients">Choose an ingredient: </label><br>  
         <select name="ingredient">
                 <option value="chicken">chicken</option>
                 <option value="fish">fish</option>
@@ -25,8 +32,4 @@
                 <option value="cheese">cheese</option>
                 <option value="string beans">string beans</option>
                 <option value="tofu">tofu</option>
-            </select><br>
-        <input type="submit">
-
-    </form>
-{% endblock %}
+            </select><br> -->
