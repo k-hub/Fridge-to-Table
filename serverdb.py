@@ -31,7 +31,7 @@ def index():
 def results():
     """Return search results for user's input ingredients."""
 
-    ingredient = request.args.get("ingredient")
+    ingredient = request.args.get("ingredients")
     print "DEBUG INGRED: ", ingredient
 
     recipes = querydb.query_recipes_with_ingredients(ingredient)
