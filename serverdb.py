@@ -6,8 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
 
-# from querydb import query_recipes_with_ingredients as qri
-import querydb
+import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
 # from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
