@@ -1,12 +1,12 @@
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, redirect, session, jsonify
-# import psycopg2
+
 from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
 
-import querydb  # Need to comment this line out if running querydb.py in interactive python.
+# import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
 # from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
@@ -34,10 +34,11 @@ def results():
     ingredient = request.args.get("ingredients")
     print "DEBUG INGRED: ", ingredient
 
-    recipes = querydb.query_recipes_with_ingredients(ingredient)
+    recipes = querydb.query_recipes_with_ingredient(ingredient)
     print "DEBUG RECIPES: ", recipes
 
     return render_template("search_resultsdb.html", ingredient=ingredient, recipes=recipes)
+
 
 @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
 def show_recipe(recipe_id):
