@@ -3,9 +3,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    
-    {% for recipe in recipes %}  <!-- Iterate through the list of recipe objects -->
-        <li> {{ recipe.title }} </li>
-    {% endfor%}
-
+    {% if recipes %}  <!-- If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
+        {% for recipe in recipes %}  <!-- Iterate through the list of recipe objects -->
+            <li> {{ recipe.title }} </li>
+        {% endfor%}
+    {% else %}
+        No recipes found
+    {% endif%}
 {% endblock %}
