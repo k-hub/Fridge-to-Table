@@ -5,7 +5,7 @@
     -- ('orange chicken', '30 m', '2 h', '(1) Cut chicken into small pieces. (2) Coat chicken with eggs and flour. (3) Fry chicken. (4) Make orange glaze. (5) Coat fried chicken with glaze.')
     -- ('string beans with bacon', '30 m', '2 h',)
 
-INSERT INTO recipes(title) VALUES
+INSERT INTO recipes (title) VALUES
 ('chicken and rice'),
 ('chicken salad'),
 ('fish taco'),
@@ -26,6 +26,29 @@ INSERT INTO recipes(title) VALUES
 ('cheesecake'),
 ('breakfast delight'),
 ('tropical smoothie');
+
+
+-- (title='chicken and rice', diet='any'),
+-- (title='chicken salad', diet='any'),
+-- (title='fish taco', diet='pescetarian'),
+-- (title='orange chicken', diet='any'),
+-- (title='string beans with bacon', diet='any'),
+-- (title='beef stew', diet='any'),
+-- (title='strawberry banana smoothie', diet='vegetarian'),
+-- (title='lemon chicken', diet='any'),
+-- (title='lemon fish', diet='pescetarian'),
+-- (title='vegetable stew', diet='vegan'),
+-- (title='omelette', diet='any'),
+-- (title='tofu with string beans', diet='vegan'),
+-- (title='tomato beef', diet='any'),
+-- (title='mushroom chicken', diet='any'),
+-- (title='supberbowl nachos', diet='vegetarian'),
+-- (title='tuna sandwich', diet='pescetarian'),
+-- (title='carbonara', diet='any'),
+-- (title='cheesecake', diet='any'),
+-- (title='breakfast delight', diet='any'),
+-- (title='tropical smoothie', diet='vegan');
+
 
 
 
@@ -118,3 +141,42 @@ INSERT INTO recipe_ingredients(recipe_id, ingredient_id) VALUES
 (19, 16),
 (20, 7),
 (20, 8);
+
+
+INSERT INTO diets (diet_code, diet_name) VALUES
+('vg', 'vegan'),
+('v', 'vegetarian'),
+('pes', 'pescetarian'),
+('a', 'any'),
+('pal', 'paleo'),
+('pr', 'primal');
+
+INSERT INTO recipe_diets (recipe_id, diet_code) VALUES
+(1, 'a'), 
+(2, 'a'),
+(3, 'a'),
+(3, 'pes'),
+(4, 'a'),
+(5, 'a'),
+(6, 'a'),
+(7, 'a'),
+(7, 'v'),
+(8, 'a'),
+(9, 'a'),
+(9, 'pes'),
+(10, 'a'),
+(10, 'v'),
+(10, 'vg'),
+(10, 'pes'),
+(11, 'a'),
+(12, 'a'),
+(12, 'v'),
+(12, 'vg'),
+(13, 'a'),
+(14, 'a'),
+(15, 'a'),
+(16, 'a'),
+(17, 'a'),
+(18, 'a'),
+(19, 'a'),
+(20, 'a');
