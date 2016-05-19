@@ -1,8 +1,8 @@
-"""Query db"""
+"""Functions to query db."""
 
 
-from model import connect_to_db, db, Ingredient, Recipe, RecipeIngredient
-from serverdb import app
+from model import connect_to_db, db, Ingredient, Recipe, RecipeIngredient, Diet, RecipeDiet
+from serverdb import app  # NEED TO UNCOMMENT
 # from sqlalchemy.sql import text
 from sqlalchemy import func
 
@@ -49,7 +49,7 @@ def query_ingredients(*ingredients):  # Function can take more than one paramete
             print "nothing found"  # For debugging.
             ingred_not_in_db.add(ingredient)
     # print "SET: ", ingred_set  # For debugging.
-    # print "LIST: ", ingred_not_in_db  # For debugging.
+    print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
 
     return ingred_set
     # return query_recipes_with_ingredients(ingred_set)
@@ -62,7 +62,7 @@ def query_ingredients(*ingredients):  # Function can take more than one paramete
 
 
 def query_recipes_with_ingredients(*ingredients):
-    """Query for recipe titles that have any of the input ingredients and 
+    """Query for recipe titles that have any of the input ingredients and
     return a unique set of recipe titles."""
 
     query_ingredients(*ingredients)
@@ -82,30 +82,38 @@ def query_recipes_with_ingredients(*ingredients):
 
 
 def query_recipes_for_info(unique_recipes):
-    """Get recipe objects from query_recipes_with_ingredients(*ingredients)"""
+    """Get recipe objects for the returned recipe titles from query_recipes_with_ingredients(*ingredients)."""
 
     recipes = []
 
     for recipe_title in unique_recipes:
         recipes.append(Recipe.query.filter_by(title=recipe_title).all())
+
     return recipes
 
 
-# def query_recipes_with_ingredients(ingred_set):
-#     """Query db for recipes that contain any of the input ingredients."""
+def query_recipes_by_diet(diet):
+    """Filter recipes based on user's indicated diet.
 
-#     recipes = []
+    If user indicates a specific diet, query the db for recipes that meet the criteria.
+    Then query those recipes for the input ingredients. 'Any' diet is the default.
+    """
 
-#     for ingred in ingred_set:
-#         recipes.extend(ingred.recipes)
-#     # print "LOOK: ", recipes  # For debugging.
+    if diet == "any":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'any')).all()
+    elif diet == "paleo":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'paleo')).all()
+    elif diet == "pescetarian":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'pescetarian')).all()
+    elif diet == "primal":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'primal')).all()
+    elif diet == "vegan":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'vegan')).all()
+    elif diet == "vegetarian":
+        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'vegetarian')).all()
 
-#     unique_recipes = set(recipes)  # A set of unique recipe objects that contain one or more of the input ingredients.
+    return recipes
 
-#     # print "UNIQUE: ", unique_recipes  # For debugging.
-
-#     if len(unique_recipes) > 1:
-#         return unique_recipes  # Returns ingredients that contain any of the input ingredients if the ingredients exist in the db.
 
 
 
