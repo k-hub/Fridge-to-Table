@@ -38,33 +38,12 @@ SET default_with_oids = false;
 --
 
 CREATE TABLE diets (
-    diet_id integer NOT NULL,
+    diet_code character varying(100) NOT NULL,
     diet_name character varying(100) NOT NULL
 );
 
 
 ALTER TABLE diets OWNER TO kathyma;
-
---
--- Name: diets_diet_id_seq; Type: SEQUENCE; Schema: public; Owner: kathyma
---
-
-CREATE SEQUENCE diets_diet_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE diets_diet_id_seq OWNER TO kathyma;
-
---
--- Name: diets_diet_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kathyma
---
-
-ALTER SEQUENCE diets_diet_id_seq OWNED BY diets.diet_id;
-
 
 --
 -- Name: ingredient_types; Type: TABLE; Schema: public; Owner: kathyma
@@ -134,6 +113,40 @@ ALTER SEQUENCE ingredients_ingredient_id_seq OWNED BY ingredients.ingredient_id;
 
 
 --
+-- Name: recipe_diets; Type: TABLE; Schema: public; Owner: kathyma
+--
+
+CREATE TABLE recipe_diets (
+    recipe_diet_id integer NOT NULL,
+    recipe_id integer NOT NULL,
+    diet_code character varying(100) NOT NULL
+);
+
+
+ALTER TABLE recipe_diets OWNER TO kathyma;
+
+--
+-- Name: recipe_diets_recipe_diet_id_seq; Type: SEQUENCE; Schema: public; Owner: kathyma
+--
+
+CREATE SEQUENCE recipe_diets_recipe_diet_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE recipe_diets_recipe_diet_id_seq OWNER TO kathyma;
+
+--
+-- Name: recipe_diets_recipe_diet_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: kathyma
+--
+
+ALTER SEQUENCE recipe_diets_recipe_diet_id_seq OWNED BY recipe_diets.recipe_diet_id;
+
+
+--
 -- Name: recipe_ingredients; Type: TABLE; Schema: public; Owner: kathyma
 --
 
@@ -179,8 +192,7 @@ CREATE TABLE recipes (
     ready_in character varying(100),
     yield_amt character varying(100),
     image character varying(500),
-    instructions character varying(20000),
-    diet character varying(100) NOT NULL
+    instructions character varying(20000)
 );
 
 
@@ -308,13 +320,6 @@ ALTER SEQUENCE types_type_id_seq OWNED BY types.type_id;
 
 
 --
--- Name: diet_id; Type: DEFAULT; Schema: public; Owner: kathyma
---
-
-ALTER TABLE ONLY diets ALTER COLUMN diet_id SET DEFAULT nextval('diets_diet_id_seq'::regclass);
-
-
---
 -- Name: ingredient_type_id; Type: DEFAULT; Schema: public; Owner: kathyma
 --
 
@@ -326,6 +331,13 @@ ALTER TABLE ONLY ingredient_types ALTER COLUMN ingredient_type_id SET DEFAULT ne
 --
 
 ALTER TABLE ONLY ingredients ALTER COLUMN ingredient_id SET DEFAULT nextval('ingredients_ingredient_id_seq'::regclass);
+
+
+--
+-- Name: recipe_diet_id; Type: DEFAULT; Schema: public; Owner: kathyma
+--
+
+ALTER TABLE ONLY recipe_diets ALTER COLUMN recipe_diet_id SET DEFAULT nextval('recipe_diets_recipe_diet_id_seq'::regclass);
 
 
 --
@@ -367,21 +379,14 @@ ALTER TABLE ONLY types ALTER COLUMN type_id SET DEFAULT nextval('types_type_id_s
 -- Data for Name: diets; Type: TABLE DATA; Schema: public; Owner: kathyma
 --
 
-COPY diets (diet_id, diet_name) FROM stdin;
-1	vegan
-2	vegetarian
-3	pescetarian
-4	any
-5	paleo
-6	primal
+COPY diets (diet_code, diet_name) FROM stdin;
+vg	vegan
+v	vegetarian
+pes	pescetarian
+a	any
+pal	paleo
+pr	primal
 \.
-
-
---
--- Name: diets_diet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
---
-
-SELECT pg_catalog.setval('diets_diet_id_seq', 6, true);
 
 
 --
@@ -424,6 +429,7 @@ COPY ingredients (ingredient_id, ingredient_name) FROM stdin;
 18	cheese
 19	string beans
 20	tofu
+21	avocado
 \.
 
 
@@ -431,7 +437,56 @@ COPY ingredients (ingredient_id, ingredient_name) FROM stdin;
 -- Name: ingredients_ingredient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
 --
 
-SELECT pg_catalog.setval('ingredients_ingredient_id_seq', 20, true);
+SELECT pg_catalog.setval('ingredients_ingredient_id_seq', 21, true);
+
+
+--
+-- Data for Name: recipe_diets; Type: TABLE DATA; Schema: public; Owner: kathyma
+--
+
+COPY recipe_diets (recipe_diet_id, recipe_id, diet_code) FROM stdin;
+1	1	a
+2	2	a
+3	3	a
+4	3	pes
+5	4	a
+6	5	a
+7	6	a
+8	7	a
+9	7	v
+10	8	a
+11	9	a
+12	9	pes
+13	10	a
+14	10	v
+15	10	vg
+16	10	pes
+17	11	a
+18	12	a
+19	12	v
+20	12	vg
+21	13	a
+22	14	a
+23	15	a
+24	16	a
+25	17	a
+26	18	a
+27	19	a
+28	20	a
+29	16	pes
+30	12	pes
+31	21	a
+32	21	pes
+33	21	v
+34	21	vg
+\.
+
+
+--
+-- Name: recipe_diets_recipe_diet_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
+--
+
+SELECT pg_catalog.setval('recipe_diets_recipe_diet_id_seq', 34, true);
 
 
 --
@@ -493,6 +548,7 @@ COPY recipe_ingredients (recipe_ingredient_id, recipe_id, ingredient_id, measure
 52	19	16	\N
 53	20	7	\N
 54	20	8	\N
+55	21	21	1 c
 \.
 
 
@@ -500,34 +556,35 @@ COPY recipe_ingredients (recipe_ingredient_id, recipe_id, ingredient_id, measure
 -- Name: recipe_ingredients_recipe_ingredient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
 --
 
-SELECT pg_catalog.setval('recipe_ingredients_recipe_ingredient_id_seq', 54, true);
+SELECT pg_catalog.setval('recipe_ingredients_recipe_ingredient_id_seq', 55, true);
 
 
 --
 -- Data for Name: recipes; Type: TABLE DATA; Schema: public; Owner: kathyma
 --
 
-COPY recipes (recipe_id, title, prep_time, ready_in, yield_amt, image, instructions, diet) FROM stdin;
-1	chicken and rice	\N	\N	\N	\N	\N	any
-2	chicken salad	\N	\N	\N	\N	\N	any
-3	fish taco	\N	\N	\N	\N	\N	pescetarian
-4	orange chicken	\N	\N	\N	\N	\N	any
-5	string beans with bacon	\N	\N	\N	\N	\N	any
-6	beef stew	\N	\N	\N	\N	\N	any
-7	strawberry banana smoothie	\N	\N	\N	\N	\N	vegetarian
-8	lemon chicken	\N	\N	\N	\N	\N	any
-9	lemon fish	\N	\N	\N	\N	\N	pescetarian
-10	vegetable stew	\N	\N	\N	\N	\N	vegan
-11	omelette	\N	\N	\N	\N	\N	any
-12	tofu with string beans	\N	\N	\N	\N	\N	vegan
-13	tomato beef	\N	\N	\N	\N	\N	any
-14	mushroom chicken	\N	\N	\N	\N	\N	any
-15	supberbowl nachos	\N	\N	\N	\N	\N	vegetarian
-16	tuna sandwich	\N	\N	\N	\N	\N	pescetarian
-17	carbonara	\N	\N	\N	\N	\N	any
-18	cheesecake	\N	\N	\N	\N	\N	any
-19	breakfast delight	\N	\N	\N	\N	\N	any
-20	tropical smoothie	\N	\N	\N	\N	\N	vegan
+COPY recipes (recipe_id, title, prep_time, ready_in, yield_amt, image, instructions) FROM stdin;
+1	chicken and rice	\N	\N	\N	\N	\N
+2	chicken salad	\N	\N	\N	\N	\N
+3	fish taco	\N	\N	\N	\N	\N
+4	orange chicken	\N	\N	\N	\N	\N
+5	string beans with bacon	\N	\N	\N	\N	\N
+6	beef stew	\N	\N	\N	\N	\N
+7	strawberry banana smoothie	\N	\N	\N	\N	\N
+8	lemon chicken	\N	\N	\N	\N	\N
+9	lemon fish	\N	\N	\N	\N	\N
+10	vegetable stew	\N	\N	\N	\N	\N
+11	omelette	\N	\N	\N	\N	\N
+12	tofu with string beans	\N	\N	\N	\N	\N
+13	tomato beef	\N	\N	\N	\N	\N
+14	mushroom chicken	\N	\N	\N	\N	\N
+15	supberbowl nachos	\N	\N	\N	\N	\N
+16	tuna sandwich	\N	\N	\N	\N	\N
+17	carbonara	\N	\N	\N	\N	\N
+18	cheesecake	\N	\N	\N	\N	\N
+19	breakfast delight	\N	\N	\N	\N	\N
+20	tropical smoothie	\N	\N	\N	\N	\N
+21	avocado salad	10 m	\N	\N	\N	\N
 \.
 
 
@@ -535,7 +592,7 @@ COPY recipes (recipe_id, title, prep_time, ready_in, yield_amt, image, instructi
 -- Name: recipes_recipe_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
 --
 
-SELECT pg_catalog.setval('recipes_recipe_id_seq', 20, true);
+SELECT pg_catalog.setval('recipes_recipe_id_seq', 21, true);
 
 
 --
@@ -543,6 +600,7 @@ SELECT pg_catalog.setval('recipes_recipe_id_seq', 20, true);
 --
 
 COPY substitution_ingredients (sub_ingredient_id, sub_id, ingredient_id) FROM stdin;
+1	1	4
 \.
 
 
@@ -550,7 +608,7 @@ COPY substitution_ingredients (sub_ingredient_id, sub_id, ingredient_id) FROM st
 -- Name: substitution_ingredients_sub_ingredient_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
 --
 
-SELECT pg_catalog.setval('substitution_ingredients_sub_ingredient_id_seq', 1, false);
+SELECT pg_catalog.setval('substitution_ingredients_sub_ingredient_id_seq', 1, true);
 
 
 --
@@ -558,6 +616,7 @@ SELECT pg_catalog.setval('substitution_ingredients_sub_ingredient_id_seq', 1, fa
 --
 
 COPY substitutions (sub_id, sub_name) FROM stdin;
+1	tofu
 \.
 
 
@@ -565,7 +624,7 @@ COPY substitutions (sub_id, sub_name) FROM stdin;
 -- Name: substitutions_sub_id_seq; Type: SEQUENCE SET; Schema: public; Owner: kathyma
 --
 
-SELECT pg_catalog.setval('substitutions_sub_id_seq', 1, false);
+SELECT pg_catalog.setval('substitutions_sub_id_seq', 1, true);
 
 
 --
@@ -596,7 +655,7 @@ ALTER TABLE ONLY diets
 --
 
 ALTER TABLE ONLY diets
-    ADD CONSTRAINT diets_pkey PRIMARY KEY (diet_id);
+    ADD CONSTRAINT diets_pkey PRIMARY KEY (diet_code);
 
 
 --
@@ -621,6 +680,14 @@ ALTER TABLE ONLY ingredients
 
 ALTER TABLE ONLY ingredients
     ADD CONSTRAINT ingredients_pkey PRIMARY KEY (ingredient_id);
+
+
+--
+-- Name: recipe_diets_pkey; Type: CONSTRAINT; Schema: public; Owner: kathyma
+--
+
+ALTER TABLE ONLY recipe_diets
+    ADD CONSTRAINT recipe_diets_pkey PRIMARY KEY (recipe_diet_id);
 
 
 --
@@ -704,6 +771,22 @@ ALTER TABLE ONLY ingredient_types
 
 
 --
+-- Name: recipe_diets_diet_code_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kathyma
+--
+
+ALTER TABLE ONLY recipe_diets
+    ADD CONSTRAINT recipe_diets_diet_code_fkey FOREIGN KEY (diet_code) REFERENCES diets(diet_code);
+
+
+--
+-- Name: recipe_diets_recipe_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kathyma
+--
+
+ALTER TABLE ONLY recipe_diets
+    ADD CONSTRAINT recipe_diets_recipe_id_fkey FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id);
+
+
+--
 -- Name: recipe_ingredients_ingredient_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kathyma
 --
 
@@ -717,14 +800,6 @@ ALTER TABLE ONLY recipe_ingredients
 
 ALTER TABLE ONLY recipe_ingredients
     ADD CONSTRAINT recipe_ingredients_recipe_id_fkey FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id);
-
-
---
--- Name: recipes_diet_fkey; Type: FK CONSTRAINT; Schema: public; Owner: kathyma
---
-
-ALTER TABLE ONLY recipes
-    ADD CONSTRAINT recipes_diet_fkey FOREIGN KEY (diet) REFERENCES diets(diet_name);
 
 
 --
