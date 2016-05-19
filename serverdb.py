@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
 
-# import querydb  # Need to comment this line out if running querydb.py in interactive python.
+import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
 # from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
 
@@ -33,19 +33,42 @@ def results():
 
 
     ingredients = request.args.get("ingredient")
+    ingredients = ingredients.split(' ')
 
-    print "Before: ", ingredients
+    diet = request.args.get("diet")
+
+    recipes = querydb.query_recipes_by_diet(diet, *ingredients)
+
+    # print "Before: ", ingredients  # For debugging.
     # ingredients = ''.join(ingredients)
     # print "After first join: ", ingredients
-    ingredients = ingredients.split(' ')
-    print "DB: ", ingredients
-
-    recipes = querydb.query_recipes_with_ingredients(*ingredients)    ###CHANGE THIS FUNCTION
-
-    # print "DEBUG RECIPES: ", recipes
-
+    # print "DB: ", ingredients  # For debugging.
+    # print "DIET: ", diet  # For debugging.
 
     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
+
+
+# @app.route("/search-results")
+# def results():
+#     """Return search results for user's input ingredients."""
+
+
+#     ingredients = request.args.get("ingredient")
+
+#     print "Before: ", ingredients
+#     # ingredients = ''.join(ingredients)
+#     # print "After first join: ", ingredients
+#     ingredients = ingredients.split(' ')
+#     print "DB: ", ingredients
+
+#     recipes = querydb.query_recipes_with_ingredients(*ingredients)    ###CHANGE THIS FUNCTION
+
+
+
+#     # print "DEBUG RECIPES: ", recipes
+
+
+#     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
 
 
 
