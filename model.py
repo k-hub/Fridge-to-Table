@@ -1,4 +1,4 @@
-"""Models and database functions."""
+"""Creating models in my db."""
 
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
@@ -14,17 +14,21 @@ class Recipe(db.Model):
 
     recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     title = db.Column(db.String(100), unique=True, nullable=False)
-    # description = db.Column(db.String(2000), nullable=False)  # Recipe description \
-    prep_time = db.Column(db.String(100), nullable=True)  # Change back to nullable=False
-    ready_in = db.Column(db.String(100), nullable=True)  # Change back to nullable=False
+    prep_time = db.Column(db.String(100), nullable=True)
+    ready_in = db.Column(db.String(100), nullable=True)
     yield_amt = db.Column(db.String(100), nullable=True)
     image = db.Column(db.String(500), nullable=True)
-    instructions = db. Column(db.String(20000), nullable=True)  # Change back to nullable=False
-    # diet = db.Column(db.Integer, db.ForeignKey("diets.diet_id"), nullable=False)
+    instructions = db. Column(db.String(20000), nullable=True)
+
 
     ingredients = db.relationship("Ingredient", # Establish a relationship with ingredients.
                                     secondary="recipe_ingredients",  # The association table is the secondary argument.
                                     backref="recipes")  # Uses the secondary argument for the reverse relationship between recipes and ingredients.
+
+
+    diets = db.relationship("Diet",  # Establish a relationship with diets.
+                                secondary="recipe_diets",
+                                backref="recipes")
 
     def __repr__(self):
         """Represent Recipe objects as recipe_id and recipe title."""
@@ -76,7 +80,7 @@ class RecipeIngredient(db.Model):
 
 
 class Type(db.Model):  ### This table will be used to make custom recipes.
-    """Type of ingredient ie. vegetable, fruit, grain, etc."""
+    """Type of ingredient ie. vegetable, fruit, grain, etc. Will be used for intolerances."""
 
     __tablename__ = "types"
 
@@ -106,18 +110,34 @@ class IngredientType(db.Model):  ### Do I need this table? Ingredient can have m
         return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(ingredient_type_id, type_id, ingredient_id)
 
 
-# class Diet(db.Model):
-#     """Diets ie. vegetarian, vegan, etc."""
+class Diet(db.Model):
+    """Diets ie. vegetarian, vegan, etc."""
 
-#     __tablename__ = "diets"
+    __tablename__ = "diets"
 
-#     diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-#     diet_name = db.Column(db.String(100), unique=True, nullable=False)
+    diet_code = db.Column(db.String(100), primary_key=True)
+    diet_name = db.Column(db.String(100), unique=True, nullable=False)
 
-#     def __repr__(self):
-#         """Represent Diet objects as diet_id and diet_name."""
+    def __repr__(self):
+        """Represent Diet objects as diet_id and diet_name."""
 
-#         return "<Diet diet_id:{}, diet_name:{}>".format(diet_id, diet_name)
+        return "<Diet diet_code:{}, diet_name:{}>".format(self.diet_code, self.diet_name)
+
+
+class RecipeDiet(db.Model):
+   """Association table for Recipe and Diet."""
+
+   __tablename__ = 'recipe_diets'
+
+   recipe_diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+   recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
+   diet_code = db.Column(db.String(100), db.ForeignKey("diets.diet_code"), nullable=False)
+
+
+   def __repr__(self):
+        """Represent RecipeDiet objects as recipe_id and diet_code."""
+
+        return "<RecipeDiet recipe_id:{}, diet_code:{}>".format(self.recipe_id, self.diet_code)
 
 
 class Substitution(db.Model):
@@ -151,6 +171,8 @@ class SubstitutionIngredient(db.Model):
         """Represent SubstitutionIngredient objects as sub_ingredient_id, sub_id, ingredient_id."""
 
         return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(sub_ingredient_id, sub_id, ingredient_id)
+
+
 
 # class Course(db.Model):
 #     pass
