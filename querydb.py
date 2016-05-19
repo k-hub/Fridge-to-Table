@@ -34,31 +34,25 @@ def query_recipes_with_ingredient(ingredient):
         return recipes
 
 
-def query_ingredients(*ingredients):  # Function can take more than one parameter with *. Since user can input n ingredients, * was used.
-    """Query input ingredients in db to check if they exist."""
+# THIS CODE WORKS. NEED TO UNCOMMENT.
+# def query_ingredients(*ingredients):  # Function can take more than one parameter with *. Since user can input n ingredients, * was used.
+#     """Query input ingredients in db to check if they exist."""
 
-    ingred_set = set()  # Set of ingredient objects found db. Used set in case user enters duplicate ingredients.
-    ingred_not_in_db = set()  # Set of ingredient names not found in db.  Use this later to make calls to API.
+#     ingred_set = set()  # Set of ingredient objects found db. Used set in case user enters duplicate ingredients.
+#     ingred_not_in_db = set()  # Set of ingredient names not found in db.  Use this later to make calls to API.
 
-    for ingredient in ingredients:  # ingredients is a tuple.
-    # print "Check:", ingredient  # For debugging.
-        try:
-            ingred = Ingredient.query.filter_by(ingredient_name=ingredient).one()
-            ingred_set.add(ingred)
-        except:
-            print "nothing found"  # For debugging.
-            ingred_not_in_db.add(ingredient)
-    # print "SET: ", ingred_set  # For debugging.
-    print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
+#     for ingredient in ingredients:  # ingredients is a tuple.
+#     # print "Check:", ingredient  # For debugging.
+#         try:
+#             ingred = Ingredient.query.filter_by(ingredient_name=ingredient).one()
+#             ingred_set.add(ingred)
+#         except:
+#             print "nothing found"  # For debugging.
+#             ingred_not_in_db.add(ingredient)
+#     # print "SET: ", ingred_set  # For debugging.
+#     print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
 
-    return ingred_set
-    # return query_recipes_with_ingredients(ingred_set)
-    # return ingred_set  # , ingred_not_in_db
-
-    # ingreds = list(ingred_set)
-    # print "DB: ", ingreds
-    # Recipe.query.filter(Recipe.ingredients.any(Ingredient.ingredient_name.in_(ingreds))).all()
-
+#     return ingred_set
 
 
 def query_recipes_with_ingredients(*ingredients):
@@ -92,30 +86,46 @@ def query_recipes_for_info(unique_recipes):
     return recipes
 
 
-def query_recipes_by_diet(diet):
-    """Filter recipes based on user's indicated diet.
+def query_recipes_by_diet(diet="any"):  # (ingredient, diet="any")
+    """Filter recipes based on user's indicated diet."""
 
-    If user indicates a specific diet, query the db for recipes that meet the criteria.
-    Then query those recipes for the input ingredients. 'Any' diet is the default.
-    """
-
-    if diet == "any":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'any')).all()
-    elif diet == "paleo":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'paleo')).all()
-    elif diet == "pescetarian":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'pescetarian')).all()
-    elif diet == "primal":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'primal')).all()
-    elif diet == "vegan":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'vegan')).all()
-    elif diet == "vegetarian":
-        recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == 'vegetarian')).all()
-
+    recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == diet)).all()
     return recipes
 
 
+####### Testing this function for diet filter. #######
+def query_ingredients(*ingredients):  # Function can take more than one parameter with *. Since user can input n ingredients, * was used.
+    """Query input ingredients in db to check if they exist."""
 
+    ingred_set = set()  # Set of ingredient objects found db. Used set in case user enters duplicate ingredients.
+    ingred_not_in_db = set()  # Set of ingredient names not found in db.  Use this later to make calls to API.
+
+    for ingredient in ingredients:  # ingredients is a tuple.
+    # print "Check:", ingredient  # For debugging.
+        try:
+            ingred = Ingredient.query.filter_by(ingredient_name=ingredient).one()
+            ingred_set.add(ingred)
+        except:
+            print "nothing found"  # For debugging.
+            ingred_not_in_db.add(ingredient)
+    # print "SET: ", ingred_set  # For debugging.
+    # print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
+
+    if len(ingred_set) < 1: # WORKING ON THIS FUNCTION. QUERY TO SEE IF INGREDIENTS EXIST. IF THEY DO THEN 
+    # CALL THE FUNCTION TO RETRIEVE RECIPES THAT CONTAIN THESE INGREDIENTS. OR I CAN JUST USE THE CHAINED QUERY
+    # TO FILTER AND FIND ANY OF THE INGREDIENTS USER INPUT.
+        return None
+
+    return ingred_set
+
+
+
+
+
+
+
+
+    
 
 # ## Below code works but not in server. 
 # def query_recipes_with_all_ingredients(*ingredients):
