@@ -90,7 +90,7 @@ class Type(db.Model):  ### This table will be used to make custom recipes.
     def __repr__(self):
         """Represent Type objects as type_id and type_name."""
 
-        return "<Type type_id={} name={}>".format(type_id, type_name)
+        return "<Type type_id={} name={}>".format(self.type_id, self.type_name)
 
 
 ### Check tables below this line. ####
@@ -107,7 +107,7 @@ class IngredientType(db.Model):  ### Do I need this table? Ingredient can have m
     def __repr__(self):
         """Represent IngredientType objects as ingredient_type_id, type_id, and ingredient_id."""
 
-        return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(ingredient_type_id, type_id, ingredient_id)
+        return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(self.ingredient_type_id, self.type_id, self.ingredient_id)
 
 
 class Diet(db.Model):
@@ -155,7 +155,7 @@ class Substitution(db.Model):
     def __repr__(self):
         """Represent Substitution object as substitution_id and sub_name."""
 
-        return "<Substitution sub_id:{}, sub_name:{}>".format(sub_id, sub_name)
+        return "<Substitution sub_id:{}, sub_name:{}>".format(self.sub_id, self.sub_name)
 
 
 class SubstitutionIngredient(db.Model):
@@ -170,7 +170,7 @@ class SubstitutionIngredient(db.Model):
     def __repr__(self):
         """Represent SubstitutionIngredient objects as sub_ingredient_id, sub_id, ingredient_id."""
 
-        return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(sub_ingredient_id, sub_id, ingredient_id)
+        return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(self.sub_ingredient_id, self.sub_id, self.ingredient_id)
 
 
 
