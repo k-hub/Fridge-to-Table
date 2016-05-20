@@ -20,8 +20,8 @@ PREFIX = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
 def header():
     """Return header information for API calls."""
 
-    header = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
-    return header
+    HEADER = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
+    return HEADER
 ### DEFINE CONSTANT INSTEAD OF FUNCTION
 
 def parse_ingredients(*ingredients):  # Function can take more than one parameter with *.
@@ -111,6 +111,75 @@ def get_recipe_instructions(source_url):
 
 
 #### NEED TO REFACTOR CODE BELOW INTO SMALLER FUNCTIONS.###########
+# def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
+#     """Get recipes based on user input ingredients and any diet they select."""
+
+#     # intolerances = ','.join(intolerances)
+    
+#     # print "INTOLERANCES: ", intolerances
+
+#     payload = {
+#             "diet" : diet,
+#             # "excludeIngredients" : excludeIngredients,
+#             "fillIngredients" : "true",
+#             "includeIngredients" : includeIngredients,
+#             # "intolerances" : intolerances,
+#             "limitLicense" : "false",
+#             "number" : 100, # Change back to 100
+#             "offset" : 101, # Change back to 101
+#             "query" : query,
+#             "ranking" : 1
+#             }
+
+
+#     response = unirest.get(PREFIX + "searchComplex", params=payload,
+#             headers=header()
+#     )
+
+#     print "\nSTATUS:\n", response.code  # The HTTP status code.
+
+#     print "\nHEADERS:\n", response.headers  # The HTTP headers.
+
+#     print "\nPARSED:"  # The parsed response, returns a dictionary.
+#     # pprint(response.body)
+
+#     pprint(response.body["results"])
+
+
+#     for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
+
+#         # Query recipes table to check that recipe does not exist in database. 
+#         # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
+#         if not db.session.query(Recipe.title).filter_by(title=recipe_dict['title']).all(): 
+#             recipe = Recipe(recipe_id=recipe_dict['id'], title=recipe_dict['title'], image=recipe_dict['image'])
+
+#             db.session.add(recipe)
+
+#             #### NEED TO THINK ABOUT HOW TO ADD THE QUERIED INGREDIENT TO THE TABLE. ######
+
+#             for missed_ingred in recipe_dict['missedIngredients']:
+
+#                 # Query ingredients table to check that ingredient does not exist in database. 
+#                 # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
+#                 if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=missed_ingred['name']).all():
+
+#                     ingredient = Ingredient(ingredient_name=missed_ingred['name'])
+#                     db.session.add(ingredient)
+#                     # print "MISSED: ", missed_ingred['name']  # For debugging.
+
+#                     # Query for the ingredient_id, which is unique, and use it to create an object to 
+#                     # be added to the recipe_ingredients table.
+#                     ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=missed_ingred['name']).one()
+#                     recipe_ingredient = RecipeIngredient(recipe_id=recipe_dict['id'], ingredient_id=ingredient_id)
+
+#                     db.session.add(recipe_ingredient)
+
+#     db.session.commit()
+    
+
+#     return response.body["results"] # Return the recipe results as a list of dictionaries.
+
+#####################
 def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
     """Get recipes based on user input ingredients and any diet they select."""
 
@@ -121,12 +190,12 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
     payload = {
             "diet" : diet,
             # "excludeIngredients" : excludeIngredients,
-            "fillIngredients" : "true",
+            "fillIngredients" : "false",
             "includeIngredients" : includeIngredients,
             # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 100, # Change back to 100
-            "offset" : 101, # Change back to 101
+            "number" : 20, # Change back to 100
+            "offset" : 21, # Change back to 101
             "query" : query,
             "ranking" : 1
             }
@@ -140,46 +209,93 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
 
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
-    print "\nPARSED:"  # The parsed response, returns a dictionary.
+    # print "\nPARSED:"  # The parsed response, returns a dictionary.
     # pprint(response.body)
 
-    pprint(response.body["results"])
-
+    # pprint(response.body["results"])
+    
     for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
 
         # Query recipes table to check that recipe does not exist in database. 
         # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
-        if not db.session.query(Recipe.title).filter_by(title=recipe_dict['title']).all(): 
-            recipe = Recipe(recipe_id=recipe_dict['id'], title=recipe_dict['title'], image=recipe_dict['image'])
+        if not db.session.query(Recipe.title).filter_by(title=recipe_dict['title']).all():
 
+            recipe_id = recipe_dict['id']  # Get the recipe_id to pass into get_recipe_info. 
+            # print "ID HERE: ", recipe_id  # For debugging.
+
+            recipe_info = get_recipe_info(recipe_id)  # Returns a dictionary with recipe_id, title, image, vegan/vegeatarian info, sourceUrl.
+
+            # print "LOOK HERE:", recipe_info  # For debugging.
+
+            recipe = Recipe(recipe_id=recipe_info['id'], title=recipe_info['title'], image=recipe_info['image'])
+
+            # print "instantiate THIS: ", recipe  # For debugging.
+            
             db.session.add(recipe)
 
-            #### NEED TO THINK ABOUT HOW TO ADD THE QUERIED INGREDIENT TO THE TABLE. ######
 
-            if includeIngredients
-            for missed_ingred in recipe_dict['missedIngredients']:
-
-                # Query ingredients table to check that ingredient does not exist in database. 
-                # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
-                if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=missed_ingred['name']).all():
-
-                    ingredient = Ingredient(ingredient_name=missed_ingred['name'])
+            # Query ingredients table to check that ingredient does not exist in database. 
+            # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
+            for ingred in recipe_info['ingredients']:
+                if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=ingred).all():
+                    ingredient = Ingredient(ingredient_name=ingred)
                     db.session.add(ingredient)
-                    # print "MISSED: ", missed_ingred['name']  # For debugging.
+                    # print "MISSED: ", ingredient  # For debugging.
 
-                    # Query for the ingredient_id, which is unique, and use it to create an object to 
-                    # be added to the recipe_ingredients table.
-                    ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=missed_ingred['name']).one()
-                    recipe_ingredient = RecipeIngredient(recipe_id=recipe_dict['id'], ingredient_id=ingredient_id)
 
-                    db.session.add(recipe_ingredient)
+                # Query for the ingredient_id, which is unique, and use it to create an object to 
+                # be added to the recipe_ingredients table.
+                ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=ingred).one()
+                recipe_ingredient = RecipeIngredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
+
+                db.session.add(recipe_ingredient)
+                # print "NEW RI: ", recipe_ingredient  # For debugging.
+
 
     db.session.commit()
+    # return response.body["results"] # Return the recipe results as a list of dictionaries.
+#########
+
+
+def get_recipe_info(recipe_id):
+    """Get information for a specific recipe and store it in a dictionary.
+
+    Returns the recipe id, title, all ingredients in the recipe, and whether
+    it is vegan or vegetarian, and the sourceUrl.
+    """
+
+    response = unirest.get(PREFIX + str(recipe_id) + "/information?includeNutrition=false",   
+        headers=header()
+    )
+
+    # print "\nSTATUS:\n", response.code  # The HTTP status code.
+
+    # print "\nHEADERS:\n", response.headers  # The HTTP headers.
+
+    # print "\nPARSED:"  # The parsed response, returns a dictionary.
+    # # pprint(response.body)
     
+    recipe = response.body
+    # pprint(recipe)
 
-    return response.body["results"] # Return the recipe results as a list of dictionaries.
+    recipe_dict = {}
+    ingredients = []
 
+    for ingred in recipe['extendedIngredients']:
+        ingredients.append(ingred['name'])
 
+    recipe_dict['id'] = recipe['id']
+    recipe_dict['title'] = recipe['title']
+    recipe_dict['image'] = recipe['image']
+    recipe_dict['vegan'] = recipe['vegan']
+    recipe_dict['vegetarian'] = recipe['vegetarian']
+    recipe_dict['sourceUrl'] = recipe['sourceUrl']
+    recipe_dict['ingredients'] = ingredients
+
+    # print "DICT: "
+    # pprint(recipe_dict)
+
+    return recipe_dict
 
 
 
