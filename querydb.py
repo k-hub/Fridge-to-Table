@@ -1,4 +1,4 @@
-"""Functions to query db."""
+"""Functions to query database."""
 
 
 from model import connect_to_db, db, Ingredient, Recipe, RecipeIngredient, Diet, RecipeDiet
@@ -49,7 +49,7 @@ def query_ingredients(*ingredients):  # Function can take more than one paramete
             # print "nothing found"  # For debugging.
             ingred_not_in_db.add(ingredient)
     # print "SET: ", ingred_set  # For debugging.
-    print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
+    # print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
 
     return ingred_not_in_db
 

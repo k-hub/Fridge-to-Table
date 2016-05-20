@@ -13,11 +13,11 @@ class Recipe(db.Model):
     __tablename__ = "recipes"
 
     recipe_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    title = db.Column(db.String(100), unique=True, nullable=False)
+    title = db.Column(db.String(1000), unique=True, nullable=False)
     prep_time = db.Column(db.String(100), nullable=True)
     ready_in = db.Column(db.String(100), nullable=True)
     yield_amt = db.Column(db.String(100), nullable=True)
-    image = db.Column(db.String(500), nullable=True)
+    image = db.Column(db.String(1000), nullable=True)
     instructions = db. Column(db.String(20000), nullable=True)
 
 
@@ -70,7 +70,8 @@ class RecipeIngredient(db.Model):
     def __repr__(self):
         """Represent RecipeIngredient objects as recipe_ingredient_id, recipe_id, and ingredient_id."""
 
-        return "<RecipeIngredient recipe_ingredient_id={} recipe_id={} ingredient_id={}>".format(self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
+        return "<RecipeIngredient recipe_ingredient_id={} recipe_id={} ingredient_id={}>".format(
+            self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
 
 
 # class Measurment(db.Model):
@@ -107,7 +108,8 @@ class IngredientType(db.Model):  ### Do I need this table? Ingredient can have m
     def __repr__(self):
         """Represent IngredientType objects as ingredient_type_id, type_id, and ingredient_id."""
 
-        return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(self.ingredient_type_id, self.type_id, self.ingredient_id)
+        return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(
+            self.ingredient_type_id, self.type_id, self.ingredient_id)
 
 
 class Diet(db.Model):
@@ -170,7 +172,8 @@ class SubstitutionIngredient(db.Model):
     def __repr__(self):
         """Represent SubstitutionIngredient objects as sub_ingredient_id, sub_id, ingredient_id."""
 
-        return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(self.sub_ingredient_id, self.sub_id, self.ingredient_id)
+        return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(
+            self.sub_ingredient_id, self.sub_id, self.ingredient_id)
 
 
 
@@ -186,7 +189,7 @@ class SubstitutionIngredient(db.Model):
 def connect_to_db(app):
     """Connect database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test'  # 'postgresql:///test' 'postgresql:///recipes'
     # app.config['SQLAlchemy_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app

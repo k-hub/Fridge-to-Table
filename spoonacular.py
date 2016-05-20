@@ -4,13 +4,17 @@ import unirest
 from pprint import pprint
 import os
 from urllib import quote
+from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient
+from serverdb import app
 
 
+PREFIX = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+# HEADER = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
 
-def prefix_url():
-    """Return beginning of URL for API calls."""
-    prefix = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
-    return prefix
+# def prefix_url():
+#     """Return beginning of URL for API calls."""
+#     prefix = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
+#     return prefix
 ### DEFINE CONSTANT INSTEAD OF FUNCTION
 
 def header():
@@ -37,9 +41,11 @@ def get_recipes(*ingredients):
     #     headers=header()
     # )
 
-    response = unirest.get(prefix_url() + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
+    response = unirest.get(PREFIX + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
         headers=header()
     )
+    
+    # response = unirest.get(PREFIX + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1" + HEADER)
 
     print "\nSTATUS:\n", response.code  # The HTTP status code.
 
@@ -60,7 +66,7 @@ def get_recipe_source(recipe_id):
     """Get the source URL of a recipe and call get_recipe_instructions to get recipe instructions."""
 
     recipe_id = str(recipe_id)
-    response = unirest.get(prefix_url() + recipe_id + "/information?includeNutrition=false",
+    response = unirest.get(PREFIX + recipe_id + "/information?includeNutrition=false",
         headers=header()
     )
 
@@ -83,7 +89,7 @@ def get_recipe_instructions(source_url):
 
     encode_source = quote(source_url, safe='')  # Encode source URL to be concatentated with get request.
 
-    response = unirest.get(prefix_url() + "extract?forceExtraction=false&url=" + encode_source,
+    response = unirest.get(PREFIX + "extract?forceExtraction=false&url=" + encode_source,
         headers=header()
     )
 
@@ -101,27 +107,32 @@ def get_recipe_instructions(source_url):
     return source_url
 
 
-def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
-    """Get recipes based on user input ingredients and any diet or intolerances they select. Recipe results are prioritized by recipes that include the most user input ingredients to the least user input ingredients."""
 
-    intolerances = ','.join(intolerances)  # WHY CAN I NOT PASS INTOLERANCES AS A LIST BUT INCLUDE_INGREDIENTS CAN
-    print "INTOLERANCES: ", intolerances
+
+
+#### NEED TO REFACTOR CODE BELOW INTO SMALLER FUNCTIONS.###########
+def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
+    """Get recipes based on user input ingredients and any diet they select."""
+
+    # intolerances = ','.join(intolerances)
+    
+    # print "INTOLERANCES: ", intolerances
 
     payload = {
             "diet" : diet,
-            "excludeIngredients" : excludeIngredients,
+            # "excludeIngredients" : excludeIngredients,
             "fillIngredients" : "true",
             "includeIngredients" : includeIngredients,
-            "intolerances" : intolerances,
+            # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 5, # Change back to 100
-            "offset" : 6, # Change back to 101
+            "number" : 100, # Change back to 100
+            "offset" : 101, # Change back to 101
             "query" : query,
             "ranking" : 1
             }
 
 
-    response = unirest.get(prefix_url() + "searchComplex", params=payload,
+    response = unirest.get(PREFIX + "searchComplex", params=payload,
             headers=header()
     )
 
@@ -135,10 +146,82 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
     pprint(response.body["results"])
 
     for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
-        if recipe_dict['usedIngredientCount'] != len(list(intolerances)):
-            print "No recipes found with your criteria. Here are recipes you may be interested in."  ###DISPLAY THIS MESSAGE ON THE TEMPLATE # http://programminghistorian.org/lessons/creating-and-viewing-html-files-with-python
+
+        # Query recipes table to check that recipe does not exist in database. 
+        # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
+        if not db.session.query(Recipe.title).filter_by(title=recipe_dict['title']).all(): 
+            recipe = Recipe(recipe_id=recipe_dict['id'], title=recipe_dict['title'], image=recipe_dict['image'])
+
+            db.session.add(recipe)
+
+            #### NEED TO THINK ABOUT HOW TO ADD THE QUERIED INGREDIENT TO THE TABLE. ######
+
+            if includeIngredients
+            for missed_ingred in recipe_dict['missedIngredients']:
+
+                # Query ingredients table to check that ingredient does not exist in database. 
+                # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
+                if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=missed_ingred['name']).all():
+
+                    ingredient = Ingredient(ingredient_name=missed_ingred['name'])
+                    db.session.add(ingredient)
+                    # print "MISSED: ", missed_ingred['name']  # For debugging.
+
+                    # Query for the ingredient_id, which is unique, and use it to create an object to 
+                    # be added to the recipe_ingredients table.
+                    ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=missed_ingred['name']).one()
+                    recipe_ingredient = RecipeIngredient(recipe_id=recipe_dict['id'], ingredient_id=ingredient_id)
+
+                    db.session.add(recipe_ingredient)
+
+    db.session.commit()
+    
 
     return response.body["results"] # Return the recipe results as a list of dictionaries.
+
+
+
+
+
+# def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
+#     """Get recipes based on user input ingredients and any diet or intolerances they select. Recipe results are prioritized by recipes that include the most user input ingredients to the least user input ingredients."""
+
+#     # intolerances = ','.join(intolerances)
+
+#     # print "INTOLERANCES: ", intolerances
+
+#     payload = {
+#             "diet" : diet,
+#             # "excludeIngredients" : excludeIngredients,
+#             "fillIngredients" : "true",
+#             "includeIngredients" : includeIngredients,
+#             # "intolerances" : intolerances,
+#             "limitLicense" : "false",
+#             "number" : 5, # Change back to 100
+#             "offset" : 6, # Change back to 101
+#             "query" : query,
+#             "ranking" : 1
+#             }
+
+
+#     response = unirest.get(PREFIX + "searchComplex", params=payload,
+#             headers=header()
+#     )
+
+#     print "\nSTATUS:\n", response.code  # The HTTP status code.
+
+#     print "\nHEADERS:\n", response.headers  # The HTTP headers.
+
+#     print "\nPARSED:"  # The parsed response, returns a dictionary.
+#     # pprint(response.body)
+
+#     pprint(response.body["results"])
+
+#     # for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
+#     #     if recipe_dict['usedIngredientCount'] != len(list(intolerances)):
+#     #         print "No recipes found with your criteria. Here are recipes you may be interested in."  ###DISPLAY THIS MESSAGE ON THE TEMPLATE # http://programminghistorian.org/lessons/creating-and-viewing-html-files-with-python
+
+#     return response.body["results"] # Return the recipe results as a list of dictionaries.
 
 
     #### Code below will keep making calls to the API for results. If response.body["totalResults"] not equal to the payload["number"], then stop making calls. 
@@ -166,35 +249,8 @@ def get_restricted_recipes(diet="Any", excludeIngredients=None, includeIngredien
 
 
 
+if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
+    # app.debug = True
 
-    # text = response.body['text']
-
-    # print "\nTEXT HERE:\n", text
-
-    # # # if text is None:
-    # # #     return source_url
-    # return text
-
-# Code below is the original code I created that takes no parameters.
-
-# def get_recipe():
-#     """Get recipe for input ingredients."""
-
-#     response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=chicken%2Conions%2Csalt&limitLicense=false&number=5&ranking=1",
-#       headers={
-#         "X-Mashape-Key": os.environ['X_MASHABLE_KEY'], # Hide secret key
-#         "Accept": "application/json"
-#       }
-#     )
-
-#     print "\nSTATUS:\n", response.code # The HTTP status code
-#     print "\nHEADERS:\n", response.headers # The HTTP headers
-#     # print "\nPARSED:\n", response.body # The parsed response
-#     print "\nPARSED:"
-#     pprint(response.body)
-#     print "\nUNPARSED:\n", response.raw_body # The unparsed response
-#     # print "\nUNPARSED:\n"
-#     # pprint(response.raw_body)
-
-
-# get_recipe()
+    connect_to_db(app)
+    print "Connected to DB."
