@@ -38,6 +38,9 @@ def results():
     diet = request.args.get("diet")
 
     recipes = querydb.query_recipes_by_diet(diet, *ingredients)
+    missing = querydb.query_ingredients(*ingredients)  # Get the ingredients not found in the db that the user input.
+    print missing
+
 
     # print "Before: ", ingredients  # For debugging.
     # ingredients = ''.join(ingredients)

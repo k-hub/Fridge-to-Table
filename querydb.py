@@ -46,12 +46,12 @@ def query_ingredients(*ingredients):  # Function can take more than one paramete
             ingred = Ingredient.query.filter_by(ingredient_name=ingredient).one()
             ingred_set.add(ingred)
         except:
-            print "nothing found"  # For debugging.
+            # print "nothing found"  # For debugging.
             ingred_not_in_db.add(ingredient)
     # print "SET: ", ingred_set  # For debugging.
     print "INGREDIENTS NOT FOUND: ", ingred_not_in_db  # For debugging.
 
-    return ingred_set
+    return ingred_not_in_db
 
 #### Delete?
 # def query_recipes_with_ingredients(*ingredients):
@@ -92,36 +92,47 @@ def query_recipes_by_diet(diet="any"):  # (ingredient, diet="any")
     return recipes
 
 
-##### MAIN FUNCTION
+##### MAIN FUNCTION ###########
 def query_recipes_by_diet(diet='any', *ingredients):  #Works for: ingredient, diet='any'
     """Query recipes for user input of any ingredients and any diet restrictions."""
-
 
     recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == diet)).filter(Recipe.ingredients.any(Ingredient.ingredient_name.in_(ingredients))).all()
     return recipes
 
 
 
-# >>> query_recipes_by_diet(
-# ... 'chicken')
-# Diet: chicken
-# ING: ()
-# >>> query_recipes_by_diet('chicken', 'duck')
-# Diet: chicken
-# ING: ('duck',)
-# >>> query_recipes_by_diet('any', 'chicken', 'duck')
-# Diet: any
-# ING: ('chicken', 'duck')
-# >>> ^D
-# (env) Kathys-MacBook-Pro:project kathyma$ python -i querydb.py
-# Connected to DB.
-# >>> query_recipes_by_diet('any', 
-# ... 'chicken', 'duck')
-# [<Recipe recipe_id=1 title=chicken and rice>, <Recipe recipe_id=2 title=chicken salad>, <Recipe recipe_id=4 title=orange chicken>, <Recipe recipe_id=8 title=lemon chicken>, <Recipe recipe_id=14 title=mushroom chicken>]
-# >>> query_recipes_by_diet('vegan','chicken', 'duck')
-# []
-# >>> query_recipes_by_diet('vegan','tomato', 'duck')
-# [<Recipe recipe_id=10 title=vegetable stew>]
+
+
+# def find_missing_ingred(recipes):
+#     """Find ingredients not in a db."""
+
+#     # Store all ingredients and ingredient count to a dictionary.
+#     all_ingred = dict()
+#     ingred_not_in_db = []
+
+#     for ingredient in ingredients:
+#         all_ingred.setdefault(ingredient, 0) + 1
+#         # print "ING: ", ingredient  # # For debugging.
+
+#     # print "DICT BEFORE:\n", all_ingred  # For debugging.
+
+#     # Iterate through a list of recipe objects to get ingredients used. Match this list of ingredients used to input ingredients to find out which ingredients were not found in the db.
+#     for recipe in recipes:
+#         for ingredient in recipe.ingredients:
+#             name = ingredient.ingredient_name
+#             all_ingred[name] = all_ingred.get(name, 0) + 1
+
+#     # print "DICT AFTER:\n", all_ingred  # For debugging.
+
+#     # Ingredients not found in the db are the ones that have a count of 0.
+#     # for count, ingredient in all_ingred.items():
+#     for key, value in all_ingred.items():
+#         if value == 0:
+#             ingred_not_in_db.append(key)
+#     # print ingred_not_in_db
+
+#     return ingred_not_in_db
+
 
 
 
