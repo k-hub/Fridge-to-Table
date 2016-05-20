@@ -93,8 +93,8 @@ def get_recipe_instructions(source_url):
         headers=header()
     )
 
-    print "\nNEW PARSED:\n"  # The parsed response, returns a dictionary.
-    pprint(response.body)
+    # print "\nNEW PARSED:\n"  # The parsed response, returns a dictionary.
+    # pprint(response.body)
 
     instructions = response.body["instructions"]
 
@@ -179,9 +179,13 @@ def get_recipe_instructions(source_url):
 
 #     return response.body["results"] # Return the recipe results as a list of dictionaries.
 
+
+
+
+
 #####################
 def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
-    """Get recipes based on user input ingredients and any diet they select."""
+    """Get recipes based on user input ingredient and any diet they select."""
 
     # intolerances = ','.join(intolerances)
     
@@ -210,11 +214,62 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
     # print "\nPARSED:"  # The parsed response, returns a dictionary.
-    # pprint(response.body)
-
     # pprint(response.body["results"])
+
+    add_to_db(response.body["results"])  # Call function to add recipes and ingredients to database.
+
+
+
+def get_recipe_info(recipe_id):
+    """Get information for a specific recipe and store it in a dictionary.
+
+    Returns the recipe id, title, all ingredients in the recipe, and whether
+    it is vegan or vegetarian, and the sourceUrl.
+    """
+
+    response = unirest.get(PREFIX + str(recipe_id) + "/information?includeNutrition=false",   
+        headers=header()
+    )
+
     
-    for recipe_dict in response.body["results"]:  # response.body["results"] is a list of recipe dictionaries.
+    recipe = response.body
+    # pprint(recipe)  # For debugging.
+
+    recipe_dict = {}
+    ingredients = []
+
+    for ingred in recipe['extendedIngredients']:
+        ingredients.append(ingred['name'])
+
+    recipe_dict['id'] = recipe['id']
+    recipe_dict['title'] = recipe['title']
+    recipe_dict['image'] = recipe['image']
+    recipe_dict['vegan'] = recipe['vegan']
+    recipe_dict['vegetarian'] = recipe['vegetarian']
+    recipe_dict['sourceUrl'] = recipe['sourceUrl']
+    recipe_dict['ingredients'] = ingredients
+
+    # print "DICT: "  # For debugging.
+    # pprint(recipe_dict)  # For debugging.
+
+    return recipe_dict
+
+
+# def add_recipe_instructions():
+#     """Add recipe instructions with respective recipe to database."""
+
+#     recipe_info = get_recipe_info()
+
+
+
+
+def add_to_db(api_response):
+    """Add recipe and ingredients to database if they do not exist."""
+
+    response = api_response
+    # print "DB: ", response
+
+    for recipe_dict in response:  # response.body["results"] is a list of recipe dictionaries.
 
         # Query recipes table to check that recipe does not exist in database. 
         # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
@@ -227,9 +282,18 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
 
             # print "LOOK HERE:", recipe_info  # For debugging.
 
-            recipe = Recipe(recipe_id=recipe_info['id'], title=recipe_info['title'], image=recipe_info['image'])
+            instructions = get_recipe_instructions(recipe_info['sourceUrl'])  # Call function to get recipe instructions.
+
+            # print "INSTRUCTIONS HERE: ", instructions  # For debugging.
+
+
+            recipe = Recipe(recipe_id=recipe_info['id'], title=recipe_info['title'], image=recipe_info['image'], instructions=instructions)
 
             # print "instantiate THIS: ", recipe  # For debugging.
+
+
+            ####### ADD FUNCTION TO GET RECIPE INSTRUCTIONS
+
             
             db.session.add(recipe)
 
@@ -254,48 +318,19 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
 
     db.session.commit()
     # return response.body["results"] # Return the recipe results as a list of dictionaries.
+
+
+
+
+
+
+
+
+
+
+
 #########
 
-
-def get_recipe_info(recipe_id):
-    """Get information for a specific recipe and store it in a dictionary.
-
-    Returns the recipe id, title, all ingredients in the recipe, and whether
-    it is vegan or vegetarian, and the sourceUrl.
-    """
-
-    response = unirest.get(PREFIX + str(recipe_id) + "/information?includeNutrition=false",   
-        headers=header()
-    )
-
-    # print "\nSTATUS:\n", response.code  # The HTTP status code.
-
-    # print "\nHEADERS:\n", response.headers  # The HTTP headers.
-
-    # print "\nPARSED:"  # The parsed response, returns a dictionary.
-    # # pprint(response.body)
-    
-    recipe = response.body
-    # pprint(recipe)
-
-    recipe_dict = {}
-    ingredients = []
-
-    for ingred in recipe['extendedIngredients']:
-        ingredients.append(ingred['name'])
-
-    recipe_dict['id'] = recipe['id']
-    recipe_dict['title'] = recipe['title']
-    recipe_dict['image'] = recipe['image']
-    recipe_dict['vegan'] = recipe['vegan']
-    recipe_dict['vegetarian'] = recipe['vegetarian']
-    recipe_dict['sourceUrl'] = recipe['sourceUrl']
-    recipe_dict['ingredients'] = ingredients
-
-    # print "DICT: "
-    # pprint(recipe_dict)
-
-    return recipe_dict
 
 
 
