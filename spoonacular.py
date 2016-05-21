@@ -18,9 +18,9 @@ def header():
 
     HEADER = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
     return HEADER
-### DEFINE CONSTANT INSTEAD OF FUNCTION
 
-def parse_ingredients(*ingredients):  # Function can take more than one parameter with *.
+
+def parse_ingredients(*ingredients):  # Function can take more than one parameter with *. * used because user can input n arguments. 
     """Parse ingredients."""
 
     ingredients = list(ingredients)
@@ -31,7 +31,7 @@ def parse_ingredients(*ingredients):  # Function can take more than one paramete
 
 
 def get_recipes(*ingredients):
-    """Get recipes for input ingredients."""
+    """Get recipes containing input ingredients."""
 
     # response = unirest.get("https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
     #     headers=header()
@@ -40,8 +40,6 @@ def get_recipes(*ingredients):
     response = unirest.get(PREFIX + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1",
         headers=header()
     )
-    
-    # response = unirest.get(PREFIX + "findByIngredients?fillIngredients=false&ingredients=" + parse_ingredients(*ingredients) + "&limitLicense=false&number=5&ranking=1" + HEADER)
 
     print "\nSTATUS:\n", response.code  # The HTTP status code.
 
@@ -52,10 +50,6 @@ def get_recipes(*ingredients):
 
     return response.body
 
-
-    # for item in response.body:  # Iterate through list of dictionaries.
-    #     item.pop('imageType')
-    # return response.body  # Returns title, image, missedIngredientCount, likes, usedIngredientCount, id but no imageType.
 
 
 def get_recipe_source(recipe_id):
@@ -73,7 +67,6 @@ def get_recipe_source(recipe_id):
     print "\nPARSED:"  # The parsed response, returns a dictionary.
     pprint(response.body)
 
-    # print "\nSOURCE URL:\n", response.body['sourceUrl']  # Get the source URL of the original recipe.
 
     source = response.body["sourceUrl"] # Get the source URL of the original recipe.
 
@@ -157,15 +150,15 @@ def get_recipe_instructions(source_url):
 
 #                 # Query ingredients table to check that ingredient does not exist in database. 
 #                 # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
-#                 if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=missed_ingred['name']).all():
+#                 if not db.session.query(Ingredient.name).filter_by(name=missed_ingred['name']).all():
 
-#                     ingredient = Ingredient(ingredient_name=missed_ingred['name'])
+#                     ingredient = Ingredient(name=missed_ingred['name'])
 #                     db.session.add(ingredient)
 #                     # print "MISSED: ", missed_ingred['name']  # For debugging.
 
 #                     # Query for the ingredient_id, which is unique, and use it to create an object to 
 #                     # be added to the recipe_ingredients table.
-#                     ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=missed_ingred['name']).one()
+#                     ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(name=missed_ingred['name']).one()
 #                     recipe_ingredient = RecipeIngredient(recipe_id=recipe_dict['id'], ingredient_id=ingredient_id)
 
 #                     db.session.add(recipe_ingredient)
@@ -194,8 +187,8 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
             "includeIngredients" : includeIngredients,
             # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 20, # Change back to 100
-            "offset" : 21, # Change back to 101
+            "number" : 100, # Change back to 100
+            "offset" : 101, # Change back to 101
             "query" : query,
             "ranking" : 1
             }
@@ -295,15 +288,15 @@ def add_to_db(api_response):
             # Query ingredients table to check that ingredient does not exist in database. 
             # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
             for ingred in recipe_info["ingredients"]:
-                if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=ingred).all():
-                    ingredient = Ingredient(ingredient_name=ingred)
+                if not db.session.query(Ingredient.name).filter_by(name=ingred).all():
+                    ingredient = Ingredient(name=ingred)
                     db.session.add(ingredient)
                     # print "MISSED: ", ingredient  # For debugging.
 
 
                 # Query for the ingredient_id, which is unique, and use it to create an object to 
                 # be added to the recipe_ingredients table.
-                ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(ingredient_name=ingred).one()
+                ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(name=ingred).one()
                 recipe_ingredient = RecipeIngredient(recipe_id=recipe_id, ingredient_id=ingredient_id)
 
                 db.session.add(recipe_ingredient)

@@ -45,16 +45,16 @@ class Ingredient(db.Model):
     __tablename__ = "ingredients"
 
     ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    ingredient_name = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
     types = db.relationship("Type",
                             secondary="ingredient_types",
                             backref="ingredients")
 
     def __repr__(self):
-        """Represent Ingredient objects as ingredient_id and ingredient_name."""
+        """Represent Ingredient objects as ingredient_id and name."""
 
-        return "<Ingredient ingredient_id={} name={}>".format(self.ingredient_id, self.ingredient_name)
+        return "<Ingredient ingredient_id={} name={}>".format(self.ingredient_id, self.name)
 
 
 class RecipeIngredient(db.Model):
@@ -74,29 +74,21 @@ class RecipeIngredient(db.Model):
             self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
 
 
-# class Measurment(db.Model):
-#     """Measurements."""
-
-#     __tablename__ = "measurements"
-
-
-class Type(db.Model):  ### This table will be used to make custom recipes.
+class Type(db.Model):  # This table will be used to make custom recipes.
     """Type of ingredient ie. vegetable, fruit, grain, etc. Will be used for intolerances."""
 
     __tablename__ = "types"
 
     type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    type_name = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
     def __repr__(self):
-        """Represent Type objects as type_id and type_name."""
+        """Represent Type objects as type_id and name."""
 
-        return "<Type type_id={} name={}>".format(self.type_id, self.type_name)
+        return "<Type type_id={} name={}>".format(self.type_id, self.name)
 
 
-### Check tables below this line. ####
-##########################################################################################
-class IngredientType(db.Model):  ### Do I need this table? Ingredient can have many types. 
+class IngredientType(db.Model):
     """Association table for Ingredient and Type."""
 
     __tablename__ = "ingredient_types"
@@ -118,12 +110,12 @@ class Diet(db.Model):
     __tablename__ = "diets"
 
     diet_code = db.Column(db.String(100), primary_key=True)
-    diet_name = db.Column(db.String(100), unique=True, nullable=False)
+    name = db.Column(db.String(100), unique=True, nullable=False)
 
     def __repr__(self):
-        """Represent Diet objects as diet_id and diet_name."""
+        """Represent Diet objects as diet_id and name."""
 
-        return "<Diet diet_code:{}, diet_name:{}>".format(self.diet_code, self.diet_name)
+        return "<Diet diet_code:{}, name:{}>".format(self.diet_code, self.name)
 
 
 class RecipeDiet(db.Model):
