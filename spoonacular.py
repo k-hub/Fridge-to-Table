@@ -8,14 +8,10 @@ from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, Recip
 from serverdb import app
 
 
+
 PREFIX = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
 # HEADER = {"X-Mashape-Key": os.environ['X_MASHABLE_KEY'], "Accept": "application/json"}
 
-# def prefix_url():
-#     """Return beginning of URL for API calls."""
-#     prefix = "https://spoonacular-recipe-food-nutrition-v1.p.mashape.com/recipes/"
-#     return prefix
-### DEFINE CONSTANT INSTEAD OF FUNCTION
 
 def header():
     """Return header information for API calls."""
@@ -110,7 +106,7 @@ def get_recipe_instructions(source_url):
 
 
 
-#### NEED TO REFACTOR CODE BELOW INTO SMALLER FUNCTIONS.###########
+#### MAY NEED LATER. ###########
 # def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
 #     """Get recipes based on user input ingredients and any diet they select."""
 
@@ -255,16 +251,8 @@ def get_recipe_info(recipe_id):
     return recipe_dict
 
 
-# def add_recipe_instructions():
-#     """Add recipe instructions with respective recipe to database."""
-
-#     recipe_info = get_recipe_info()
-
-
-
-
 def add_to_db(api_response):
-    """Add recipe and ingredients to database if they do not exist."""
+    """Add recipe, ingredients, and diet to database."""
 
     response = api_response
     # print "DB: ", response
@@ -323,7 +311,6 @@ def add_to_db(api_response):
 
 
     db.session.commit()
-    # return response.body["results"] # Return the recipe results as a list of dictionaries.
 
 
 
