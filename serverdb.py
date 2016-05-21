@@ -42,9 +42,9 @@ def results():
     ######## Working on this function ##############
     
     ingred_not_found = querydb.query_ingredients(*ingredients)  # Get the ingredients not found in the db that the user input and returned as a set.
-    if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request. 
-        print "MISSING:", ingred_not_found
-        for ingredient in ingred_not_found:
+    # if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request. 
+    #     print "MISSING:", ingred_not_found
+        # for ingredient in ingred_not_found:
 
     
     recipes = querydb.query_recipes_by_diet(diet, *ingredients)

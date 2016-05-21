@@ -91,7 +91,7 @@ def query_recipes_by_diet(diet='any', *ingredients):  #Works for: ingredient, di
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.debug = True
+    # app.debug = 
 
     connect_to_db(app)
     print "Connected to DB."
