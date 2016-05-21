@@ -6,9 +6,9 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db
 
-# import querydb  # Need to comment this line out if running querydb.py in interactive python.
+import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
-# from spoonacular import get_recipes, get_recipe_source, get_restricted_recipes
+from spoonacular import get_restricted_recipes
 
 
 
@@ -37,10 +37,14 @@ def results():
 
     diet = request.args.get("diet")
 
+
+
+    ######## Working on this function ##############
     
-    missing = querydb.query_ingredients(*ingredients)  # Get the ingredients not found in the db that the user input.
-    if missing:  # If there are missing ingredients, then call a function to make an API request. 
-        print "MISSING:", missing
+    ingred_not_found = querydb.query_ingredients(*ingredients)  # Get the ingredients not found in the db that the user input and returned as a set.
+    if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request. 
+        print "MISSING:", ingred_not_found
+        for ingredient in ingred_not_found:
 
     
     recipes = querydb.query_recipes_by_diet(diet, *ingredients)
