@@ -4,7 +4,7 @@ import unirest
 from pprint import pprint
 import os
 from urllib import quote
-from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient
+from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet
 from serverdb import app
 
 
@@ -238,16 +238,16 @@ def get_recipe_info(recipe_id):
     recipe_dict = {}
     ingredients = []
 
-    for ingred in recipe['extendedIngredients']:
-        ingredients.append(ingred['name'])
+    for ingred in recipe["extendedIngredients"]:
+        ingredients.append(ingred["name"])
 
-    recipe_dict['id'] = recipe['id']
-    recipe_dict['title'] = recipe['title']
-    recipe_dict['image'] = recipe['image']
-    recipe_dict['vegan'] = recipe['vegan']
-    recipe_dict['vegetarian'] = recipe['vegetarian']
-    recipe_dict['sourceUrl'] = recipe['sourceUrl']
-    recipe_dict['ingredients'] = ingredients
+    recipe_dict["id"] = recipe["id"]
+    recipe_dict["title"] = recipe["title"]
+    recipe_dict["image"] = recipe["image"]
+    recipe_dict["vegan"] = recipe["vegan"]
+    recipe_dict["vegetarian"] = recipe["vegetarian"]
+    recipe_dict["sourceUrl"] = recipe["sourceUrl"]
+    recipe_dict["ingredients"] = ingredients
 
     # print "DICT: "  # For debugging.
     # pprint(recipe_dict)  # For debugging.
@@ -273,34 +273,40 @@ def add_to_db(api_response):
 
         # Query recipes table to check that recipe does not exist in database. 
         # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
-        if not db.session.query(Recipe.title).filter_by(title=recipe_dict['title']).all():
+        if not db.session.query(Recipe.title).filter_by(title=recipe_dict["title"]).all():
 
-            recipe_id = recipe_dict['id']  # Get the recipe_id to pass into get_recipe_info. 
+            recipe_id = recipe_dict["id"]  # Get the recipe_id to pass into get_recipe_info. 
             # print "ID HERE: ", recipe_id  # For debugging.
 
             recipe_info = get_recipe_info(recipe_id)  # Returns a dictionary with recipe_id, title, image, vegan/vegeatarian info, sourceUrl.
 
             # print "LOOK HERE:", recipe_info  # For debugging.
 
-            instructions = get_recipe_instructions(recipe_info['sourceUrl'])  # Call function to get recipe instructions.
+            instructions = get_recipe_instructions(recipe_info["sourceUrl"])  # Call function to get recipe instructions.
 
             # print "INSTRUCTIONS HERE: ", instructions  # For debugging.
-
-
-            recipe = Recipe(recipe_id=recipe_info['id'], title=recipe_info['title'], image=recipe_info['image'], instructions=instructions)
+            recipe = Recipe(recipe_id=recipe_info["id"], title=recipe_info["title"], image=recipe_info["image"], instructions=instructions)
 
             # print "instantiate THIS: ", recipe  # For debugging.
-
-
-            ####### ADD FUNCTION TO GET RECIPE INSTRUCTIONS
-
-            
             db.session.add(recipe)
+            db.session.commit()  # Need to commit here because recipe_id is a foreign key in the RecipeDiet table. 
+
+
+            if recipe_info["vegan"]:  # Any recipes that are vegan will have a diet_code "vg".
+                diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="vg")
+                db.session.add(diet)
+
+            if recipe_info["vegetarian"]:  # Any recipes that are vegan will have a diet_code "v".
+                diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="v")
+                db.session.add(diet)
+
+            diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="a")  # Add a diet_code of "a" indicating no dietary restrcition to all recipes.
+            db.session.add(diet)
 
 
             # Query ingredients table to check that ingredient does not exist in database. 
             # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
-            for ingred in recipe_info['ingredients']:
+            for ingred in recipe_info["ingredients"]:
                 if not db.session.query(Ingredient.ingredient_name).filter_by(ingredient_name=ingred).all():
                     ingredient = Ingredient(ingredient_name=ingred)
                     db.session.add(ingredient)
