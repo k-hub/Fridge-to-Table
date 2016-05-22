@@ -4,11 +4,12 @@ from flask import Flask, render_template, request, redirect, session, jsonify
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db
+from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient
 
-# import querydb  # Need to comment this line out if running querydb.py in interactive python.
+import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
-# from spoonacular import get_restricted_recipes
+import spoonacular
+
 
 
 
@@ -37,20 +38,19 @@ def results():
 
     diet = request.args.get("diet")
 
-
-
-    ######## Working on this function ##############
+    recipes = querydb.query_recipes_by_diet(diet, *ingredients)  # Query for recipes in the database that contain any of the input ingredients.
     
-    ingred_not_found = querydb.query_ingredients(*ingredients)  # Get the ingredients not found in the db that the user input and returned as a set.
-    # if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request. 
+
+    # ######## Unneccessary code below ##############
+    # # Each ingredient not found in the database will be used in the API call to get recipes containing that ingredient. Ingredient and recipe information will be added to the database.
+    # ingred_not_found = querydb.query_ingredients(*ingredients)  # Get the user input ingredient(s) not found in the database, returned as a set.
+    # if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request.
     #     print "MISSING:", ingred_not_found
-        # for ingredient in ingred_not_found:
+    #     for ingredient in ingred_not_found:
+    #         print "DIET:", diet
+    #         print "SEARCHING:", ingredient
+    #         spoonacular.get_restricted_recipes(diet=diet, includeIngredients=ingredient)
 
-    
-    recipes = querydb.query_recipes_by_diet(diet, *ingredients)
-
-
-    # get_recipes(*ingredients)
 
     # print "Before: ", ingredients  # For debugging.
     # ingredients = ''.join(ingredients)
@@ -61,35 +61,18 @@ def results():
     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
 
 
-# @app.route("/search-results")
-# def results():
-#     """Return search results for user's input ingredients."""
-
-
-#     ingredients = request.args.get("ingredient")
-
-#     print "Before: ", ingredients
-#     # ingredients = ''.join(ingredients)
-#     # print "After first join: ", ingredients
-#     ingredients = ingredients.split(' ')
-#     print "DB: ", ingredients
-
-#     recipes = querydb.query_recipes_with_ingredients(*ingredients)    ###CHANGE THIS FUNCTION
-
-
-
-#     # print "DEBUG RECIPES: ", recipes
-
-
-#     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
-
-
-
 @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
 def show_recipe(recipe_id):
     """Return recipe that user clicks on from /search_results."""
 
-    pass
+    recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
+
+    ingredients = recipe.ingredients
+    
+    ####### Working on this route.
+
+
+    return render_template("recipe.html", recipe=recipe, ingredients=ingredients)
 
 @app.route("/shopping-lists")  # Route needs to be revised.
 def show_shopping_lists():

@@ -181,7 +181,7 @@ class SubstitutionIngredient(db.Model):
 def connect_to_db(app):
     """Connect database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///test'  # 'postgresql:///test' 'postgresql:///recipes'
+    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'  # 'postgresql:///test' 'postgresql:///recipes'
     # app.config['SQLAlchemy_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app

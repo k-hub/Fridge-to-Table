@@ -2,7 +2,11 @@
 {% block content %}
 
 
-{{ recipe }}
-
+    {{ recipe.title }}<br><br>
+    {{ recipe.image }}<br><br>
+    {{ recipe.instructions }}<br><br>
+        {% for ingredient in ingredients %}
+            <li>{{ ingredients[0].name }}</li>  <!-- Working on displaying ingredient and measurements -->
+        {% endfor %}
 {% endblock %}
 

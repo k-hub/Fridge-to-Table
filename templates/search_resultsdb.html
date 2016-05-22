@@ -3,7 +3,18 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ recipes }}
+        {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
+            {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects -->
+                <li> {{ recipe.title }} </li>
+                    <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" id={{ recipe.recipe_id }} src="{{recipe.image}}"></a> 
+
+
+
+
+            {% endfor%}
+        {% else %}
+            No recipes found
+        {% endif%}
 {% endblock %}
 
             <!-- <li> {{ recipe.title }} </li>
