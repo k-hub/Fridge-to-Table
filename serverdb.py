@@ -10,7 +10,7 @@ import querydb  # Need to comment this line out if running querydb.py in interac
 
 import spoonacular
 
-
+import re
 
 
 
@@ -67,12 +67,18 @@ def show_recipe(recipe_id):
 
     recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
 
-    ingredients = recipe.ingredients
-    
-    ####### Working on this route.
+    instructions = recipe.instructions
+    instructions = re.sub('<[^>]*>', '', instructions)  # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
 
+    measurements_ingredients = db.session.query(RecipeIngredient.measurement, Ingredient.name).join(Recipe).join(Ingredient).filter(Recipe.recipe_id == recipe_id).all()
 
-    return render_template("recipe.html", recipe=recipe, ingredients=ingredients)
+    # print "RECIPE:\n", recipe  # For debugging.
+    # print "INGREDIENTS:\n", ingredients  # For debugging.
+    # print "INSTRUCTIONS:\n", instructions  # For debugging.
+    # print "DB: ", instructions  # For debugging.
+
+    return render_template("recipe.html", recipe=recipe, instructions=instructions, measurements_ingredients=measurements_ingredients)
+
 
 @app.route("/shopping-lists")  # Route needs to be revised.
 def show_shopping_lists():

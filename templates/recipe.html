@@ -3,10 +3,15 @@
 
 
     {{ recipe.title }}<br><br>
-    {{ recipe.image }}<br><br>
-    {{ recipe.instructions }}<br><br>
-        {% for ingredient in ingredients %}
-            <li>{{ ingredients[0].name }}</li>  <!-- Working on displaying ingredient and measurements -->
-        {% endfor %}
+    
+    <img class="recipe_image" id="{{recipe.recipe_id}}" src={{ recipe.image }}> <br><br>
+    
+    {% for measurement, ingredient in measurements_ingredients %}
+        {{ measurement }} {{ ingredient }} <br>
+    {% endfor %} <br>
+    
+    {{ instructions }}<br><br>
+
+
 {% endblock %}
 

@@ -68,15 +68,15 @@ def query_recipes_for_info(unique_recipes):
 def query_recipes_by_diet(diet="any"):  # (ingredient, diet="any")
     """Filter recipes based on user's indicated diet."""
 
-    recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == diet)).all()
+    recipes = Recipe.query.filter(Recipe.diets.any(Diet.name == diet)).all()
     return recipes
 
 
 ##### MAIN FUNCTION ###########
-def query_recipes_by_diet(diet='any', *ingredients):  #Works for: ingredient, diet='any'
+def query_recipes_by_diet(diet='any', *ingredients):  # Even though a default paramater is set, the diet still needs to be explicitly passed in as an argument.          #Works for: ingredient, diet='any'
     """Query recipes for user input of any ingredients and any diet restrictions."""
 
-    recipes = Recipe.query.filter(Recipe.diets.any(Diet.diet_name == diet)).filter(Recipe.ingredients.any(Ingredient.name.in_(ingredients))).all()
+    recipes = Recipe.query.filter(Recipe.diets.any(Diet.name == diet)).filter(Recipe.ingredients.any(Ingredient.name.in_(ingredients))).all()
     return recipes
 
 

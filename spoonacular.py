@@ -5,7 +5,7 @@ from pprint import pprint
 import os
 from urllib import quote
 from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet, Diet
-# from serverdb import app
+# from serverdb import app  # Need to comment out if running serverdb.
 
 
 
@@ -91,7 +91,11 @@ def get_recipe_instructions(source_url):
 
 
 def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
-    """Get recipes based on user input ingredient and any diet they select."""
+    """Get recipes based on user input ingredient and any diet they select.
+
+    This API call does not include the searched ingredient as one of the ingredients in the recipe.
+    get_recipe_info takes care of that. 
+    """
 
     payload = {
             "diet" : diet,
@@ -100,8 +104,8 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
             "includeIngredients" : includeIngredients,
             # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 100, # Change back to 100
-            "offset" : 101, # Change back to 101
+            "number" : 10, # Change back to 100
+            "offset" : 11, # Change back to 101
             "query" : query,
             "ranking" : 1
             }
@@ -118,15 +122,18 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
     # print "\nPARSED:"  # The parsed response, returns a dictionary.
     pprint(response.body["results"])
 
-    add_to_db(response.body["results"], diet)  # Call function to add recipes, ingredients, diet information to database.
+    add_to_db(response.body["results"])  # Call function to add recipes, ingredients, diet information to database.
 
 
 
 def get_recipe_info(recipe_id):
-    """Get information for a specific recipe and store it in a dictionary.
+    """Get information for a specific recipe and store it in a dictionary to be used 
+    to instantiate objects in add_to_db.
 
-    Returns the recipe id, title, all ingredients in the recipe, and whether
-    it is vegan or vegetarian, and the sourceUrl.
+    Returns the recipe id, title, image, whether it is vegan and/or vegetarian,
+    all ingredients and respecitve measurements in the recipe, and the instructions. 
+    Using this particular API call gives all ingredients in the recipe. To get the
+    instructions for a recipe, get_recipe_instructions is used. 
     """
 
     response = unirest.get(PREFIX + str(recipe_id) + "/information?includeNutrition=false",   
@@ -144,15 +151,19 @@ def get_recipe_info(recipe_id):
         measurement = "{} {}".format(ingred["amount"], ingred["unit"])
         ingredients.setdefault(ingred["name"], measurement)
 
+    instructions = get_recipe_instructions(recipe["sourceUrl"])  # Get the recipe instructions by calling
+    # another function. 
+
     recipe_dict["id"] = recipe["id"]
     recipe_dict["title"] = recipe["title"]
     recipe_dict["image"] = recipe["image"]
     recipe_dict["vegan"] = recipe["vegan"]
     recipe_dict["vegetarian"] = recipe["vegetarian"]
-    recipe_dict["sourceUrl"] = recipe["sourceUrl"]
     recipe_dict["ingredients"] = ingredients
+    recipe_dict["instructions"] = instructions
 
-
+    # Below does not work because images have different image format.
+    # recipe_dict["image"] = "https://webknox.com/recipeImages/" + str(recipe["id"]) + "-556x370.jpg"  # Using this URL because the images are formatted to same height and width.
 
 
     # recipe_dict = {}
@@ -174,8 +185,8 @@ def get_recipe_info(recipe_id):
     return recipe_dict
 
 
-def add_to_db(api_response, diet):
-    """Add recipe, ingredients, and diet to database."""
+def add_to_db(api_response):
+    """Add recipes, ingredients, and diet information to database."""
 
     response = api_response
 
@@ -188,18 +199,17 @@ def add_to_db(api_response, diet):
         # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
         if not db.session.query(Recipe.title).filter_by(title=recipe_dict["title"]).all():
 
-            recipe_id = recipe_dict["id"]  # Get the recipe_id to pass into get_recipe_info function. 
+            recipe_id = recipe_dict["id"]  # Get the recipe_id to pass into get_recipe_info function.
 
-            recipe_info = get_recipe_info(recipe_id)  # Returns a dictionary with recipe_id, title, image, vegan/vegeatarian info, sourceUrl.
+            recipe_info = get_recipe_info(recipe_id)  # Returns a dictionary with recipe id, title, image, vegan/vegeatarian info, ingredients, instructions.
 
-            instructions = get_recipe_instructions(recipe_info["sourceUrl"])  # Call function to get recipe instructions.
-
-            recipe = Recipe(recipe_id=recipe_info["id"], title=recipe_info["title"], image=recipe_info["image"], instructions=instructions)  # Instantiate a Recipe object.
+            recipe = Recipe(recipe_id=recipe_info["id"], title=recipe_info["title"], image=recipe_info["image"], instructions=recipe_info["instructions"])  # Instantiate a Recipe object.
 
             db.session.add(recipe)
             db.session.commit()  # Need to commit here because recipe_id is a foreign key in the RecipeDiet table. 
 
 
+            # Instantiate RecipeDiet objects for each recipe. Each recipe can have more than one diet_code.
             if recipe_info["vegan"]:  # Any recipes that are vegan will have a diet_code "vg".
                 diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="vg")
                 db.session.add(diet)
@@ -208,21 +218,16 @@ def add_to_db(api_response, diet):
                 diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="v")
                 db.session.add(diet)
 
-            diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="a")  # Add a diet_code of "a" indicating no dietary restriction to all recipes.
+            diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="a")  # Add a diet_code of "a", which indicates no dietary restriction to all recipes.
             db.session.add(diet)
 
-            # Below code is not the best idea because if user inputs a diet and then inputs an ingredient that doesn't meet dietary restrictions, recipe can be mislabeled with an incorrect diet. 
-            # diet_type = diet  # Diet will be the diet indicated by the user. Use this to instantiate RecipeDiet objects because API responses do not include diet types other than vegan and vegetarian.
-            # if diet_type != "any":
-            #     diet_name = Diet.query.filter_by(name=diet_type).one()  # Query database for the input diet name in order to use the diet_code attribute.
-            #     diet_code = diet_name.diet_code  # Get the diet_code because this is the foreign key in RecipeDiet.
-            #     diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code=diet_code)
-            #     db.session.add(diet)
 
+            # recipe_info["ingredients"] is a key with a value that is a dictionary of ingredient-measurement pairs, 
+            # so need to use .items().
+            for name, measurement in recipe_info["ingredients"].items():
 
-            # Query ingredients table to check that ingredient does not exist in database. 
-            # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
-            for name, measurement in recipe_info["ingredients"].items():  # recipe_info["ingredients"] is a key with a value that is a dictionary of ingredient-measurement pairs, so need to use .items().
+                # Query ingredients table to check that ingredient does not exist in database. 
+                # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database. 
                 if not db.session.query(Ingredient.name).filter_by(name=name).all():
                     ingredient = Ingredient(name=name)
                     db.session.add(ingredient)
