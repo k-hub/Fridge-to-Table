@@ -61,7 +61,7 @@ def results():
     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
 
 
-@app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
+@app.route("/recipe/<int:recipe_id>")
 def show_recipe(recipe_id):
     """Return recipe that user clicks on from /search_results."""
 
@@ -85,7 +85,55 @@ def show_recipe(recipe_id):
 def show_shopping_lists():
     """Show user's shopping lists."""
 
-    return render_template("shopping_list.html")
+    ###### WORKING ON THIS FUNCTION. TRYING TO STORE DATA SENT FROM AJAX IN SHOPPING LIST. #####
+
+    if 'shopping_list' in session:
+        shopping_list = session['shopping_list']
+
+    else:
+        shopping_list = session['shopping_list'] = []
+
+
+
+
+
+    ingredient = request.args.get("ingredient_id")  # Get the ingredient_id of the ingredient clicked using AJAX. 
+    print "DB: ", ingredient  # For debugging.
+
+    # all_ingredients = []  # Create a list to store clicked ingredients.
+    ingredient_object = Ingredient.query.filter(Ingredient.ingredient_id == ingredient).one()
+    print "OBJECT: ", ingredient_object
+
+    ingredient = ingredient_object.name
+    print "INGREDIENT: ", ingredient
+    print "JSONIFY:", jsonify({'name': ingredient})
+    shopping_list.append(ingredient)
+
+    print "SHOPPING: ", shopping_list
+    # Query the ingredient clicked to get the respective ingredient object. This will be used to get the ingredient name.
+    # all_ingredients.append(ingredient_objects)
+    # print "ALL: ", all_ingredients  # For debugging.
+
+    # shopping_list_ids = session.get("shopping_list", [])  # Get the shopping_list or an empty list, if there's not shopping_list yet. 
+
+    # print "EMPTY: ", shopping_list_ids
+
+    # shopping_list = {}  # This dictionary will be used to keep track of ingredient names.
+
+    # for ingredient_id in shopping_list_ids:  # change ingredient_object to ingredient_id
+
+    #     if ingredient_id in shopping_list:
+    #         shopping_list_info = shopping_list[ingredient_id]
+
+    #     else:
+    #         ingredient = ingredient_object.name 
+    #         shopping_list_info = shopping_list[ingredient_id] = {
+    #             'ingredient_name': ingredient.name
+    #         }
+
+    # shopping_list = shopping_list.values()
+
+    return render_template("shopping_list.html", ingredient=ingredient, shopping_list=shopping_list)
 
 
 @app.route("/bookmarks")  # Route needs to be revised.
@@ -102,27 +150,6 @@ def show_profile():
     pass
 
 
-
-# @app.route("/search-results")  # Route needs to be revised.
-# def results():
-#     """Return search results for user's input ingredients."""
-
-#     search = request.args.get("search")
-#     search_results = get_recipes(search)  # Returns a list of recipe dictionaries.
-
-#     return render_template("search_results.html", search_results=search_results)
-
-
-
-# @app.route("/recipe/<int:recipe_id>")  # Route needs to be revised.
-# def show_recipe(recipe_id):
-#     """Return recipe that user clicks on from /search_results."""
-
-#     # recipe = request.args.get("recipe_id") ## To make alert pop up from AJAX.
-#     # print "TEST: ", recipe
-#     recipe = get_recipe_source(recipe_id)  # Get the recipe instructions.
-
-#     return render_template("recipe.html", recipe=recipe)
 
 
 

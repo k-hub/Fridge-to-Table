@@ -104,8 +104,8 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
             "includeIngredients" : includeIngredients,
             # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 10, # Change back to 100
-            "offset" : 11, # Change back to 101
+            "number" : 100, # Change back to 100
+            "offset" : 101, # Change back to 101
             "query" : query,
             "ranking" : 1
             }
