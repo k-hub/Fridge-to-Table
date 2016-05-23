@@ -68,9 +68,10 @@ def show_recipe(recipe_id):
     recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
 
     instructions = recipe.instructions
-    instructions = re.sub('<[^>]*>', '', instructions)  # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
+    instructions = re.sub('<[^>]*>', '', instructions)  # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
+    # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
 
-    measurements_ingredients = db.session.query(RecipeIngredient.measurement, Ingredient.name).join(Recipe).join(Ingredient).filter(Recipe.recipe_id == recipe_id).all()
+    measurements_ingredients = db.session.query(RecipeIngredient.measurement, Ingredient.ingredient_id, Ingredient.name).join(Recipe).join(Ingredient).filter(Recipe.recipe_id == recipe_id).all()
 
     # print "RECIPE:\n", recipe  # For debugging.
     # print "INGREDIENTS:\n", ingredients  # For debugging.
@@ -84,7 +85,7 @@ def show_recipe(recipe_id):
 def show_shopping_lists():
     """Show user's shopping lists."""
 
-    pass
+    return render_template("shopping_list.html")
 
 
 @app.route("/bookmarks")  # Route needs to be revised.
