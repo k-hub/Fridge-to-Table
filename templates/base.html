@@ -1,10 +1,42 @@
 <!doctype html>
 <html>
 <head>
-     <title>{% block title %} Recipe Finder {% endblock title %}</title>  <!-- Change title --> 
-</head>
-<body>
+    <link rel="stylesheet"
+          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/css/site.css"/>
 
+    <title>{% block title %} Recipe Finder {% endblock title %}</title>  <!-- Change title --> 
+</head>
+
+<body>
+    <div class="navbar navbar-inverse navbar-static-top">
+    <div class="container">
+
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Recipe Finder</a>
+        </div>
+
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="/shopping-list">
+                        <img class="shopping-list">
+                        Shopping List
+                    </a>
+                </li>
+                {% if session.get('logged_in_customer_email') %}
+                <li><a href="/logout">Log Out</a></li>
+                {% else %}
+                <li><a href="/login">Log In</a></li>
+                {% endif %}
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<div class="container">
+    <!-- <a href="/shopping-lists"> -->
     {% block content %}
         NO ONE WILL SEE THIS
     {% endblock %}
