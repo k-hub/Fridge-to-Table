@@ -12,11 +12,13 @@ import spoonacular
 
 import re
 
+import os
+
 
 
 app = Flask(__name__)
 
-app.secret_key = "FOOD123"  # Required to use Flask sessions and the debug toolbar.
+app.secret_key = os.environ["APP_SECRET_KEY"]
 
 app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
 
@@ -78,27 +80,6 @@ def show_recipe(recipe_id):
     # print "INSTRUCTIONS:\n", instructions  # For debugging.
     # print "DB: ", instructions  # For debugging.
 
-
-
-    # ingredient = request.args.get("ingredient_id")
-
-    # if 'shopping_list' in session:
-    #     shopping_list = session['shopping_list']
-
-    # else:
-    #     shopping_list = session['shopping_list'] = []
-
-    # # Add melon to cart
-    # shopping_list.append(ingredient)
-
-    # # Show user success message on next page load
-    # flash("Successfully added to shopping list.")
-
-
-
-    # # Redirect to shopping cart page
-    # return redirect("/shopping-list")
-
     return render_template("recipe.html", recipe=recipe, instructions=instructions, measurements_ingredients=measurements_ingredients)
 
 
@@ -123,37 +104,40 @@ def show_shopping_list():
     # session.clear()
 
     print "SESSION KEYS: ", session.keys()
-    print "SESSION VALUES: ", session.values()
+    print "SESSION VALUES: ", session["shopping_list"]
     # print "SHOPPING IDS: ", shopping_list_ids
 
-    shopping_list = {"test": "T"}
+    # shopping_list = session.values()
+    # import pdb; pdb.set_trace()
 
 
+    # print "SHOPPING LIST:", shopping_list
+
+    shopping_list = session["shopping_list"]
 
     # Query the ingredient clicked to get the respective ingredient object. This will be used to get the ingredient name.
 
 
     # shopping_list = {}  # This dictionary will be used to keep track of ingredient names.
 
-    # for ingredient_id in shopping_list_ids:  # change ingredient_object to ingredient_id
+    # for ingredient_name in shopping_list_ids:  # change ingredient_object to ingredient_id
 
-    #     if ingredient_id in shopping_list:
-    #         shopping_list_info = shopping_list[ingredient_id]
+    #     if ingredient_name in shopping_list:
+    #         shopping_list_info = shopping_list[ingredient_name]
 
     #     else:
     #         ingredient = ingredient_id
-    #         shopping_list_info = shopping_list[ingredient_id] = {
-    #             'ingredient_id': "test"
+    #         shopping_list_info = shopping_list[ingredient_name] = {
+    #             'ingredient_name': ingredient_name
     #         }
 
-    # shopping_list = shopping_list.values()
+    # shopping_list = shopping_list_info.values()
 
-    # return render_template("shopping_list.html", ingredient=shopping_list)
     # return (ingredient_id)
 
-    return ("hello")
+    return render_template ("shopping_list.html", shopping_list=shopping_list)
 
-# @app.route("/add_to_shopping_list/<int:ingredient_id>")
+
 # def add_to_shopping_list(ingredient_id):
     
 #     # Check if there is a shopping list in session dictionary and if not, add one.
