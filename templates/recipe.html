@@ -2,6 +2,16 @@
 {% block content %}
     <head>
         <title>{% block title %} {{ recipe.title }} {% endblock title %}</title>
+    
+
+    <style>
+    .blue {
+        color: blue;
+    }
+    </style>
+
+
+
     </head>
 
     <body>
@@ -21,8 +31,56 @@
         </form>
     </body>
 
+
+
+
     <script src="https://code.jquery.com/jquery.js"></script>
+
+
+<script>
+
+function removeIngredient() {
+
+
+}
+
+
+
+function get_ingredient_id(evt) {
+    console.log($(this).attr("id"));
+
+// Create an object.
+        var ingredientId = {
+            "ingredient_id": $(this).attr("id")
+        };
+
+        var ingredientName = {
+            "ingredient_name": $(this).attr("name")
+        };
+
+        var changeColor = $(this).toggleClass("blue");  // Change color of ingredient to blue and change color back to default color if user clicks again.
+
+        $.get("/shopping-list", ingredientName);  //AJAX
+
+        console.log(ingredientId);  // For debugging
+        console.log(ingredientName);  // For debugging
+
+    };
+
+
+
+$("span").on("click", get_ingredient_id);
+
+</script>
+
+
+
+
+
+
+
+
     
-    <script src="/static/click-ingredients.js"></script>
+
 {% endblock %}
 
