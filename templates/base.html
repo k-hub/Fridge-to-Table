@@ -36,7 +36,15 @@
 </div>
 
 <div class="container">
-    <!-- <a href="/shopping-lists"> -->
+  <!-- Show flashed messages -->
+  {% with messages = get_flashed_messages() %}
+      {% for message in messages %}
+          <div class="alert alert-warning">{{ message }}</div>
+      {% endfor %}
+  {% endwith %}
+
+
+    
     {% block content %}
         NO ONE WILL SEE THIS
     {% endblock %}

@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, redirect, session, jsonify
+from flask import Flask, render_template, request, redirect, session, jsonify, flash
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -78,45 +78,60 @@ def show_recipe(recipe_id):
     # print "INSTRUCTIONS:\n", instructions  # For debugging.
     # print "DB: ", instructions  # For debugging.
 
+
+
+    # ingredient = request.args.get("ingredient_id")
+
+    # if 'shopping_list' in session:
+    #     shopping_list = session['shopping_list']
+
+    # else:
+    #     shopping_list = session['shopping_list'] = []
+
+    # # Add melon to cart
+    # shopping_list.append(ingredient)
+
+    # # Show user success message on next page load
+    # flash("Successfully added to shopping list.")
+
+
+
+    # # Redirect to shopping cart page
+    # return redirect("/shopping-list")
+
     return render_template("recipe.html", recipe=recipe, instructions=instructions, measurements_ingredients=measurements_ingredients)
 
 
-@app.route("/shopping-lists")  # Route needs to be revised.
-def show_shopping_lists():
-    """Show user's shopping lists."""
+@app.route("/shopping-list")  # Route needs to be revised.
+def show_shopping_list():
+    """Show user's shopping list."""
 
     ###### WORKING ON THIS FUNCTION. TRYING TO STORE DATA SENT FROM AJAX IN SHOPPING LIST. #####
 
-    if 'shopping_list' in session:
-        shopping_list = session['shopping_list']
-
-    else:
-        shopping_list = session['shopping_list'] = []
+    ingredient_name = request.args.get("ingredient_name")  # Get the ingredient_id of the ingredient clicked using AJAX. 
+    print "DB: ", ingredient_name # For debugging.
 
 
+    # ingredient_object = Ingredient.query.filter(Ingredient.ingredient_id == ingredient_id).one()
+    # # # print "OBJECT: ", ingredient_object
+    # ingredient_name = ingredient_object.name
+    # print "INGREDIENT: ", ingredient_name
+
+    # import pdb; pdb.set_trace()
+
+    shopping_list_ids = session.setdefault("shopping_list", []).append(ingredient_name)  # Get the shopping_list or an empty list, if there's not shopping_list yet. 
+    # session.clear()
+
+    print "SESSION KEYS: ", session.keys()
+    print "SESSION VALUES: ", session.values()
+    # print "SHOPPING IDS: ", shopping_list_ids
+
+    shopping_list = {"test": "T"}
 
 
 
-    ingredient = request.args.get("ingredient_id")  # Get the ingredient_id of the ingredient clicked using AJAX. 
-    print "DB: ", ingredient  # For debugging.
-
-    # all_ingredients = []  # Create a list to store clicked ingredients.
-    ingredient_object = Ingredient.query.filter(Ingredient.ingredient_id == ingredient).one()
-    print "OBJECT: ", ingredient_object
-
-    ingredient = ingredient_object.name
-    print "INGREDIENT: ", ingredient
-    print "JSONIFY:", jsonify({'name': ingredient})
-    shopping_list.append(ingredient)
-
-    print "SHOPPING: ", shopping_list
     # Query the ingredient clicked to get the respective ingredient object. This will be used to get the ingredient name.
-    # all_ingredients.append(ingredient_objects)
-    # print "ALL: ", all_ingredients  # For debugging.
 
-    # shopping_list_ids = session.get("shopping_list", [])  # Get the shopping_list or an empty list, if there's not shopping_list yet. 
-
-    # print "EMPTY: ", shopping_list_ids
 
     # shopping_list = {}  # This dictionary will be used to keep track of ingredient names.
 
@@ -126,14 +141,52 @@ def show_shopping_lists():
     #         shopping_list_info = shopping_list[ingredient_id]
 
     #     else:
-    #         ingredient = ingredient_object.name 
+    #         ingredient = ingredient_id
     #         shopping_list_info = shopping_list[ingredient_id] = {
-    #             'ingredient_name': ingredient.name
+    #             'ingredient_id': "test"
     #         }
 
     # shopping_list = shopping_list.values()
 
-    return render_template("shopping_list.html", ingredient=ingredient, shopping_list=shopping_list)
+    # return render_template("shopping_list.html", ingredient=shopping_list)
+    # return (ingredient_id)
+
+    return ("hello")
+
+# @app.route("/add_to_shopping_list/<int:ingredient_id>")
+# def add_to_shopping_list(ingredient_id):
+    
+#     # Check if there is a shopping list in session dictionary and if not, add one.
+#     if 'shopping_list' in session:
+#         shopping_list = session['shopping_list']
+
+#     else:
+#         shopping_list = session['shopping_list'] = []
+
+#     # Add an ingredient to shopping list
+#     shopping_list.append(ingredient_id)
+
+#     return redirect("/shopping-list")
+
+
+@app.route("/login")  # Route needs to be revised.
+def show_profile():
+    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+
+    pass
+
+@app.route("/logout")  # Route needs to be revised.
+def show_logout():
+    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+
+    pass
+
+
+@app.route("/profile")  # Route needs to be revised.
+def show_user_profile():
+    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+
+    pass
 
 
 @app.route("/bookmarks")  # Route needs to be revised.
@@ -141,15 +194,6 @@ def show_bookmarks():
     """Show user's bookmarked recipes."""
 
     pass
-
-
-@app.route("/profile")  # Route needs to be revised.
-def show_profile():
-    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-
-    pass
-
-
 
 
 

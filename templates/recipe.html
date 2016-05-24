@@ -5,14 +5,14 @@
     </head>
 
     <body>
-        <form action="/shopping-lists">
+        <form action="/shopping-list">
             <h1 class="recipe_title"> {{ recipe.title }} </h1><br>
             
             <img class="recipe_image" id="{{recipe.recipe_id}}" src={{ recipe.image }}> <br><br>
 
             {% for measurement, ingredient_id, ingredient in measurements_ingredients %}  <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
                 {{ measurement }} 
-                <span class="ingredient" id="{{ ingredient_id }}"> {{ ingredient }} </span><br>
+                <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
                 
             {% endfor %} <br>
 
