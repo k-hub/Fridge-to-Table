@@ -92,8 +92,9 @@ def show_recipe(recipe_id):
 def show_shopping_list():
     """Show user's shopping list."""
 
-    
-    return "test"
+    shopping_list = session.keys()
+
+    return render_template("shopping_list.html", shopping_list=shopping_list)
 
 
 @app.route("/add-to-shopping-list")  # This route will never be visited by user.
@@ -104,65 +105,32 @@ def add_to_shopping_list():
     ingredient_name = request.args.get("ingredient_name")  # Get the ingredient_id of the ingredient clicked using AJAX. 
     print "DB: ", ingredient_name # For debugging.
 
+
+    # print "BEFORE:", shopping_dict
+
+    # if ingredient_name in shopping_dict:
+    #     del shopping_dict[ingredient_name]
+    # else:
+    #     shopping_dict.setdefault(ingredient_name, 0)
+
+    # # session.setdefault("shopping_list", shopping_dict)
+    # print "AFTER:", shopping_dict
+
+    # # print "SESSION:", session['shopping_list']
+
+    print "BEFORE: ", session
+    if ingredient_name in session:
+        del session[ingredient_name]
+    else:
+        session.setdefault(ingredient_name, 0)
+
     # import pdb; pdb.set_trace()
+    print "AFTER: ", session
 
     # session.clear() 
 
-    print "BEFORE:", shopping_dict
-
-    if ingredient_name in shopping_dict:
-        del shopping_dict[ingredient_name]
-    else:
-        shopping_dict.setdefault(ingredient_name, 0)
-
-    # session.setdefault("shopping_list", shopping_dict)
-    print "AFTER:", shopping_dict
-
-    # print "SESSION:", session['shopping_list']
-
-
-    return "hello"
+    return "test"
     
-
- # shopping_list_ids = session.setdefault("shopping_list", []).append(ingredient_name)
-    # Get the shopping_list or an empty list, if there's not shopping_list yet. 
-
-
-    # print "SESSION KEYS: ", session.keys()
-    # print "SESSION VALUES: ", session["shopping_list"]
-    # # print "SHOPPING IDS: ", shopping_list_ids
-
-    # # shopping_list = session.values()
-    # # import pdb; pdb.set_trace()
-
-
-    # # print "SHOPPING LIST:", shopping_list
-
-    # shopping_list = session["shopping_list"]
-
-    # Query the ingredient clicked to get the respective ingredient object. This will be used to get the ingredient name.
-
-
-    # shopping_list = {}  # This dictionary will be used to keep track of ingredient names.
-
-    # for ingredient_name in shopping_list_ids:  # change ingredient_object to ingredient_id
-
-    #     if ingredient_name in shopping_list:
-    #         shopping_list_info = shopping_list[ingredient_name]
-
-    #     else:
-    #         ingredient = ingredient_id
-    #         shopping_list_info = shopping_list[ingredient_name] = {
-    #             'ingredient_name': ingredient_name
-    #         }
-
-    # shopping_list = shopping_list_info.values()
-
-    # return (ingredient_id)
-
-    # return render_template ("shopping_list.html", shopping_list=shopping_list)
-
-
 
 @app.route("/login")  # Route needs to be revised.
 def show_profile():
