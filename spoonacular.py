@@ -1,4 +1,4 @@
-"""Use Spooncular API to send get request of input ingredients and returns recipes as a response."""
+"""Use Spooncular API to send get requests and to add recipe information to database."""
 
 import unirest
 from pprint import pprint
@@ -45,7 +45,7 @@ def get_recipes(*ingredients):
 
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
-    print "\nPARSED:"  # The parsed response, a list of dictionaries.
+    print "\nPARSED:"  # The parsed response, is a list of dictionaries.
     pprint(response.body)
 
     return response.body
@@ -91,7 +91,7 @@ def get_recipe_instructions(source_url):
 
 
 def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredients=None, intolerances=None, query=None):
-    """Get recipes based on user input ingredient and any diet they select.
+    """Get recipes to add to database.
 
     This API call does not include the searched ingredient as one of the ingredients in the recipe.
     get_recipe_info takes care of that. 
@@ -104,8 +104,8 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
             "includeIngredients" : includeIngredients,
             # "intolerances" : intolerances,
             "limitLicense" : "false",
-            "number" : 100, # Change back to 100
-            "offset" : 101, # Change back to 101
+            "number" : 100,
+            "offset" : 101,
             "query" : query,
             "ranking" : 1
             }
@@ -119,7 +119,6 @@ def get_restricted_recipes(diet="any", excludeIngredients=None, includeIngredien
 
     print "\nHEADERS:\n", response.headers  # The HTTP headers.
 
-    # print "\nPARSED:"  # The parsed response, returns a dictionary.
     pprint(response.body["results"])
 
     add_to_db(response.body["results"])  # Call function to add recipes, ingredients, diet information to database.
@@ -165,20 +164,7 @@ def get_recipe_info(recipe_id):
     # Below does not work because images have different image format.
     # recipe_dict["image"] = "https://webknox.com/recipeImages/" + str(recipe["id"]) + "-556x370.jpg"  # Using this URL because the images are formatted to same height and width.
 
-
-    # recipe_dict = {}
-    # ingredients = []
-
-    # for ingred in recipe["extendedIngredients"]:
-    #     ingredients.append(ingred["name"])
-
-    # recipe_dict["id"] = recipe["id"]
-    # recipe_dict["title"] = recipe["title"]
-    # recipe_dict["image"] = recipe["image"]
-    # recipe_dict["vegan"] = recipe["vegan"]
-    # recipe_dict["vegetarian"] = recipe["vegetarian"]
     # recipe_dict["sourceUrl"] = recipe["sourceUrl"]
-    # recipe_dict["ingredients"] = ingredients
     # print "DICT: "  # For debugging.
     # pprint(recipe_dict)  # For debugging.
 

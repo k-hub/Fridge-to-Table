@@ -36,9 +36,6 @@ class Recipe(db.Model):
         return "<Recipe recipe_id={} title={}>".format(self.recipe_id, self.title)
 
 
-
-# CHECK ALL BACKREFS
-##########################################################################################
 class Ingredient(db.Model):
     """Ingredients."""
 
@@ -182,7 +179,6 @@ def connect_to_db(app):
     """Connect database to Flask app."""
 
     app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'  # 'postgresql:///test' 'postgresql:///recipes'
-    # app.config['SQLAlchemy_ECHO'] = True
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
@@ -190,8 +186,8 @@ def connect_to_db(app):
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
 
-    from serverdb import app  # Using serverdb to connect to db.
-    # from server import app
+    from serverdb import app
+
     connect_to_db(app)
     db.create_all()
     print "Connected to DB."

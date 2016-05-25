@@ -1,5 +1,14 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    {{ shopping_list}}
+    {% if shopping_list %}
+        <h2> Ingredients to buy: </h2>
+        <ol>
+            {% for ingredient in shopping_list %}
+                <li> {{ ingredient}} </li>
+            {% endfor %}
+        </ol>
+    {% else %}
+        <h3> No ingredients found your in shopping list. </h3>
+    {% endif %}
 {% endblock content %}

@@ -1,86 +1,41 @@
 {% extends 'base.html' %}
+
 {% block content %}
     <head>
         <title>{% block title %} {{ recipe.title }} {% endblock title %}</title>
     
-
-    <style>
-    .blue {
-        color: blue;
-    }
-    </style>
-
-
+        <style>
+           /* .blue is to change the ingredient name when user clicks on it. */
+            .blue {
+                color: blue;
+            }
+        </style>
 
     </head>
 
     <body>
-        <form action="/shopping-list">
+        <!-- Display recipe title, image, measurements and respective ingredients, and instructions. -->
             <h1 class="recipe_title"> {{ recipe.title }} </h1><br>
             
-            <img class="recipe_image" id="{{recipe.recipe_id}}" src={{ recipe.image }}> <br><br>
+            <img class="recipe_image" id="{{recipe.recipe_id}}" src={{ recipe.image }}><br><br>
+
+            <p class="shopping_list_tip"> Don't have an ingredient? Just click on the ingredient to add it to your shopping list. To remove the ingredient from your list, click on the ingredient again.</p><br>
 
             {% for measurement, ingredient_id, ingredient in measurements_ingredients %}  <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
                 {{ measurement }} 
                 <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
                 
-            {% endfor %} <br>
+            {% endfor %}<br>
 
             {{ instructions }}<br>
 
-        </form>
     </body>
 
 
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
-
-
-<script>
-
-function removeIngredient() {
-
-
-}
-
-
-
-function get_ingredient_id(evt) {
-    console.log($(this).attr("id"));
-
-// Create an object.
-        var ingredientId = {
-            "ingredient_id": $(this).attr("id")
-        };
-
-        var ingredientName = {
-            "ingredient_name": $(this).attr("name")
-        };
-
-        var changeColor = $(this).toggleClass("blue");  // Change color of ingredient to blue and change color back to default color if user clicks again.
-
-        $.get("/shopping-list", ingredientName);  //AJAX
-
-        console.log(ingredientId);  // For debugging
-        console.log(ingredientName);  // For debugging
-
-    };
-
-
-
-$("span").on("click", get_ingredient_id);
-
-</script>
-
-
-
-
-
-
-
-
-    
+    <script src="/static/click-ingredients.js"></script>
 
 {% endblock %}
 

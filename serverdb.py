@@ -22,8 +22,6 @@ app.secret_key = os.environ["APP_SECRET_KEY"]
 
 app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
 
-global shopping_dict  # Defined a global shopping_dict for /add-to-shopping-list because can't define a variable outside the function in an @app.route.
-shopping_dict = {}
 
 
 
@@ -40,31 +38,14 @@ def results():
     """Return search results for user's input ingredients."""
 
 
-    ingredients = request.args.get("ingredient")
-    ingredients = ingredients.split(' ')
+    ingredients = request.args.get("ingredient")  # Get the ingredient(s) inputted by the user and pass as one
+    # of the arguments in the query_recipes_by_diet.
+    ingredients = ingredients.split(' ')  # Split the ingredient(s) into a list.
 
-    diet = request.args.get("diet")
+    diet = request.args.get("diet")  # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
 
     recipes = querydb.query_recipes_by_diet(diet, *ingredients)  # Query for recipes in the database that contain any of the input ingredients.
     
-
-    # ######## Unneccessary code below ##############
-    # # Each ingredient not found in the database will be used in the API call to get recipes containing that ingredient. Ingredient and recipe information will be added to the database.
-    # ingred_not_found = querydb.query_ingredients(*ingredients)  # Get the user input ingredient(s) not found in the database, returned as a set.
-    # if ingred_not_found:  # If there are missing ingredients, then call a function to make an API request.
-    #     print "MISSING:", ingred_not_found
-    #     for ingredient in ingred_not_found:
-    #         print "DIET:", diet
-    #         print "SEARCHING:", ingredient
-    #         spoonacular.get_restricted_recipes(diet=diet, includeIngredients=ingredient)
-
-
-    # print "Before: ", ingredients  # For debugging.
-    # ingredients = ''.join(ingredients)
-    # print "After first join: ", ingredients
-    # print "DB: ", ingredients  # For debugging.
-    # print "DIET: ", diet  # For debugging.
-
     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
 
 
@@ -75,9 +56,11 @@ def show_recipe(recipe_id):
     recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
 
     instructions = recipe.instructions
-    instructions = re.sub('<[^>]*>', '', instructions)  # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
-    # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
 
+    # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
+    instructions = re.sub('<[^>]*>', '', instructions)  # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
+
+    # Perform this query to get the measurements, ingredients, and ingredient ids. Display measurements and ingredients to user.
     measurements_ingredients = db.session.query(RecipeIngredient.measurement, Ingredient.ingredient_id, Ingredient.name).join(Recipe).join(Ingredient).filter(Recipe.recipe_id == recipe_id).all()
 
     # print "RECIPE:\n", recipe  # For debugging.
@@ -88,48 +71,38 @@ def show_recipe(recipe_id):
     return render_template("recipe.html", recipe=recipe, instructions=instructions, measurements_ingredients=measurements_ingredients)
 
 
-@app.route("/shopping-list")  # Route needs to be revised.
+@app.route("/shopping-list")
 def show_shopping_list():
     """Show user's shopping list."""
 
-    shopping_list = session.keys()
+    shopping_list = session.keys()  # The session keys are the ingredients the user added to the shopping list.
 
     return render_template("shopping_list.html", shopping_list=shopping_list)
 
 
 @app.route("/add-to-shopping-list")  # This route will never be visited by user.
 def add_to_shopping_list():
-    
-    ###### WORKING ON THIS FUNCTION. TRYING TO STORE DATA SENT FROM AJAX IN SHOPPING LIST. #####
+    """Add ingredients to shopping_list session.
 
-    ingredient_name = request.args.get("ingredient_name")  # Get the ingredient_id of the ingredient clicked using AJAX. 
-    print "DB: ", ingredient_name # For debugging.
+    This route will never be visited by the user. Get the ingredient name
+    clicked by the user on the recipe route and add to the session. 
+    """
 
+    ingredient_name = request.args.get("ingredient_name")  # Get the ingredient clicked by the user, from the server. 
+    # print "DB: ", ingredient_name # For debugging.
 
-    # print "BEFORE:", shopping_dict
-
-    # if ingredient_name in shopping_dict:
-    #     del shopping_dict[ingredient_name]
-    # else:
-    #     shopping_dict.setdefault(ingredient_name, 0)
-
-    # # session.setdefault("shopping_list", shopping_dict)
-    # print "AFTER:", shopping_dict
-
-    # # print "SESSION:", session['shopping_list']
-
-    print "BEFORE: ", session
-    if ingredient_name in session:
+    # print "BEFORE: ", session  # For debugging.
+    if ingredient_name in session:  # When user clicks on the ingredient again, this will remove it from the shopping list.
         del session[ingredient_name]
     else:
-        session.setdefault(ingredient_name, 0)
+        session.setdefault(ingredient_name, 0)  # If the user wants to add ingredient to the shopping list, user can click the ingredient.
 
     # import pdb; pdb.set_trace()
-    print "AFTER: ", session
+    # print "AFTER: ", session  # For debugging.
 
     # session.clear() 
 
-    return "test"
+    return "Success"
     
 
 @app.route("/login")  # Route needs to be revised.

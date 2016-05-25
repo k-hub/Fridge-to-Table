@@ -3,7 +3,7 @@
 <head>
     <link rel="stylesheet"
           href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"/>
-    <link rel="stylesheet" href="/static/css/site.css"/>
+    <!-- <link rel="stylesheet" href="/static/css/site.css"/> -->
 
     <title>{% block title %} Recipe Finder {% endblock title %}</title>  <!-- Change title --> 
 </head>
@@ -24,11 +24,6 @@
                         Shopping List
                     </a>
                 </li>
-                {% if session.get('logged_in_customer_email') %}
-                <li><a href="/logout">Log Out</a></li>
-                {% else %}
-                <li><a href="/login">Log In</a></li>
-                {% endif %}
             </ul>
         </div>
 

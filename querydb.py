@@ -15,11 +15,10 @@ def query_ingredient(ingredient):
     # If ingredient is not in db, raise exception.
     try:
         ingred = Ingredient.query.filter_by(name=ingredient).one()
-        # print 'PRINT: ', ingred  # For debugging.
         return ingred
     except:
-        # print "No recipes found."
         return None
+
 
 def query_recipes_with_ingredient(ingredient):
     """Query recipes in the db that have the input ingredient. Only works for one ingredient."""
@@ -91,7 +90,6 @@ def query_recipes_by_diet(diet='any', *ingredients):  # Even though a default pa
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    # app.debug = 
 
     connect_to_db(app)
     print "Connected to DB."
