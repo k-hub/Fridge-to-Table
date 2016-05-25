@@ -22,6 +22,11 @@ app.secret_key = os.environ["APP_SECRET_KEY"]
 
 app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
 
+global shopping_dict  # Defined a global shopping_dict for /add-to-shopping-list because can't define a variable outside the function in an @app.route.
+shopping_dict = {}
+
+
+
 
 @app.route("/")
 def index():
@@ -87,33 +92,53 @@ def show_recipe(recipe_id):
 def show_shopping_list():
     """Show user's shopping list."""
 
+    
+    return "test"
+
+
+@app.route("/add-to-shopping-list")  # This route will never be visited by user.
+def add_to_shopping_list():
+    
     ###### WORKING ON THIS FUNCTION. TRYING TO STORE DATA SENT FROM AJAX IN SHOPPING LIST. #####
 
     ingredient_name = request.args.get("ingredient_name")  # Get the ingredient_id of the ingredient clicked using AJAX. 
     print "DB: ", ingredient_name # For debugging.
 
-
-    # ingredient_object = Ingredient.query.filter(Ingredient.ingredient_id == ingredient_id).one()
-    # # # print "OBJECT: ", ingredient_object
-    # ingredient_name = ingredient_object.name
-    # print "INGREDIENT: ", ingredient_name
-
     # import pdb; pdb.set_trace()
 
-    shopping_list_ids = session.setdefault("shopping_list", []).append(ingredient_name)  # Get the shopping_list or an empty list, if there's not shopping_list yet. 
-    # session.clear()
+    # session.clear() 
 
-    print "SESSION KEYS: ", session.keys()
-    print "SESSION VALUES: ", session["shopping_list"]
-    # print "SHOPPING IDS: ", shopping_list_ids
+    print "BEFORE:", shopping_dict
 
-    # shopping_list = session.values()
-    # import pdb; pdb.set_trace()
+    if ingredient_name in shopping_dict:
+        del shopping_dict[ingredient_name]
+    else:
+        shopping_dict.setdefault(ingredient_name, 0)
+
+    # session.setdefault("shopping_list", shopping_dict)
+    print "AFTER:", shopping_dict
+
+    # print "SESSION:", session['shopping_list']
 
 
-    # print "SHOPPING LIST:", shopping_list
+    return "hello"
+    
 
-    shopping_list = session["shopping_list"]
+ # shopping_list_ids = session.setdefault("shopping_list", []).append(ingredient_name)
+    # Get the shopping_list or an empty list, if there's not shopping_list yet. 
+
+
+    # print "SESSION KEYS: ", session.keys()
+    # print "SESSION VALUES: ", session["shopping_list"]
+    # # print "SHOPPING IDS: ", shopping_list_ids
+
+    # # shopping_list = session.values()
+    # # import pdb; pdb.set_trace()
+
+
+    # # print "SHOPPING LIST:", shopping_list
+
+    # shopping_list = session["shopping_list"]
 
     # Query the ingredient clicked to get the respective ingredient object. This will be used to get the ingredient name.
 
@@ -135,22 +160,8 @@ def show_shopping_list():
 
     # return (ingredient_id)
 
-    return render_template ("shopping_list.html", shopping_list=shopping_list)
+    # return render_template ("shopping_list.html", shopping_list=shopping_list)
 
-
-# def add_to_shopping_list(ingredient_id):
-    
-#     # Check if there is a shopping list in session dictionary and if not, add one.
-#     if 'shopping_list' in session:
-#         shopping_list = session['shopping_list']
-
-#     else:
-#         shopping_list = session['shopping_list'] = []
-
-#     # Add an ingredient to shopping list
-#     shopping_list.append(ingredient_id)
-
-#     return redirect("/shopping-list")
 
 
 @app.route("/login")  # Route needs to be revised.
