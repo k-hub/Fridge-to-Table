@@ -81,6 +81,7 @@ def show_shopping_list():
     """Show user's shopping list."""
 
     ingredient_ids = session["shopping_list"]  # List of ingredient ids.
+    # print "LOOK: ", ingredient_ids
     # print "DEBUGGING:", get_shopping_list
 
     # import pdb; pdb.set_trace()
@@ -104,60 +105,40 @@ def add_to_shopping_list():
 
     # session.clear()
 
-    ingredient_id = request.form.get("ingredient_id")  # Get the ingredient_id clicked by the user sent by AJAX.// change to ingredient id and then query ingredient id for ingredient name to pass into html.
+    ingredient_id = request.form.get("ingredient_id")  # Get the ingredient_id clicked by the user sent by AJAX.
+
+    ingredient_id = int(ingredient_id)
 
     if "shopping_list" in session:
         shopping_list = session["shopping_list"]
     else:
         shopping_list = session["shopping_list"] = []
 
+    # print "DEBUG:", type(session["shopping_list"])
 
     if ingredient_id not in shopping_list:  # Only append ingredients not currently in the shopping_list.
         shopping_list.append(ingredient_id)
     else:
         flash("Ingredient already in list!")
     
-    print "DEBUG:", session["shopping_list"]
-
-
-
-
-
-
-
-    # print "BEFORE: ", session  # For debugging.
-    # if ingredient_name in session:  # When user clicks on the ingredient again, this will remove it from the shopping list.
-    #     del session[ingredient_name]
-    # else:
-    # session.setdefault(ingredient_name, 0)  # If the user wants to add ingredient to the shopping list, user can click the ingredient. Will not add duplicate ingredient.
-
-
-    # session.setdefault("shopping_list", {})
-
-    # main_session = session["shopping_list"]
-    # print "OUTER: ", main_session
-    # # if session["shopping_list"]:
-    # # print "CHECK:", main_session.get(ingredient_name)  # For Debugging.
-
-    # if main_session.get(ingredient_name):  # If user tries to add an ingredient that exists in the shopping_list dictionary, user will be notified that ingredient is in already there.
-    #     print "ALREADY ADDED.\n"  ##### Need to flash a message here to let user know ingredient already in shopping list.
-
-    # main_session.setdefault(ingredient_name, 0) 
-
+    print "DEBUG:", session["shopping_list"]  # For debugging.
 
     # import pdb; pdb.set_trace()
 
     # session.clear() 
 
-    return "Success"
+    return "Success"  # What can I return here?
     
 
 @app.route("/remove-from-shopping-list", methods=['POST'])
 def remove_ingredient():
     """Remove ingredients from shopping list."""
 
-    remove_ingredient = request.form.get("ingredient_id")
-    print "REMOVE THIS: ", remove_ingredient  # For debugging.
+    ingredient = request.form.get("ingredient_id")
+
+    ingredient = int(ingredient)  # Convert unicode to int.
+
+    session["shopping_list"].remove(ingredient)  # Remove the ingredient deleted from the shopping list view from the session.
 
 
     return "Success"

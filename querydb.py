@@ -8,7 +8,7 @@ from sqlalchemy import func
 
 
 
-def query_ingredient(ingredient):
+def _query_ingredient(ingredient):
     """Query ingredient in db. Only works for one ingredient."""
 
     # If ingredient found in db, then return ingredient object.

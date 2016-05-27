@@ -297,7 +297,6 @@ def add_to_db(api_response):
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    # app.debug = True
 
     connect_to_db(app)
     print "Connected to DB."
