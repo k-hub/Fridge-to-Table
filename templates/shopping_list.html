@@ -1,14 +1,69 @@
+
 {% extends 'base.html' %}
 
+
 {% block content %}
+<body> 
     {% if shopping_list %}
         <h2> Ingredients to buy: </h2>
         <ol>
             {% for ingredient in shopping_list %}
-                <li> {{ ingredient}} </li>
+                <span class="ingredient" id="{{ ingredient[0] }}">
+                    <li> {{ ingredient[1] }}
+                        <input type="button" class="remove-item" id="{{ ingredient[0] }} "value="X"/> 
+                    </li> 
+                </span> 
             {% endfor %}
         </ol>
     {% else %}
         <h3> No ingredients found your in shopping list. </h3>
     {% endif %}
+
+</body>
+
+
+    <script src="https://code.jquery.com/jquery.js"></script>    
+
+<script>
+
+"use strict";
+
+$('.ingredient').on('click', '.remove-item', function(){
+        var ingredientId = {
+        "ingredient_id": $(this).attr("id")
+    };
+    $.post("/remove-from-shopping-list", ingredientId, function(){
+        console.log("Successful.")});
+    console.log(ingredientId);
+    $(this).closest('span').remove()
+});
+
+
+
+
+// function get_ingredient_id(evt) {
+//     var ingredientId = {
+//         "ingredient_id": $(this).attr("id")
+//     };
+
+//     $.ajax({
+//     url: "/shopping-list",
+//     type: "DELETE",
+//     data: ingredientId
+//     // success: console.log("success");
+
+//     });
+//     console.log(ingredientId);
+// };
+
+// $('.ingredient').on('click', get_ingredient_id);
+
+
+
+
+
+
+
+</script>
+
 {% endblock content %}

@@ -85,18 +85,17 @@ def show_shopping_list():
 
     # import pdb; pdb.set_trace()
 
-    ingredient_names = []
+    ingredients = []
 
     # Get the ingredient names for the ingredients in the shopping_list.
     for ingredient_id in ingredient_ids:
-        ingredient = Ingredient.query.filter_by(ingredient_id=ingredient_id).one()  # Did query this way because db.session.query gave the ingredients in unicode.
-        ingredient_name = ingredient.name
-        ingredient_names.append(ingredient_name)
+        ingredient = db.session.query(Ingredient.ingredient_id, Ingredient.name ).filter_by(ingredient_id=ingredient_id).one()
+        ingredients.append(ingredient)
 
-    # print "DEBUGGING: ", ingredient_names
+    # print "DEBUGGING: ", ingredients
 
 
-    return render_template("shopping_list.html", shopping_list=ingredient_names)
+    return render_template("shopping_list.html", shopping_list=ingredients)
 
 
 @app.route("/shopping-list", methods=['POST'])
@@ -153,9 +152,15 @@ def add_to_shopping_list():
     return "Success"
     
 
+@app.route("/remove-from-shopping-list", methods=['POST'])
+def remove_ingredient():
+    """Remove ingredients from shopping list."""
+
+    remove_ingredient = request.form.get("ingredient_id")
+    print "REMOVE THIS: ", remove_ingredient  # For debugging.
 
 
-
+    return "Success"
 
 
 
