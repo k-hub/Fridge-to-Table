@@ -16,6 +16,9 @@ import os
 
 import json
 
+from send_sms import send_sms
+
+
 
 
 app = Flask(__name__)
@@ -99,7 +102,7 @@ def show_shopping_list():
     return render_template("shopping_list.html", shopping_list=ingredients)
 
 
-@app.route("/shopping-list", methods=['POST'])
+@app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
     """Add ingredients to shopping_list session."""
 
@@ -119,7 +122,7 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:  # Only append ingredients not currently in the shopping_list.
         shopping_list.append(ingredient_id)
     else:
-        flash("Ingredient already in list!")
+        flash("Ingredient already in list!")  # Need to debug flash. 
     
     print "DEBUG:", session["shopping_list"]  # For debugging.
 
@@ -130,9 +133,9 @@ def add_to_shopping_list():
     return "Success"  # What can I return here?
     
 
-@app.route("/remove-from-shopping-list", methods=['POST'])
+@app.route("/remove-from-shopping-list", methods=["POST"])  # User will never see this route.
 def remove_ingredient():
-    """Remove ingredients from shopping list."""
+    """Remove ingredients from shopping list session."""
 
     ingredient = request.form.get("ingredient_id")
 
@@ -143,7 +146,41 @@ def remove_ingredient():
 
     return "Success"
 
+### This route needs to be fixed. 
+@app.route("/send-sms")
+def send_sms_shopping_list():
 
+    shopping_list = session["shopping_list"]
+
+    ingredients = []
+
+    # Get the ingredient names for the ingredients in the shopping_list.
+    for ingredient_id in shopping_list:
+        ingredient = db.session.query(Ingredient.name ).filter_by(ingredient_id=ingredient_id).one()
+        ingredients.append(str(ingredient[0]))  # ingredient is a tuple so get the first index and convert unicode to string.
+
+    # import pdb; pdb.set_trace()
+    if len(ingredients) > 1:
+        ingredients = ", ".join(ingredients)
+        # print "MORE THAN ONE: ", ingredients
+    else:
+        ingredients = "".join(ingredients)
+        # print "LESS THAN ONE: ", ingredients
+
+    # print ingredients
+
+    sender = request.args.get("sender_number")
+    print "SENDER:", sender
+    recipient = request.args.get("recipient_number")
+    print "RECIPIENT:", recipient
+    
+    #### If user hits submit, then call send_sms. 
+    # ingredients = json.dumps(ingredients)
+    # print ingredients
+    # send_sms(ingredients)  # Will send a text message with the shopping list.
+
+
+    return render_template("send_sms.html")
 
 
 # # @app.route("/favorites")  # Route needs to be revised.
