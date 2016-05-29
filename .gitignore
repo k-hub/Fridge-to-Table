@@ -5,3 +5,5 @@ recipe.py
 .DS_Store
 keep.html
 testquery.py
+querydb.py
+spoonacularcalls.py
