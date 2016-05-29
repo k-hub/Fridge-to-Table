@@ -126,7 +126,8 @@ def add_to_shopping_list():
     else:
         flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
 
-    return "Success"  # What can I return here?
+    # Render a template that will never display.
+    return render_template("temp.html")
 
 
 @app.route("/remove-from-shopping-list", methods=["POST"])
@@ -144,10 +145,11 @@ def remove_ingredient():
     # Remove the ingredient deleted from the shopping list view from the session.
     session["shopping_list"].remove(ingredient)
 
-    return "Success"  # What can I return here?
+    # Render a template that will never display.
+    return render_template("temp.html")
 
 
-@app.route("/favorites")  # Route needs to be revised.
+@app.route("/favorites")
 def show_saved_recipes():
     """Show user's bookmarked recipes."""
 
@@ -162,7 +164,6 @@ def show_saved_recipes():
                                         Recipe.title).filter_by(
                                         recipe_id=recipe_id).one()
         recipes.append(recipe)
-    # print 'LOOK HERE', recipes
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -186,7 +187,8 @@ def add_recipes():
     if recipe_id not in favorites:
         favorites.append(recipe_id)
 
-    return "Sucess"  # What can I return here?
+    # Render a template that will never display.
+    return render_template("temp.html")
 
 
 
