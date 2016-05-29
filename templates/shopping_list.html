@@ -1,4 +1,3 @@
-
 {% extends 'base.html' %}
 
 
@@ -14,56 +13,20 @@
                     </li> 
                 </span> 
             {% endfor %}
+            <br>
+            <form action="/send-sms">  <!-- In the future, evt.preventdefault to have modal window.-->
+                <input type="submit" value="Send 'Shopping List' to my phone">
+            </form>
         </ol>
     {% else %}
-        <h3> No ingredients found your in shopping list. </h3>
+        <h3> No ingredients found in your shopping list. </h3>
     {% endif %}
 
 </body>
 
 
-    <script src="https://code.jquery.com/jquery.js"></script>    
+<script src="https://code.jquery.com/jquery.js"></script>    
+<script src="/static/remove_ingredients.js"></script>
 
-<script>
-
-"use strict";
-
-$('.ingredient').on('click', '.remove-item', function(){
-        var ingredientId = {
-        "ingredient_id": $(this).attr("id")
-    };
-    $.post("/remove-from-shopping-list", ingredientId, function(){
-        console.log("Successful.")});
-    console.log(ingredientId);
-    $(this).closest('span').remove()
-});
-
-
-
-
-// function get_ingredient_id(evt) {
-//     var ingredientId = {
-//         "ingredient_id": $(this).attr("id")
-//     };
-
-//     $.ajax({
-//     url: "/shopping-list",
-//     type: "DELETE",
-//     data: ingredientId
-//     // success: console.log("success");
-
-//     });
-//     console.log(ingredientId);
-// };
-
-// $('.ingredient').on('click', get_ingredient_id);
-
-
-
-
-
-
-
-</script>
 
 {% endblock content %}
