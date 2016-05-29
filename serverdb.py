@@ -14,9 +14,7 @@ import json
 
 from send_sms import send_sms
 
-# import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
-# import spoonacular
 
 app = Flask(__name__)
 
