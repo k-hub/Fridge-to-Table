@@ -20,7 +20,8 @@ app = Flask(__name__)
 
 app.secret_key = os.environ["APP_SECRET_KEY"]
 
-app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
+# Raises an error if error made in Jinja2.
+app.jinja_env.undefined = StrictUndefined
 
 
 @app.route("/")
@@ -38,7 +39,7 @@ def results():
     # of the arguments in the query_recipes_by_diet.
     ingredients = request.args.get("ingredient")
 
-    # Split the ingredient(s) into a list.
+    # Split the input ingredient(s) into a list.
     ingredients = ingredients.split(' ')
 
     # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
@@ -61,8 +62,8 @@ def show_recipe(recipe_id):
 
     instructions = recipe.instructions
 
-    # Remove HTML tags from instructions with regex. Expression means to match strings 
-    # that start with < that don't match characters in the following set [^>]. 
+    # Remove HTML tags from instructions with regex. Expression means to match strings
+    # that start with < that don't match characters in the following set [^>].
     # * means to match 0 or more of the preceding token. The last character of the string being >.
     # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
     instructions = re.sub('<[^>]*>', '', instructions)
@@ -77,7 +78,7 @@ def show_recipe(recipe_id):
     shopping_list = session.keys()
 
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
-                            measurements_ingredients=measurements_ingredients, 
+                            measurements_ingredients=measurements_ingredients,
                             shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
 
 
@@ -124,15 +125,9 @@ def add_to_shopping_list():
         shopping_list.append(ingredient_id)
     else:
         flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
-    
-    # print "DEBUG:", session["shopping_list"]  # For debugging.
-
-    # import pdb; pdb.set_trace()
-
-    # session.clear() 
 
     return "Success"  # What can I return here?
-    
+
 
 @app.route("/remove-from-shopping-list", methods=["POST"])
 def remove_ingredient():
@@ -142,7 +137,7 @@ def remove_ingredient():
     """
 
     ingredient = request.form.get("ingredient_id")
-    
+
     # Convert unicode to int.
     ingredient = int(ingredient)
 
@@ -151,6 +146,51 @@ def remove_ingredient():
 
     return "Success"  # What can I return here?
 
+
+@app.route("/favorites")  # Route needs to be revised.
+def show_saved_recipes():
+    """Show user's bookmarked recipes."""
+
+    # List of recipe ids in favorites.
+    recipe_ids = session["favorites"]
+
+    recipes = []
+
+    # Query database for recipe titles by recipe_id.
+    for recipe_id in recipe_ids:
+        recipe = db.session.query(Recipe.recipe_id,
+                                        Recipe.title).filter_by(
+                                        recipe_id=recipe_id).one()
+        recipes.append(recipe)
+    # print 'LOOK HERE', recipes
+
+    return render_template("favorites.html", recipes=recipes)
+
+
+@app.route("/favorites", methods=["POST"])  # Route needs to be revised.
+def add_recipes():
+    """Save recipe to favorites."""
+
+    recipe_id = request.form.get("recipe_id")
+    recipe_id = int(recipe_id)
+
+    # Check if "favorites" is in session
+    # if it's not, add it as a key to session
+    # with a empty list as a value to store
+    # recipes that user favorites.
+    if "favorites" in session:
+        favorites = session["favorites"]
+    else:
+        favorites = session["favorites"] = []
+
+    if recipe_id not in favorites:
+        favorites.append(recipe_id)
+
+    return "Sucess"  # What can I return here?
+
+
+
+########## Routes that need to be worked on are below this line #################################
 
 ### This route needs to be fixed. 
 @app.route("/send-sms")
@@ -185,55 +225,6 @@ def send_sms_shopping_list():
 
 
     return render_template("send_sms.html")
-
-
-@app.route("/favorites")  # Route needs to be revised.
-def show_saved_recipes():
-    """Show user's bookmarked recipes."""
-
-    # List of recipe ids in favorites.
-    recipe_ids = session["favorites"]
-
-    recipes = []
-
-    # Query database for recipe titles by recipe_id.
-    for recipe_id in recipe_ids:
-        recipe = db.session.query(Recipe.recipe_id,
-                                        Recipe.title).filter_by(
-                                        recipe_id=recipe_id).one()
-        recipes.append(recipe)
-    # print 'LOOK HERE', recipes
-
-    return render_template("favorites.html", recipes=recipes)
-
-
-
-@app.route("/favorites", methods=["POST"])  # Route needs to be revised.
-def add_recipes():
-    """Save recipe to favorites."""
-
-    recipe_id = request.form.get("recipe_id")
-    recipe_id = int(recipe_id)
-    print "DEBUG:", recipe_id
-    print 
-
-    # Check if "favorites" is in session
-    # if it's not, add it as a key to session
-    # with a empty list as a value to store
-    # recipes that user favorites.
-    if "favorites" in session:
-        favorites = session["favorites"]
-    else:
-        favorites = session["favorites"] = []
-
-
-    if recipe_id not in favorites:
-        favorites.append(recipe_id)
-
-    print "HERE:", session["favorites"]
-    print
-
-    return "Sucess"
 
 
 @app.route("/login")  # Route needs to be revised.
