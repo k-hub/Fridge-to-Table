@@ -4,11 +4,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient
-
-import querydb  # Need to comment this line out if running querydb.py in interactive python.
-
-# import spoonacular
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
 import re
 
@@ -18,17 +14,15 @@ import json
 
 from send_sms import send_sms
 
+# import querydb  # Need to comment this line out if running querydb.py in interactive python.
 
-
+# import spoonacular
 
 app = Flask(__name__)
 
 app.secret_key = os.environ["APP_SECRET_KEY"]
 
 app.jinja_env.undefined = StrictUndefined  # Raises an error if error made in Jinja2.
-
-
-
 
 
 @app.route("/")
@@ -42,15 +36,22 @@ def index():
 def results():
     """Return search results for user's input ingredients."""
 
-
-    ingredients = request.args.get("ingredient")  # Get the ingredient(s) inputted by the user and pass as one
+    # Get the ingredient(s) inputted by the user and pass as one
     # of the arguments in the query_recipes_by_diet.
-    ingredients = ingredients.split(' ')  # Split the ingredient(s) into a list.
+    ingredients = request.args.get("ingredient")
 
-    diet = request.args.get("diet")  # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
+    # Split the ingredient(s) into a list.
+    ingredients = ingredients.split(' ')
 
-    recipes = querydb.query_recipes_by_diet(diet, *ingredients)  # Query for recipes in the database that contain any of the input ingredients.
-    
+    # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
+    diet = request.args.get("diet")
+
+    # Query for recipes in the database that meet user indicated diet and any of the input ingredients.
+    recipes = Recipe.query.filter(Recipe.diets.any(
+                                Diet.name == diet)).filter(
+                                Recipe.ingredients.any(
+                                Ingredient.name.in_(ingredients))).all()
+
     return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
 
 
@@ -62,42 +63,41 @@ def show_recipe(recipe_id):
 
     instructions = recipe.instructions
 
-    # Remove HTML tags from instructions with regex. Expression means to match strings that start with < that don't match characters in the following set [^>]. * means to match 0 or more of the preceding token. The last character of the string being >.
-    instructions = re.sub('<[^>]*>', '', instructions)  # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
+    # Remove HTML tags from instructions with regex. Expression means to match strings 
+    # that start with < that don't match characters in the following set [^>]. 
+    # * means to match 0 or more of the preceding token. The last character of the string being >.
+    # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
+    instructions = re.sub('<[^>]*>', '', instructions)
 
-    # Perform this query to get the measurements, ingredients, and ingredient ids. Display measurements and ingredients to user.
-    measurements_ingredients = db.session.query(RecipeIngredient.measurement, Ingredient.ingredient_id, Ingredient.name).join(Recipe).join(Ingredient).filter(Recipe.recipe_id == recipe_id).all()
+    # Perform this query to get the measurements, ingredients, and ingredient ids.
+    # Display measurements and ingredients to user.
+    measurements_ingredients = db.session.query(RecipeIngredient.measurement,
+                                                Ingredient.ingredient_id,
+                                                Ingredient.name).join(Recipe).join(Ingredient).filter(
+                                                Recipe.recipe_id == recipe_id).all()
 
-    # print measurements_ingredients
-
-    # print "RECIPE:\n", recipe  # For debugging.
-    # print "INGREDIENTS:\n", ingredients  # For debugging.
-    # print "INSTRUCTIONS:\n", instructions  # For debugging.
-    # print "DB: ", instructions  # For debugging.
     shopping_list = session.keys()
 
-    return render_template("recipe.html", recipe=recipe, instructions=instructions, measurements_ingredients=measurements_ingredients, shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
+    return render_template("recipe.html", recipe=recipe, instructions=instructions,
+                            measurements_ingredients=measurements_ingredients, 
+                            shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
 
 
 @app.route("/shopping-list")
 def show_shopping_list():
     """Show user's shopping list."""
 
-    ingredient_ids = session["shopping_list"]  # List of ingredient ids.
-    # print "LOOK: ", ingredient_ids
-    # print "DEBUGGING:", get_shopping_list
-
-    # import pdb; pdb.set_trace()
+    # List of ingredient ids in shopping list.
+    ingredient_ids = session["shopping_list"]
 
     ingredients = []
 
     # Get the ingredient names for the ingredients in the shopping_list.
     for ingredient_id in ingredient_ids:
-        ingredient = db.session.query(Ingredient.ingredient_id, Ingredient.name ).filter_by(ingredient_id=ingredient_id).one()
+        ingredient = db.session.query(Ingredient.ingredient_id,
+                                        Ingredient.name).filter_by(
+                                        ingredient_id=ingredient_id).one()
         ingredients.append(ingredient)
-
-    # print "DEBUGGING: ", ingredients
-
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
@@ -106,10 +106,10 @@ def show_shopping_list():
 def add_to_shopping_list():
     """Add ingredients to shopping_list session."""
 
-    # session.clear()
+    # Get the ingredient_id clicked by the user sent by AJAX.
+    ingredient_id = request.form.get("ingredient_id")
 
-    ingredient_id = request.form.get("ingredient_id")  # Get the ingredient_id clicked by the user sent by AJAX.
-
+    # Convert unicode to int.
     ingredient_id = int(ingredient_id)
 
     if "shopping_list" in session:
@@ -117,14 +117,13 @@ def add_to_shopping_list():
     else:
         shopping_list = session["shopping_list"] = []
 
-    # print "DEBUG:", type(session["shopping_list"])
-
-    if ingredient_id not in shopping_list:  # Only append ingredients not currently in the shopping_list.
+    # Only append ingredients not currently in the shopping_list.
+    if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
     else:
         flash("Ingredient already in list!")  # Need to debug flash. 
     
-    print "DEBUG:", session["shopping_list"]  # For debugging.
+    # print "DEBUG:", session["shopping_list"]  # For debugging.
 
     # import pdb; pdb.set_trace()
 
@@ -133,18 +132,23 @@ def add_to_shopping_list():
     return "Success"  # What can I return here?
     
 
-@app.route("/remove-from-shopping-list", methods=["POST"])  # User will never see this route.
+@app.route("/remove-from-shopping-list", methods=["POST"])
 def remove_ingredient():
-    """Remove ingredients from shopping list session."""
+    """Remove ingredients from shopping list session.
+
+    User will never visit this route.
+    """
 
     ingredient = request.form.get("ingredient_id")
+    
+    # Convert unicode to int.
+    ingredient = int(ingredient)
 
-    ingredient = int(ingredient)  # Convert unicode to int.
+    # Remove the ingredient deleted from the shopping list view from the session.
+    session["shopping_list"].remove(ingredient)
 
-    session["shopping_list"].remove(ingredient)  # Remove the ingredient deleted from the shopping list view from the session.
+    return "Success"  # What can I return here?
 
-
-    return "Success"
 
 ### This route needs to be fixed. 
 @app.route("/send-sms")
@@ -173,10 +177,8 @@ def send_sms_shopping_list():
     print "SENDER:", sender
     recipient = request.args.get("recipient_number")
     print "RECIPIENT:", recipient
-    
-    #### If user hits submit, then call send_sms. 
-    # ingredients = json.dumps(ingredients)
-    # print ingredients
+
+    #### If user hits submit, then call send_sms.
     # send_sms(ingredients)  # Will send a text message with the shopping list.
 
 
