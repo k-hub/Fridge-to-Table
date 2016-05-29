@@ -3,28 +3,26 @@
 {% block content %}
     <head>
         <title>{% block title %} {{ recipe.title }} {% endblock title %}</title>
-    
-        <style>
-           /* .blue is to change the ingredient name when user clicks on it. */
-            .blue {
-                color: blue;
-            }
-        </style>
-
     </head>
 
     <body>
-        <!-- Display recipe title, image, measurements and respective ingredients, and instructions. -->
-            <h1 class="recipe_title"> {{ recipe.title }} </h1><br>
-            
-            <img class="recipe_image" id="{{recipe.recipe_id}}" src={{ recipe.image }}><br><br>
+            <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add to Favorites">
 
-            <p class="shopping_list_tip"> Don't have an ingredient? Just click on the ingredient to add it to your shopping list. To remove the ingredient from your list, click on the ingredient again.</p><br>
+
+        <!-- Display recipe title, image, measurements and respective ingredients, and instructions. -->
+            <h1 class="recipe_title" id="{{ recipe.recipe_id }}"> {{ recipe.title }} </h1><br>
+            
+            <img class="recipe_image" id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
 
             {% for measurement, ingredient_id, ingredient in measurements_ingredients %}  <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
                 {{ measurement }} 
-                <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
-                
+
+                {% if ingredient in shopping_list %}
+                    <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">
+                {% else %}
+                    <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
+                {% endif %}
+
             {% endfor %}<br>
 
             {{ instructions }}<br>
@@ -35,7 +33,7 @@
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
-    <script src="/static/click-ingredients.js"></script>
+    <script src="/static/add_ingredients.js"></script>
+    <script src="/static/add_recipes.js"></script>
 
 {% endblock %}
-
