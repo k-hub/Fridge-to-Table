@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<body>
+    <h2> Favorites: </h2>
+        {% for recipe in recipes %}
+            <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a><br>
+        {% endfor %}
+</body>
+
+{% endblock %}

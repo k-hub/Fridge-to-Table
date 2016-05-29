@@ -110,6 +110,10 @@ def add_to_shopping_list():
     # Convert unicode to int.
     ingredient_id = int(ingredient_id)
 
+    # Check if "shopping_list" is in the session
+    # if it's not, then add it as a key to session
+    # with an empty list as a value to store ingredients
+    # that user adds to the shopping list.
     if "shopping_list" in session:
         shopping_list = session["shopping_list"]
     else:
@@ -119,7 +123,7 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
     else:
-        flash("Ingredient already in list!")  # Need to debug flash. 
+        flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
     
     # print "DEBUG:", session["shopping_list"]  # For debugging.
 
@@ -183,41 +187,53 @@ def send_sms_shopping_list():
     return render_template("send_sms.html")
 
 
-# # @app.route("/favorites")  # Route needs to be revised.
-# # def show_saved_recipes():
-# #     """Show user's bookmarked recipes."""
+@app.route("/favorites")  # Route needs to be revised.
+def show_saved_recipes():
+    """Show user's bookmarked recipes."""
 
-# #     saved_recipes = session["save_recipe"]
-# #     print "DEBUG:", saved_recipes
+    # List of recipe ids in favorites.
+    recipe_ids = session["favorites"]
 
-# #     return render_template("savedrecipes.html", saved_recipe=saved_recipe)
+    recipes = []
 
+    # Query database for recipe titles by recipe_id.
+    for recipe_id in recipe_ids:
+        recipe = db.session.query(Recipe.recipe_id,
+                                        Recipe.title).filter_by(
+                                        recipe_id=recipe_id).one()
+        recipes.append(recipe)
+    # print 'LOOK HERE', recipes
 
-
-# @app.route("/favorites", methods=["POST"])  # Route needs to be revised.
-# def add_recipes():
-#     """Save recipe to favorites."""
-
-#     recipe_title = request.form.get("save_recipe")
-
-#     print session
-
-#     # print "DEBUG", recipe_title
+    return render_template("favorites.html", recipes=recipes)
 
 
 
-#     session.setdefault("save_recipe", []).append(recipe_title)
-#     # import pdb; pdb.set_trace()
+@app.route("/favorites", methods=["POST"])  # Route needs to be revised.
+def add_recipes():
+    """Save recipe to favorites."""
+
+    recipe_id = request.form.get("recipe_id")
+    recipe_id = int(recipe_id)
+    print "DEBUG:", recipe_id
+    print 
+
+    # Check if "favorites" is in session
+    # if it's not, add it as a key to session
+    # with a empty list as a value to store
+    # recipes that user favorites.
+    if "favorites" in session:
+        favorites = session["favorites"]
+    else:
+        favorites = session["favorites"] = []
 
 
-#     saved = session["save_recipe"]
+    if recipe_id not in favorites:
+        favorites.append(recipe_id)
 
-#     print "FAVORITES: ", saved  # For debugging.
+    print "HERE:", session["favorites"]
+    print
 
-#     session.clear()
-
-#     print session
-#     return "Sucess"
+    return "Sucess"
 
 
 @app.route("/login")  # Route needs to be revised.
