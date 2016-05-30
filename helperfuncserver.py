@@ -38,3 +38,18 @@ def get_ingredient_info(ingredient_ids):
         ingredients.append(ingredient)
 
     return ingredients
+
+
+def get_recipe_info(recipe_ids):
+    """Store recipe ids and respective names in a list."""
+
+    recipes = []
+
+    # Query database for recipe titles by recipe_id.
+    for recipe_id in recipe_ids:
+        recipe = db.session.query(Recipe.recipe_id,
+                                        Recipe.title).filter_by(
+                                        recipe_id=recipe_id).one()
+        recipes.append(recipe)
+
+    return recipes

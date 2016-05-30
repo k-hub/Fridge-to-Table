@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
-from helperfuncserver import display_recipe, get_ingredient_info
+from helperfuncserver import display_recipe, get_ingredient_info, get_recipe_info
 
 import os
 
@@ -104,8 +104,8 @@ def add_to_shopping_list():
     # Only append ingredients not currently in the shopping_list.
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
-    else:
-        flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
+    # else:
+    #     flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -137,14 +137,8 @@ def show_saved_recipes():
     # List of recipe ids in favorites.
     recipe_ids = session["favorites"]
 
-    recipes = []
-
-    # Query database for recipe titles by recipe_id.
-    for recipe_id in recipe_ids:
-        recipe = db.session.query(Recipe.recipe_id,
-                                        Recipe.title).filter_by(
-                                        recipe_id=recipe_id).one()
-        recipes.append(recipe)
+    # get_recipe_info returns a list of recipe id and recipe title tuples.
+    recipes = get_recipe_info(recipe_ids)
 
     return render_template("favorites.html", recipes=recipes)
 
