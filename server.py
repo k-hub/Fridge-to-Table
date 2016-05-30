@@ -6,13 +6,14 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
-import re
+from helperfuncserver import display_recipe, get_ingredient_info
 
 import os
 
 import json
 
-from send_sms import send_sms
+# from send_sms import send_sms
+# import re
 
 
 
@@ -58,22 +59,8 @@ def results():
 def show_recipe(recipe_id):
     """Return recipe that user clicks on from /search_results."""
 
-    recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
-
-    instructions = recipe.instructions
-
-    # Remove HTML tags from instructions with regex. Expression means to match strings
-    # that start with < that don't match characters in the following set [^>].
-    # * means to match 0 or more of the preceding token. The last character of the string being >.
-    # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
-    instructions = re.sub('<[^>]*>', '', instructions)
-
-    # Perform this query to get the measurements, ingredients, and ingredient ids.
-    # Display measurements and ingredients to user.
-    measurements_ingredients = db.session.query(RecipeIngredient.measurement,
-                                                Ingredient.ingredient_id,
-                                                Ingredient.name).join(Recipe).join(Ingredient).filter(
-                                                Recipe.recipe_id == recipe_id).all()
+    # Unpack returned values from display_recipe to be passed to template.
+    recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
     shopping_list = session["shopping_list"]
 
@@ -89,14 +76,8 @@ def show_shopping_list():
     # List of ingredient ids in shopping list.
     ingredient_ids = session["shopping_list"]
 
-    ingredients = []
-
-    # Get the ingredient names for the ingredients in the shopping_list.
-    for ingredient_id in ingredient_ids:
-        ingredient = db.session.query(Ingredient.ingredient_id,
-                                        Ingredient.name).filter_by(
-                                        ingredient_id=ingredient_id).one()
-        ingredients.append(ingredient)
+    # get_ingredient_info returns a list of ingredient id and ingredient name tuples.
+    ingredients = get_ingredient_info(ingredient_ids)
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
