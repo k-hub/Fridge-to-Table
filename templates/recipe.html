@@ -15,13 +15,12 @@
             <img class="recipe_image" id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
 
             {% for measurement, ingredient_id, ingredient in measurements_ingredients %}  <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
+                <button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}">
+                      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                </button>
                 {{ measurement }} 
+                <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
 
-                {% if ingredient in shopping_list %}
-                    <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">
-                {% else %}
-                    <span class="ingredient" id="{{ ingredient_id }}" name="{{ ingredient }}">{{ ingredient }}</span><br>
-                {% endif %}
 
             {% endfor %}<br>
 
@@ -35,5 +34,30 @@
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="/static/add_ingredients.js"></script>
     <script src="/static/add_recipes.js"></script>
+
+    <!-- Check if ingredient is in session with AJAX and let user know if it is. -->
+<script>
+"use strict";
+
+function get_ingredient_id(evt) {
+
+        // Create an object.
+        var ingredientId = {
+            "ingredient_id": $(this).attr("id")
+        };
+
+        // Change color of button when clicked.
+        var changeColor = $(this).css('color', 'blue');
+        console.log(changeColor)
+
+        // Send ingredient id that was clicked to server with AJAX.
+        $.post("/shopping-list", ingredientId);
+
+        console.log(ingredientId);  // For debugging
+
+    };
+
+$("button").on("click", get_ingredient_id);
+</script>
 
 {% endblock %}
