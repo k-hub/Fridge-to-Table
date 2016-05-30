@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
-from helperfuncserver import display_recipe, get_ingredient_info, get_recipe_info
+from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info
 
 import os
 
@@ -46,13 +46,10 @@ def results():
     # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
     diet = request.args.get("diet")
 
-    # Query for recipes in the database that meet user indicated diet and any of the input ingredients.
-    recipes = Recipe.query.filter(Recipe.diets.any(
-                                Diet.name == diet)).filter(
-                                Recipe.ingredients.any(
-                                Ingredient.name.in_(ingredients))).all()
+    # Get recipes that meet user indicated diet and any of the input ingredients.
+    recipes = query_recipes(diet, ingredients)
 
-    return render_template("search_resultsdb.html", recipes=recipes, ingredients=ingredients)
+    return render_template("search_resultsdb.html", recipes=recipes)
 
 
 @app.route("/recipe/<int:recipe_id>")

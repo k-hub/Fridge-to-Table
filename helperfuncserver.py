@@ -4,8 +4,21 @@ from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 import re
 
 
+def query_recipes(diet, ingredients):
+    """Query for recipes by diet and ingredients."""
+
+    # Query for recipes in the database that meet user indicated diet and any of the input ingredients.
+    recipes = Recipe.query.filter(Recipe.diets.any(
+                                Diet.name == diet)).filter(
+                                Recipe.ingredients.any(
+                                Ingredient.name.in_(ingredients))).all()
+
+    return recipes
+
+
 def display_recipe(recipe_id):
     """Display recipe information."""
+    
     recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
 
     instructions = recipe.instructions
@@ -28,6 +41,7 @@ def display_recipe(recipe_id):
 
 def get_ingredient_info(ingredient_ids):
     """Store ingredient ids and respective names in a list."""
+    
     ingredients = []
 
     # Get the ingredient names for the ingredients in the shopping_list.
