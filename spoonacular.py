@@ -5,7 +5,7 @@ from pprint import pprint
 import os
 from urllib import quote
 from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet, Diet
-# from serverdb import app  # Need to comment out if running serverdb.
+# from server import app  # Need to comment out if running server.
 
 
 

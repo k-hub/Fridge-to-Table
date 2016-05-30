@@ -186,8 +186,7 @@ def connect_to_db(app):
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
 
-    from serverdb import app
-
+    from server import app
     connect_to_db(app)
     db.create_all()
     print "Connected to DB."
