@@ -216,41 +216,6 @@ def sample_data():
 
 
 
-
-
-    # Add sample recipe, ingredient, and diet.
-    # roc = Recipe(recipe_id=1,
-    #              title="orange chicken",
-    #              image="http://www.thegunnysack.com/wp-content/uploads/2014/08/Orange_Chicken_Skillet.jpg",
-    #              instructions="(1) Cut chicken into small pieces. (2) Coat chicken with eggs and flour. (3) Fry chicken. (4) Make orange glaze. (5) Coat fried chicken with glaze.")
-    # rsb = Recipe(recipe_id=2,
-    #              title="strawberry banana smoothie",
-    #              image="test.jpg",
-    #              instructions="test instructions")
-
-    # db.session.add([roc, rsb])
-
-    # ic = Ingredient(ingredient_id=1, name="chicken")
-    # io = Ingredient(ingredient_id=2, name="orange")
-    # ist = Ingredient(ingredient_id=3, name="strawberry")
-
-    # db.session.add([ic, io, ist])
-
-    # ric = RecipeIngredient(recipe_ingredient_id=1, recipe_id=1, ingredient_id=1, measurement="2 c")
-    # rio = RecipeIngredient(recipe_ingredient_id=2, recipe_id=1, ingredient_id=2, measurement="1 c")
-    # da = Diet(diet_code="a", name="any")
-    # dv = Diet(diet_code="v", name="vegetarian")
-    # dvg = Diet(diet_code="vg", name="vegan")
-    # rdoc = RecipeDiet(recipe_diet_id=1, recipe_id=1, diet_code="a")
-    # rdsba = RecipeDiet(recipe_diet_id=2, recipe_id=2, diet_code="a")
-    # rdsbv = RecipeDiet(recipe_diet_id=2, recipe_id=2, diet_code="v")
-
-    # # db.session.add_all([roc, rsb, ic, io, ist, ric, rio, da, dv, dvg, rdoc, rdsba, rdsbv])
-    # db.session.add_all([ric, rio, da, dv, dvg, rdoc, rdsba, rdsbv])
-    # db.session.commit()
-
-
-
 def connect_to_db(app, db_uri="postgresql:///recipes"):
     """Connect database to Flask app."""
 
