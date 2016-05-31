@@ -49,17 +49,19 @@ class FlaskTestsRoutes(unittest.TestCase):
         result = self.client.get("/search-results?ingredient=strawberry+banana&diet=any")
         self.assertIn("Results", result.data)
 
-    # {% for measurement, ingredient_id, ingredient in measurements_ingredients %}  <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
-    # ValueError: too many values to unpack
-    # def test_recipe(self):
-    #     """Test that recipe is rednering recipe.html."""
 
-    #     def _mock_display_recipe(recipe_id):
-    #         return [Recipe(recipe_id=1, title="test", image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg'), u'http://www.wholefoodsmarket.com/recipes/650', (u'7.0 oz', 296, u'tofu')]
+    def test_recipe(self):
+        """Test that recipe is rednering recipe.html."""
 
-    #     server.display_recipe = _mock_display_recipe
-    #     result = self.client.get("/recipe/13864")
-    #     self.assertIn("/static/add_recipes.js", result.data)
+        def _mock_display_recipe(recipe_id):
+            return [Recipe(recipe_id=1,
+                           title="test",
+                           image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg'),
+                           u'http://www.wholefoodsmarket.com/recipes/650', [(u'7.0 oz', 296, u'tofu')]]
+
+        server.display_recipe = _mock_display_recipe
+        result = self.client.get("/recipe/13864")
+        self.assertIn("/static/add_recipes.js", result.data)
 
 
     def test_shopping_list(self):
