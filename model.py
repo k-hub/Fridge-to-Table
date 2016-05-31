@@ -37,7 +37,7 @@ class Recipe(db.Model):
 
 
 class Ingredient(db.Model):
-    """Ingredients."""
+    """Ingredient ids and names."""
 
     __tablename__ = "ingredients"
 
@@ -55,7 +55,7 @@ class Ingredient(db.Model):
 
 
 class RecipeIngredient(db.Model):
-    """"""
+    """Ingredients and respective measurements for recipes."""
 
     __tablename__ = "recipe_ingredients"
 
@@ -69,6 +69,36 @@ class RecipeIngredient(db.Model):
 
         return "<RecipeIngredient recipe_ingredient_id={} recipe_id={} ingredient_id={}>".format(
             self.recipe_ingredient_id, self.recipe_id, self.ingredient_id)
+
+
+class Diet(db.Model):
+    """Diets ie. vegetarian, vegan, etc."""
+
+    __tablename__ = "diets"
+
+    diet_code = db.Column(db.String(100), primary_key=True)
+    name = db.Column(db.String(100), unique=True, nullable=False)
+
+    def __repr__(self):
+        """Represent Diet objects as diet_id and name."""
+
+        return "<Diet diet_code:{}, name:{}>".format(self.diet_code, self.name)
+
+
+class RecipeDiet(db.Model):
+    """Association table for Recipe and Diet."""
+
+    __tablename__ = 'recipe_diets'
+
+    recipe_diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
+    diet_code = db.Column(db.String(100), db.ForeignKey("diets.diet_code"), nullable=False)
+
+
+    def __repr__(self):
+        """Represent RecipeDiet objects as recipe_id and diet_code."""
+
+        return "<RecipeDiet recipe_id:{}, diet_code:{}>".format(self.recipe_id, self.diet_code)
 
 
 class Type(db.Model):  # This table will be used to make custom recipes.
@@ -99,36 +129,6 @@ class IngredientType(db.Model):
 
         return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(
             self.ingredient_type_id, self.type_id, self.ingredient_id)
-
-
-class Diet(db.Model):
-    """Diets ie. vegetarian, vegan, etc."""
-
-    __tablename__ = "diets"
-
-    diet_code = db.Column(db.String(100), primary_key=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-
-    def __repr__(self):
-        """Represent Diet objects as diet_id and name."""
-
-        return "<Diet diet_code:{}, name:{}>".format(self.diet_code, self.name)
-
-
-class RecipeDiet(db.Model):
-   """Association table for Recipe and Diet."""
-
-   __tablename__ = 'recipe_diets'
-
-   recipe_diet_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-   recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
-   diet_code = db.Column(db.String(100), db.ForeignKey("diets.diet_code"), nullable=False)
-
-
-   def __repr__(self):
-        """Represent RecipeDiet objects as recipe_id and diet_code."""
-
-        return "<RecipeDiet recipe_id:{}, diet_code:{}>".format(self.recipe_id, self.diet_code)
 
 
 class Substitution(db.Model):
@@ -164,8 +164,7 @@ class SubstitutionIngredient(db.Model):
         return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(
             self.sub_ingredient_id, self.sub_id, self.ingredient_id)
 
-
-
+# For future implementation.
 # class Course(db.Model):
 #     pass
 
@@ -173,12 +172,89 @@ class SubstitutionIngredient(db.Model):
 #     pass
 
 
+def sample_data():
+    """Create sample data for testing."""
+
+    # In case this is run more than once, empty out existing data.
+    Recipe.query.delete()
+    Ingredient.query.delete()
+    RecipeIngredient.query.delete()
+    Diet.query.delete()
+    RecipeDiet.query.delete()
+
+    # Add sample recipe, ingredient, and diet.
+    rsb = Recipe(recipe_id=1,
+                 title="strawberry banana smoothie",
+                 image="test.jpg",
+                 instructions="test instructions")
+
+    db.session.add(rsb)
+    db.session.commit()
+
+    ist = Ingredient(ingredient_id=1, name="strawberry")
+    ib = Ingredient(ingredient_id=2, name="banana")
+
+    db.session.add_all([ist, ib])
+    db.session.commit()
+
+    rist = RecipeIngredient(recipe_ingredient_id=1, recipe_id=1, ingredient_id=1, measurement="2 c")
+    rib = RecipeIngredient(recipe_ingredient_id=2, recipe_id=1, ingredient_id=2, measurement="1 c")
+
+    db.session.add_all([rist, rib])
+
+    da = Diet(diet_code="a", name="any")
+    dv = Diet(diet_code="v", name="vegetarian")
+
+    db.session.add_all([da, dv])
+    db.session.commit()
+
+    rdsba = RecipeDiet(recipe_diet_id=1, recipe_id=1, diet_code="a")
+    rdsbv = RecipeDiet(recipe_diet_id=2, recipe_id=1, diet_code="v")
+
+    db.session.add_all([rdsba, rdsbv])
+    db.session.commit()
 
 
-def connect_to_db(app):
+
+
+
+    # Add sample recipe, ingredient, and diet.
+    # roc = Recipe(recipe_id=1,
+    #              title="orange chicken",
+    #              image="http://www.thegunnysack.com/wp-content/uploads/2014/08/Orange_Chicken_Skillet.jpg",
+    #              instructions="(1) Cut chicken into small pieces. (2) Coat chicken with eggs and flour. (3) Fry chicken. (4) Make orange glaze. (5) Coat fried chicken with glaze.")
+    # rsb = Recipe(recipe_id=2,
+    #              title="strawberry banana smoothie",
+    #              image="test.jpg",
+    #              instructions="test instructions")
+
+    # db.session.add([roc, rsb])
+
+    # ic = Ingredient(ingredient_id=1, name="chicken")
+    # io = Ingredient(ingredient_id=2, name="orange")
+    # ist = Ingredient(ingredient_id=3, name="strawberry")
+
+    # db.session.add([ic, io, ist])
+
+    # ric = RecipeIngredient(recipe_ingredient_id=1, recipe_id=1, ingredient_id=1, measurement="2 c")
+    # rio = RecipeIngredient(recipe_ingredient_id=2, recipe_id=1, ingredient_id=2, measurement="1 c")
+    # da = Diet(diet_code="a", name="any")
+    # dv = Diet(diet_code="v", name="vegetarian")
+    # dvg = Diet(diet_code="vg", name="vegan")
+    # rdoc = RecipeDiet(recipe_diet_id=1, recipe_id=1, diet_code="a")
+    # rdsba = RecipeDiet(recipe_diet_id=2, recipe_id=2, diet_code="a")
+    # rdsbv = RecipeDiet(recipe_diet_id=2, recipe_id=2, diet_code="v")
+
+    # # db.session.add_all([roc, rsb, ic, io, ist, ric, rio, da, dv, dvg, rdoc, rdsba, rdsbv])
+    # db.session.add_all([ric, rio, da, dv, dvg, rdoc, rdsba, rdsbv])
+    # db.session.commit()
+
+
+
+def connect_to_db(app, db_uri="postgresql:///recipes"):
     """Connect database to Flask app."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql:///recipes'  # 'postgresql:///test' 'postgresql:///recipes'
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri  # 'postgresql///test'
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
