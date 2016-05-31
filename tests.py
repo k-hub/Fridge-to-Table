@@ -8,7 +8,7 @@ import sqlalchemy
 
 
 class FlaskTestsRoutes(unittest.TestCase):
-    """Flask tests for routes."""
+    """Test that Flask Routes are rendering correct template."""
 
     def setUp(self):
         """Do setUp before every test."""
@@ -45,7 +45,6 @@ class FlaskTestsRoutes(unittest.TestCase):
             # Instantiate a Recipe object.
             return [Recipe(recipe_id=1, title="test", image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg')]
 
-
         server.query_recipes = _mock_query_recipes
         result = self.client.get("/search-results?ingredient=strawberry+banana&diet=any")
         self.assertIn("Results", result.data)
@@ -70,7 +69,6 @@ class FlaskTestsRoutes(unittest.TestCase):
         def _mock_get_ingredient_info(ingredient_ids):
             return [(136, u'buns')]
 
-
         server.get_ingredient_info = _mock_get_ingredient_info
         result = self.client.get("/shopping-list")
         self.assertIn("Ingredients to buy:", result.data)
@@ -94,10 +92,18 @@ class FlaskTestsDatabase(unittest.TestCase):
     def setUp(self):
         """Do setUp before every test."""
 
+        app.config["TESTING"] = True
+        # Create a secret key to use Flask Session.
+        app.config["SECRET_KEY"] = "key"
+
         # Get Flask test client.
         self.client = app.test_client()
-        app.config["TESTING"] = True
-        # app.config["APP_SECRET_KEY"] = "key"
+
+        # Accessing Flask session.
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess["shopping_list"] = [1]
+                sess["favorites"] = [1]
 
         # Connect to the test database.
         connect_to_db(app, "postgresql:///test")
@@ -106,22 +112,40 @@ class FlaskTestsDatabase(unittest.TestCase):
         db.create_all()
         sample_data()
 
+
     def tearDown(self):
         """Do tearDown at the end of every test."""
 
         db.session.close()
         db.drop_all()
 
-    # def test_search_results(self):
 
-    #     result = self.client.get("/search-results?ingredient=strawberry&diet=any")
-    #     self.assertIn("Results", result.data)
+    def test_search_results(self):
+        """Test database query for search results page."""
 
-
-
-
+        result = self.client.get("/search-results?ingredient=strawberry&diet=any")
+        self.assertIn("strawberry", result.data)
 
 
+    def test_recipe(self):
+        """Test database query for recipe page."""
+
+        result = self.client.get("/recipe/1")
+        self.assertIn("strawberry", result.data)
+
+
+    def test_shopping_list(self):
+        """Test database query for shopping list page."""
+
+        result = self.client.get("/shopping-list")
+        self.assertIn("strawberry", result.data)
+
+
+    def test_favorites(self):
+        """Test database query for favorites page."""
+
+        result = self.client.get("/favorites")
+        self.assertIn("strawberry banana smoothie", result.data)
 
 
 
