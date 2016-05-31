@@ -2,7 +2,8 @@ from server import app
 import server
 import unittest
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, sample_data
-
+# from flask_sqlalchemy import SQLAlchemy
+import sqlalchemy
 # import doctest
 
 
@@ -12,11 +13,19 @@ class FlaskTestsRoutes(unittest.TestCase):
     def setUp(self):
         """Do setUp before every test."""
 
+        # Show Flask errors that occur during tests.
+        app.config["TESTING"] = True
+
+        # Create a secret key to use Flask Session.
+        app.config["SECRET_KEY"] = "key"
+
         # Get Flask test client.
         self.client = app.test_client()
 
-        # Show Flask errors that occur during tests.
-        app.config["TESTING"] = True
+        # Accessing Flask session.
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess["shopping_list"] = [1]
 
 
     def test_index(self):
@@ -27,17 +36,14 @@ class FlaskTestsRoutes(unittest.TestCase):
         self.assertEqual(result.status_code, 200)
 
 
-    #### Need to fix the test below. 
     def test_shopping_list(self):
         """Test that shopping list is rendering shopping_list.html."""
 
-        # def _mock_ingredient_ids():
-        #     return "[1, 2]"
-
+        # Mock helper function called in /shopping_list. 
         def _mock_get_ingredient_info(ingredient_ids):
-            return "[1, 2]"
+            return [(136, u'buns')]
 
-        # server.ingredient_id = _mock_ingredient_ids
+
         server.get_ingredient_info = _mock_get_ingredient_info
         result = self.client.get("/shopping-list")
         self.assertIn("Ingredients to buy:", result.data)
