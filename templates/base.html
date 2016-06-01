@@ -10,51 +10,40 @@
 
 <body>
     <div class="navbar navbar-inverse navbar-static-top">
-    <div class="container">
-
-        <div class="navbar-header">
-            <a class="navbar-brand" href="/">Fridge-to-Table</a>
-        </div>
-
-        <div class="navbar-collapse collapse">
-
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="/shopping-list">
-                        <img class="shopping-list">
-                        Shopping List
-                    </a>
-                </li>
-                <li>
-                    <a href="/favorites">
-                        <img class="saved-recipes">
-                        Favorites
-                    </a>
-                </li>
-
-            </ul>
-        <form class="navbar-form navbar-left" role="search">
-            <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Fridge-to-Table</a>
             </div>
-        </form>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/shopping-list"><img class="shopping-list">Shopping List</a></li>
+                    <li><a href="/favorites"><img class="saved-recipes">Favorites</a></li>
+                </ul>
+                <form class="navbar-form navbar-left" role="search">
+                    <form action="/search-results">
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="ingredient-nav-search" placeholder="Search">
+                        </div>
+                    </form>
+                </form>
+            </div>
         </div>
-
     </div>
-</div>
 
-<div class="container">
+
   <!-- Show flashed messages -->
-  {% with messages = get_flashed_messages() %}
+    {% with messages = get_flashed_messages() %}
       {% for message in messages %}
           <div class="alert alert-warning">{{ message }}</div>
       {% endfor %}
-  {% endwith %}
+    {% endwith %}
 
-
-    
     {% block content %}
         NO ONE WILL SEE THIS
     {% endblock %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="js/bootstrap.min.js"></script>
 </body>
+
 </html>
