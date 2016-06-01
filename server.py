@@ -102,14 +102,6 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
 
-
-    # else:
-    #     flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
-
-
-
-
-
     # Render a template that will never display.
     return render_template("temp.html")
 

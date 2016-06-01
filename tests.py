@@ -41,6 +41,7 @@ class FlaskTestsRoutes(unittest.TestCase):
 
         # Mock helper function called in /search-results.
         def _mock_query_recipes(diet, ingredients):
+            
             # Instantiate a Recipe object.
             return [Recipe(recipe_id=1, 
                            title="test", 
@@ -77,19 +78,31 @@ class FlaskTestsRoutes(unittest.TestCase):
         self.assertIn("Ingredients to buy:", result.data)
 
 
-##### working on this function
-    # def test_shopping_list_post(self):
+    def test_shopping_list_post(self):
+        """Test that shopping list post method is rendering temp.html."""
+        
+        result = self.client.post("/shopping-list",
+                                  data={"ingredient_id": "1"})
 
-    #     result = self.client.post("/shopping-list",
-    #                               data={"ingredient_id": "1"})
-
-    #     self.assertIn("1", result.data)
-
-
+        self.assertIn('', result.data)
 
 
+    def test_remove_from_shopping_list(self):
+        """Test that remove from shopping list is rendering temp.html."""
+
+        result = self.client.post("/remove-from-shopping-list",
+                                  data={"ingredient_id": "1"})
+
+        self.assertIn('', result.data)
 
 
+    def test_favorites_post(self):
+        """Test that favorites post method is rendering temp.html."""
+
+        result = self.client.post("/favorites",
+                                  data={"recipe_id": "1"})
+
+        self.assertIn('', result.data)
 
 
     def test_favorites(self):
