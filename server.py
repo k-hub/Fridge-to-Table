@@ -103,8 +103,6 @@ def add_to_shopping_list():
         shopping_list.append(ingredient_id)
 
 
-
-
     # else:
     #     flash("Ingredient already in list!")  # Need to debug flash. Should flash on recipe page.
 

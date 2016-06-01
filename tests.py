@@ -2,8 +2,7 @@ from server import app
 import server
 import unittest
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, sample_data
-# from flask_sqlalchemy import SQLAlchemy
-import sqlalchemy
+
 # import doctest
 
 
@@ -43,7 +42,9 @@ class FlaskTestsRoutes(unittest.TestCase):
         # Mock helper function called in /search-results.
         def _mock_query_recipes(diet, ingredients):
             # Instantiate a Recipe object.
-            return [Recipe(recipe_id=1, title="test", image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg')]
+            return [Recipe(recipe_id=1, 
+                           title="test", 
+                           image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg')]
 
         server.query_recipes = _mock_query_recipes
         result = self.client.get("/search-results?ingredient=strawberry+banana&diet=any")
@@ -57,7 +58,7 @@ class FlaskTestsRoutes(unittest.TestCase):
             return [Recipe(recipe_id=1,
                            title="test",
                            image=u'https://spoonacular.com/recipeImages/tofu_caribbean_salad_with_watercress-13864.jpg'),
-                           u'http://www.wholefoodsmarket.com/recipes/650', [(u'7.0 oz', 296, u'tofu')]]
+                    u'http://www.wholefoodsmarket.com/recipes/650', [(u'7.0 oz', 296, u'tofu')]]
 
         server.display_recipe = _mock_display_recipe
         result = self.client.get("/recipe/13864")
@@ -74,6 +75,21 @@ class FlaskTestsRoutes(unittest.TestCase):
         server.get_ingredient_info = _mock_get_ingredient_info
         result = self.client.get("/shopping-list")
         self.assertIn("Ingredients to buy:", result.data)
+
+
+##### working on this function
+    # def test_shopping_list_post(self):
+
+    #     result = self.client.post("/shopping-list",
+    #                               data={"ingredient_id": "1"})
+
+    #     self.assertIn("1", result.data)
+
+
+
+
+
+
 
 
     def test_favorites(self):
