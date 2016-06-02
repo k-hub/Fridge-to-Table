@@ -9,16 +9,16 @@ def query_recipes(diet, ingredients):
 
     # Query for recipes in the database that meet user indicated diet and any of the input ingredients.
     recipes = Recipe.query.filter(Recipe.diets.any(
-                                Diet.name == diet)).filter(
-                                Recipe.ingredients.any(
-                                Ingredient.name.in_(ingredients))).all()
+                                  Diet.name == diet)).filter(
+                                  Recipe.ingredients.any(
+                                  Ingredient.name.in_(ingredients))).all()
 
     return recipes
 
 
 def display_recipe(recipe_id):
     """Display recipe information."""
-    
+
     recipe = Recipe.query.filter_by(recipe_id=recipe_id).one()
 
     instructions = recipe.instructions
@@ -41,14 +41,14 @@ def display_recipe(recipe_id):
 
 def get_ingredient_info(ingredient_ids):
     """Store ingredient ids and respective names in a list."""
-    
+
     ingredients = []
 
     # Get the ingredient names for the ingredients in the shopping_list.
     for ingredient_id in ingredient_ids:
         ingredient = db.session.query(Ingredient.ingredient_id,
-                                        Ingredient.name).filter_by(
-                                        ingredient_id=ingredient_id).one()
+                                      Ingredient.name).filter_by(
+                                      ingredient_id=ingredient_id).one()
         ingredients.append(ingredient)
 
     return ingredients
@@ -62,8 +62,8 @@ def get_recipe_info(recipe_ids):
     # Query database for recipe titles by recipe_id.
     for recipe_id in recipe_ids:
         recipe = db.session.query(Recipe.recipe_id,
-                                        Recipe.title).filter_by(
-                                        recipe_id=recipe_id).one()
+                                  Recipe.title).filter_by(
+                                  recipe_id=recipe_id).one()
         recipes.append(recipe)
 
     return recipes
