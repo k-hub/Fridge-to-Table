@@ -1,54 +1,47 @@
 <!-- Homepage with search field for ingredients that will be used to query db. -->
 <head>
     <link rel="stylesheet"
-          href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.css"/>
-    <!-- <link rel="stylesheet" href="/static/css/site.css"/> -->
+          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="/static/css/homepagedb.css"/>
+    <!-- <link rel="stylesheet" href="/static/test.css"/> -->
 
     <title>{% block title %} Fridge-to-Table {% endblock title %}</title> 
 </head>
 <body>
+
     <div class="navbar navbar-inverse navbar-static-top">
         <div class="container">
             <div class="navbar-header">
                 <a class="navbar-brand" href="/">Fridge-to-Table</a>
             </div>
-        <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav navbar-right">
-                <li>
-                    <a href="/shopping-list">
-                        <img class="shopping-list">
-                        Shopping List
-                    </a>
-                </li>
-                <li>
-                    <a href="/favorites">
-                        <img class="saved-recipes">
-                        Favorites
-                    </a>
-                </li>
-            </ul>
-        </div>
-
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="/shopping-list"><img class="shopping-list">Shopping List</a></li>
+                    <li><a href="/favorites"><img class="saved-recipes">Favorites</a></li>
+                </ul>
+            </div>
         </div>
     </div>
 
-    <div class="container">
-
+    <div class="container-fluid">
         <form action="/search-results">
-        <label for="field-search">Enter ingredient(s): </label><br> 
-            <input type="text" name="ingredient" id="ingredient-search"><br>
+            <input type="text" placeholder="Ingredients" name="ingredient" id="ingredient-search"><br>
+                <label for="dropdown-diet"> Diet: </label><br>
+                <select name="diet">
+                    <option value="any">Any</option>
+                    <option value="paleo">Paleo</option>
+                    <option value="pescetarian">Pescetarian</option>
+                    <option value="primal">Primal</option>
+                    <option value="vegan">Vegan</option>
+                    <option value="vegetarian">Vegetarian</option>
+                </select><br>
+            <input type="submit">
+        </form>
+    </div>
 
-        <label for="dropdown-diet"> Diet: </label><br>
-            <select name="diet">
-            <option value="any">Any</option>
-            <option value="paleo">Paleo</option>
-            <option value="pescetarian">Pescetarian</option>
-            <option value="primal">Primal</option>
-            <option value="vegan">Vegan</option>
-            <option value="vegetarian">Vegetarian</option>
-        </select><br>
-        <input type="submit">
 
-    </form>
-
+    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+<!--     // <script src="js/bootstrap.min.js"></script> -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 </body>
