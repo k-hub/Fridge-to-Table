@@ -9,9 +9,5 @@ $(".favorite-recipe").on("click", function(){
         "recipe_id" : $(this).attr("id")
     };
 
-    console.log(recipeId)
-
-    $.post("/favorites", recipeId, function(){
-                console.log("success");
-            });
+    $.post("/favorites", recipeId);
 });
