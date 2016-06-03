@@ -39,29 +39,30 @@ def results():
     # If user uses the search field in the nav bar, get the input ingredient(s).
     if request.args.get("ingredient-nav-search"):
         ingredients = request.args.get("ingredient-nav-search")
-        # print "DEBUG", ingredients
 
     # Get the ingredient(s) inputted by the user from the homepage and pass as one
     # of the arguments in the query_recipes_by_diet.
-    else: 
+    else:
         ingredients = request.args.get("ingredient")
+        print "DEBUG:", ingredients
 
     # Split the input ingredient(s) into a list.
     ingredients = ingredients.split(' ')
-    # print "SPLIT: ", ingredients
 
     # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
-    if request.args.get("diet"): 
+    if request.args.get("diet"):
         diet = request.args.get("diet")
 
-    diet = "any"
+    # Default diet to "any" for navbar search.
+    else:
+        diet = "any"
 
 
     # Get recipes that meet user indicated diet and any of the input ingredients.
     recipes = query_recipes(diet, ingredients)
 
 
-
+    # Original code before navbar search. 
     # # Get the ingredient(s) inputted by the user and pass as one
     # # of the arguments in the query_recipes_by_diet.
     # ingredients = request.args.get("ingredient")
