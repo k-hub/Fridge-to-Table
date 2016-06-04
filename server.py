@@ -13,7 +13,6 @@ import os
 import json
 
 # from send_sms import send_sms
-# import re
 
 
 
@@ -86,16 +85,25 @@ def show_recipe(recipe_id):
     # Unpack returned values from display_recipe to be passed to template.
     recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
-    shopping_list = session["shopping_list"]
+    # shopping_list = session["shopping_list"]
 
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
-                            measurements_ingredients=measurements_ingredients,
-                            shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
+                            measurements_ingredients=measurements_ingredients)
+                            #shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
 
 
 @app.route("/shopping-list")
 def show_shopping_list():
     """Show user's shopping list."""
+
+    # Check if "shopping_list" is in the session
+    # if it's not, then add it as a key to session
+    # with an empty list as a value to store ingredients
+    # that user adds to the shopping list.
+    if "shopping_list" in session:
+        shopping_list = session["shopping_list"]
+    else:
+        shopping_list = session["shopping_list"] = []
 
     # List of ingredient ids in shopping list.
     ingredient_ids = session["shopping_list"]
@@ -129,6 +137,7 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
 
+
     # Render a template that will never display.
     return render_template("temp.html")
 
@@ -155,6 +164,15 @@ def remove_ingredient():
 @app.route("/favorites")
 def show_saved_recipes():
     """Show user's bookmarked recipes."""
+
+    # Check if "favorites" is in session
+    # if it's not, add it as a key to session
+    # with a empty list as a value to store
+    # recipes that user favorites.
+    if "favorites" in session:
+        favorites = session["favorites"]
+    else:
+        favorites = session["favorites"] = []
 
     # List of recipe ids in favorites.
     recipe_ids = session["favorites"]
@@ -256,7 +274,7 @@ def add_recipes():
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.debug = True
+    app.debug = False
 
     connect_to_db(app)
 
