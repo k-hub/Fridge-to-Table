@@ -1,3 +1,5 @@
+"""Test application with Selenium Webdriver."""
+
 import os
 import time
 from selenium import webdriver
@@ -32,7 +34,7 @@ add_recipe = driver.find_element_by_css_selector("input.favorite-recipe")
 add_recipe.click()
 time.sleep(1)
 
-# Go to /favorites route. 
+# Go to /favorites route.
 favorites = driver.find_elements_by_xpath('//a[img/@class="saved-recipes"]')
 favorites[0].click()
 time.sleep(1)
@@ -40,5 +42,12 @@ time.sleep(1)
 # Click a recipe found in Favorites.
 return_to_recipe = driver.find_element_by_link_text("Hot Italian Chicken Sandwiches")
 return_to_recipe.click()
+
+# Add all ingredients in a recipe to Shopping List.
+add_ingredients = driver.find_elements_by_css_selector("button")
+for ingredient in add_ingredients:
+    ingredient.click()
+# time.sleep(1)
+
 
 # driver.quit()
