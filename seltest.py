@@ -29,4 +29,8 @@ recipe = driver.find_elements_by_xpath('//a[img/@src="https://spoonacular.com/re
 recipe[0].click()
 time.sleep(1)
 
+add_ingredient = driver.find_element_by_css_selector("input.favorite-recipe")
+add_ingredient.click()
+
+
 # driver.quit()
