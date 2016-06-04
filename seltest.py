@@ -35,7 +35,7 @@ add_recipe.click()
 time.sleep(1)
 
 # Go to /favorites route.
-favorites = driver.find_elements_by_xpath('//a[img/@class="saved-recipes"]')
+favorites = driver.find_elements_by_xpath('//a[img/@class="favorites"]')
 favorites[0].click()
 time.sleep(1)
 
@@ -47,7 +47,10 @@ return_to_recipe.click()
 add_ingredients = driver.find_elements_by_css_selector("button")
 for ingredient in add_ingredients:
     ingredient.click()
-# time.sleep(1)
+time.sleep(1)
 
+# Go to /shopping-list route.
+shopping_list = driver.find_elements_by_xpath('//a[img/@class="shopping-list"]')
+shopping_list[0].click()
 
 # driver.quit()
