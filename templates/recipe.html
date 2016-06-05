@@ -7,46 +7,35 @@
     </head>
 
     <body>
-            <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add to Favorites">
-<div class="panel panel-default">
-  <div class="panel-heading">
-    <h3 class="panel-title recipe-title {{ recipe.recipe_id }}"> {{ recipe.title }} </h3>
-  </div>
-  <div class="panel-body">
-    <img class="img-rounded img-responsive center-block" alt='{{ recipe.title }}' id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
-    <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Ingredients</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for measurement, ingredient_id, ingredient in measurements_ingredients %} 
-    <tr>
-      <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}">
-                      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                </button> {{ measurement }} {{ ingredient }} </td>
-    </tr>
-    {% endfor %}<br> 
-  </tbody>
-</table>
- <div class="panel-body">
-    {{ instructions }}
-  </div>
-            
-
-            
-  </div>
-</div>
- <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
-                
-                
-               
         <!-- Display recipe title, image, measurements and respective ingredients, and instructions. -->
-
-
+        <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add to Favorites">
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title recipe-title {{ recipe.recipe_id }}"> {{ recipe.title }} </h3>
+            </div>
+            <div class="panel-body">
+                <img class="img-rounded img-responsive center-block" alt='{{ recipe.title }}' id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Ingredients</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                         <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
+                        {% for measurement, ingredient_id, ingredient in measurements_ingredients %} 
+                        <tr>
+                            <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> {{ measurement }} {{ ingredient }} </td>
+                        </tr>
+                        {% endfor %}<br> 
+                      </tbody>
+                    </table>
+            <div class="panel-body">
+                {{ instructions }}
+            </div>       
+          </div>
+        </div>
     </body>
-
 
 
 
@@ -54,10 +43,6 @@
     <script src="/static/add_ingredients.js"></script>
     <script src="/static/add_recipes.js"></script>
 
-    <!-- Check if ingredient is in session with AJAX and let user know if it is. -->
-    
-<script>
 
-</script>
 
 {% endblock %}
