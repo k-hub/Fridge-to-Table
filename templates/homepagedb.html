@@ -3,6 +3,7 @@
     <link rel="stylesheet"
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/css/homepagedb.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
     <!-- <link rel="stylesheet" href="/static/test.css"/> -->
 
     <title>{% block title %} Fridge-to-Table {% endblock title %}</title> 
@@ -25,23 +26,32 @@
 
     <div class="container-fluid">
         <form action="/search-results">
-            <input type="text" class="form-control" placeholder="chicken" name="ingredient" id="ingredient-search" value="chicken"><br>
-                <label for="dropdown-diet"> Diet: </label><br>
-                <select name="diet">
-                    <option value="any">Any</option>
-                    <option value="paleo">Paleo</option>
-                    <option value="pescetarian">Pescetarian</option>
-                    <option value="primal">Primal</option>
-                    <option value="vegan">Vegan</option>
-                    <option value="vegetarian">Vegetarian</option>
-                </select><br>
+            <input type="text" class="form-control" name="ingredient" id="ingredient-search" value="chicken apple"><br>
+            
+            <label for="dropdown-diet"></label><br>
+            <select class="selectpicker" name="diet">
+                <option value="any">Select Diet</option>
+                <option value="paleo">Paleo</option>
+                <option value="pescetarian">Pescetarian</option>
+                <option value="primal">Primal</option>
+                <option value="vegan">Vegan</option>
+                <option value="vegetarian">Vegetarian</option>
+            </select><br>
             <!-- <input type="submit" style="visibility: hidden;"> -->
         </form>
+        
     </div>
 
 
-    // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
+               
+
+
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
-<!--     // <script src="js/bootstrap.min.js"></script> -->
+    <script src="js/bootstrap.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
+
 </body>
