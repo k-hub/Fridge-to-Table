@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
-from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info
+from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session
 
 import os
 
@@ -43,7 +43,6 @@ def results():
     # of the arguments in the query_recipes_by_diet.
     else:
         ingredients = request.args.get("ingredient")
-        print "DEBUG:", ingredients
 
     # Split the input ingredient(s) into a list.
     ingredients = ingredients.split(' ')
@@ -61,7 +60,7 @@ def results():
     recipes = query_recipes(diet, ingredients)
 
 
-    # Original code before navbar search. 
+    # Original code before navbar search.
     # # Get the ingredient(s) inputted by the user and pass as one
     # # of the arguments in the query_recipes_by_diet.
     # ingredients = request.args.get("ingredient")
@@ -85,28 +84,19 @@ def show_recipe(recipe_id):
     # Unpack returned values from display_recipe to be passed to template.
     recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
-    # shopping_list = session["shopping_list"]
-
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
                             measurements_ingredients=measurements_ingredients)
-                            #shopping_list=json.dumps(shopping_list))  # Use shopping_list as an object in html and js.
 
 
 @app.route("/shopping-list")
 def show_shopping_list():
     """Show user's shopping list."""
 
-    # Check if "shopping_list" is in the session
-    # if it's not, then add it as a key to session
-    # with an empty list as a value to store ingredients
-    # that user adds to the shopping list.
-    if "shopping_list" in session:
-        shopping_list = session["shopping_list"]
-    else:
-        shopping_list = session["shopping_list"] = []
+    # Call function to check or create a shopping list in the flask session.
+    shopping_list = shopping_list_session()
 
     # List of ingredient ids in shopping list.
-    ingredient_ids = session["shopping_list"]
+    ingredient_ids = shopping_list
 
     # get_ingredient_info returns a list of ingredient id and ingredient name tuples.
     ingredients = get_ingredient_info(ingredient_ids)
@@ -124,19 +114,12 @@ def add_to_shopping_list():
     # Convert unicode to int.
     ingredient_id = int(ingredient_id)
 
-    # Check if "shopping_list" is in the session
-    # if it's not, then add it as a key to session
-    # with an empty list as a value to store ingredients
-    # that user adds to the shopping list.
-    if "shopping_list" in session:
-        shopping_list = session["shopping_list"]
-    else:
-        shopping_list = session["shopping_list"] = []
+    # Call function to check or create a shopping list in the flask session.
+    shopping_list = shopping_list_session()
 
     # Only append ingredients not currently in the shopping_list.
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
-
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -222,7 +205,6 @@ def add_recipes():
 #         ingredient = db.session.query(Ingredient.name ).filter_by(ingredient_id=ingredient_id).one()
 #         ingredients.append(str(ingredient[0]))  # ingredient is a tuple so get the first index and convert unicode to string.
 
-#     # import pdb; pdb.set_trace()
 #     if len(ingredients) > 1:
 #         ingredients = ", ".join(ingredients)
 #         # print "MORE THAN ONE: ", ingredients
@@ -274,7 +256,7 @@ def add_recipes():
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 
