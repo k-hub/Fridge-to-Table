@@ -5,7 +5,13 @@
           href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="/static/css/base.css"/>
 
-    <title>{% block title %} Fridge-to-Table {% endblock title %}</title>  <!-- Change title --> 
+    <!-- This block enables templates to link different stylesheets. -->
+    {% block head %}
+        <!-- This block enables templates to have different titles. --> 
+        <title>{% block title %} Fridge-to-Table {% endblock title %}</title>
+    {% endblock %}
+
+
 </head>
 
 <body>
@@ -31,10 +37,12 @@
     {% block content %}
         NO ONE WILL SEE THIS
     {% endblock %}
-    <!-- // <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>  -->
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <!-- // <script src="js/bootstrap.min.js"></script> -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
 </body>
 
 </html>

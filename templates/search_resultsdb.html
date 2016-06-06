@@ -2,9 +2,12 @@
 
 {% extends 'base.html' %}
     <head>
-        <title>{% block title %} Results {% endblock title %}</title>
-<!--         <link rel="stylesheet" href="/static/css/search_resultsdb.css"/>
- -->    </head>
+       {% block head %} 
+            <link rel="stylesheet" href="/static/css/search_resultsdb.css"/>
+            <title>{% block title %} Results {% endblock title %}</title>    
+       {% endblock %}
+
+    </head>
     
 {% block content %}
 
@@ -13,11 +16,12 @@
         <div class="row">
         {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects. -->
             <!-- Truncate recipe title if it is greater than 40 characters. -->
-            <div class="col-md-4"><div style="height: 30px;"><a href="/recipe/{{ recipe.recipe_id }}">
+            <div class="col-md-4"><div class="recipe"><a href="/recipe/{{ recipe.recipe_id }}">
                 {{ recipe.title|truncate(40) }}</a></div>
                 <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" 
-                    id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a> 
+                    id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>
             </div>
+
         {% endfor%}  
         </div>
     </div>
@@ -26,5 +30,3 @@
     {% endif%}
 
 {% endblock %}
-
-

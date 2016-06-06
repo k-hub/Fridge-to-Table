@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 <head>
-    <title>{% block title %} Shopping List {% endblock title %}</title>
+    {% block head %}
+        <title>{% block title %} Shopping List {% endblock title %}</title>
+    {% endblock %}
 </head>
 
 {% block content %}
