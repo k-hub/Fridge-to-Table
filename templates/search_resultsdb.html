@@ -11,9 +11,12 @@
     {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
     <div class="container">
         <div class="row">
-        {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects -->
-             <div class="col-md-4"><div style="height: 70px;"> {{ recipe.title }}</div>
-                <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>   
+        {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects. -->
+            <!-- Truncate recipe title if it is greater than 40 characters. -->
+            <div class="col-md-4"><div style="height: 30px;"><a href="/recipe/{{ recipe.recipe_id }}">
+                {{ recipe.title|truncate(40) }}</a></div>
+                <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" 
+                    id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a> 
             </div>
         {% endfor%}  
         </div>
@@ -23,3 +26,5 @@
     {% endif%}
 
 {% endblock %}
+
+
