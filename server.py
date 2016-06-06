@@ -6,7 +6,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 
 from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
 
-from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session
+from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
 import os
 
@@ -148,17 +148,11 @@ def remove_ingredient():
 def show_saved_recipes():
     """Show user's bookmarked recipes."""
 
-    # Check if "favorites" is in session
-    # if it's not, add it as a key to session
-    # with a empty list as a value to store
-    # recipes that user favorites.
-    if "favorites" in session:
-        favorites = session["favorites"]
-    else:
-        favorites = session["favorites"] = []
+    # Call function to check or create favorites in the flask session.
+    favorites = favorites_session()
 
     # List of recipe ids in favorites.
-    recipe_ids = session["favorites"]
+    recipe_ids = favorites
 
     # get_recipe_info returns a list of recipe id and recipe title tuples.
     recipes = get_recipe_info(recipe_ids)
@@ -173,14 +167,8 @@ def add_recipes():
     recipe_id = request.form.get("recipe_id")
     recipe_id = int(recipe_id)
 
-    # Check if "favorites" is in session
-    # if it's not, add it as a key to session
-    # with a empty list as a value to store
-    # recipes that user favorites.
-    if "favorites" in session:
-        favorites = session["favorites"]
-    else:
-        favorites = session["favorites"] = []
+    # Call function to check or create favorites in the flask session.
+    favorites = favorites_session()
 
     if recipe_id not in favorites:
         favorites.append(recipe_id)
@@ -190,7 +178,8 @@ def add_recipes():
 
 
 
-########## Routes that need to be worked on are below this line #################################
+################################################################################
+# Routes that need to be worked on for future implentation are below this line. 
 
 # ### This route needs to be fixed. 
 # @app.route("/send-sms")
@@ -207,39 +196,35 @@ def add_recipes():
 
 #     if len(ingredients) > 1:
 #         ingredients = ", ".join(ingredients)
-#         # print "MORE THAN ONE: ", ingredients
 #     else:
 #         ingredients = "".join(ingredients)
-#         # print "LESS THAN ONE: ", ingredients
 
 #     # print ingredients
 
 #     sender = request.args.get("sender_number")
-#     print "SENDER:", sender
 #     recipient = request.args.get("recipient_number")
-#     print "RECIPIENT:", recipient
 
-#     #### If user hits submit, then call send_sms.
+#     # Add conditional statement here. If user hits submit, then call send_sms.
 #     # send_sms(ingredients)  # Will send a text message with the shopping list.
 
 
 #     return render_template("send_sms.html")
 
 
-# @app.route("/login")  # Route needs to be revised.
+# @app.route("/login")
 # def show_profile():
 #     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
 #     pass
 
-# @app.route("/logout")  # Route needs to be revised.
+# @app.route("/logout")
 # def show_logout():
 #     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
 #     pass
 
 
-# @app.route("/profile")  # Route needs to be revised.
+# @app.route("/profile")
 # def show_user_profile():
 #     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
