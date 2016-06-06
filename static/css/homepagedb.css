@@ -4,7 +4,7 @@ body {
     background-repeat: no-repeat;
 }
 
-.container-fluid {
+.container-search {
     position: fixed;
     top: 50%;
     left: 40%;
