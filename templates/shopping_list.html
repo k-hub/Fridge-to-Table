@@ -5,8 +5,9 @@
 
 {% block content %}
 <body> 
+    <h2> Shopping List </h2>
     {% if shopping_list %}
-        <h2> Ingredients to buy: </h2>
+        <h3> Ingredients to buy: </h3>
         <ol>
             {% for ingredient in shopping_list %}
                 <span class="ingredient" id="{{ ingredient[0] }}">
@@ -20,12 +21,9 @@
                 </span> 
             {% endfor %}
             <br>
-           <!--  <form action="/send-sms"> -->  <!-- In the future, evt.preventdefault to have modal window.-->
-         <!--        <input type="submit" value="Send 'Shopping List' to my phone">
-            </form> -->
         </ol>
     {% else %}
-        <h3> No ingredients found in your shopping list. </h3>
+        <h4> No ingredients found in your shopping list. </h4>
     {% endif %}
 
 </body>
