@@ -1,9 +1,4 @@
 env/
 *.pyc
 *secrets*
-recipe.py
 .DS_Store
-keep.html
-testquery.py
-query.py
-spoonacularcalls.py
