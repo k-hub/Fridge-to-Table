@@ -5,12 +5,24 @@
 {% block content %}
 <body>
     <h2> Favorites </h2>
-        {% for recipe in recipes %}
-            <button type="button" class="btn btn-default btn-xs" aria-label="Left Align">
-                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-            </button>
-            <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a><br>
-        {% endfor %}
+        <table class="table">
+            <thead>
+                <th><h4>Recipes</h4></th>
+            </thead>
+            <tbody>
+            {% for recipe in recipes %}
+                <tr>
+                    <td>
+                        <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a>
+                        <button type="button" class="btn btn-default btn-xs" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
+                    </td> 
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+
 </body>
 
 {% endblock %}
