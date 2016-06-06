@@ -70,23 +70,14 @@ def route_to_shopping_list():
     shopping_list = driver.find_elements_by_xpath('//a[img/@class="shopping-list"]')
     shopping_list[0].click()
 
-# def remove(lst):
-#     for ingredient in lst:
-#         ingredient.click()
-#         driver.implicitly_wait(10)
-#         driver.get("http://localhost:5000/shopping-list")
-#         # import pdb; pdb.set_trace()
-#         remove(lst)
+def remove():
+    """Remove an ingredient from Shopping List."""
 
-# remove(driver.find_elements_by_css_selector("button"))
-#     # print "BEFORE:", remove_ingredients    
-#     # remove_ingredients = driver.find_elements_by_css_selector("button")
-#     # for ingredient in remove_ingredients:
-#         # # driver.implicitly_wait(10)
-#         # ingredient.click()
-#         # driver.implicitly_wait(10)
-#         # remove_ingredients = driver.find_elements_by_css_selector("button")
-# # print "AFTER:", remove_ingredients
+    remove_ingredients = driver.find_elements_by_css_selector("button")
+    remove_ingredients.click()
+
+
+
 
 search()
 click_recipe()
@@ -95,4 +86,5 @@ check_favorites()
 route_to_recipe()
 add_to_shopping_list()
 route_to_shopping_list()
-# # driver.quit()
+remove()
+# driver.quit()
