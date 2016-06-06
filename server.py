@@ -179,9 +179,9 @@ def add_recipes():
 
 
 ################################################################################
-# Routes that need to be worked on for future implentation are below this line. 
+# Routes that need to be worked on for future implentation are below this line.
 
-# ### This route needs to be fixed. 
+# ### This route needs to be fixed.
 # @app.route("/send-sms")
 # def send_sms_shopping_list():
 
