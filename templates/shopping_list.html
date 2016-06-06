@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
-
+<head>
+    <title>{% block title %} Shopping List {% endblock title %}</title>
+</head>
 
 {% block content %}
 <body> 
@@ -9,14 +11,14 @@
             {% for ingredient in shopping_list %}
                 <span class="ingredient" id="{{ ingredient[0] }}">
                     <li> {{ ingredient[1] }}
-                        <input type="button" class="remove-item" id="{{ ingredient[0] }} "value="X"/> 
+                        <button type="button" class="remove-item" id="{{ ingredient[0] }}"/> 
                     </li> 
                 </span> 
             {% endfor %}
             <br>
-            <form action="/send-sms">  <!-- In the future, evt.preventdefault to have modal window.-->
-                <input type="submit" value="Send 'Shopping List' to my phone">
-            </form>
+           <!--  <form action="/send-sms"> -->  <!-- In the future, evt.preventdefault to have modal window.-->
+         <!--        <input type="submit" value="Send 'Shopping List' to my phone">
+            </form> -->
         </ol>
     {% else %}
         <h3> No ingredients found in your shopping list. </h3>
