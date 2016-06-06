@@ -11,7 +11,11 @@
             {% for ingredient in shopping_list %}
                 <span class="ingredient" id="{{ ingredient[0] }}">
                     <li> {{ ingredient[1] }}
-                        <button type="button" class="remove-item" id="{{ ingredient[0] }}"/> 
+           <!--              <button type="button" class="remove-item" id="{{ ingredient[0] }}"/>  -->
+                        <button type="button" class="btn btn-default btn-xs remove-item"
+                        id="{{ ingredient[0] }}">
+                              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button>
                     </li> 
                 </span> 
             {% endfor %}
