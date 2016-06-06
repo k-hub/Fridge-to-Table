@@ -7,26 +7,30 @@
 <body> 
     <h2> Shopping List </h2>
     {% if shopping_list %}
-        <h3> Ingredients to buy: </h3>
-        <ol>
+        <table class="table">
+            <thead>
+                <th><h4>Ingredients to buy:</h4></th>
+            </thead>
+            <tbody>
             {% for ingredient in shopping_list %}
-                <span class="ingredient" id="{{ ingredient[0] }}">
-                    <li> {{ ingredient[1] }}
+                <tr>
+                    <td>
+                        <span class="ingredient" id="{{ ingredient[0] }}">{{ ingredient[1] }}
            <!--              <button type="button" class="remove-item" id="{{ ingredient[0] }}"/>  -->
-                        <button type="button" class="btn btn-default btn-xs remove-item"
-                        id="{{ ingredient[0] }}">
-                              <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                        </button>
-                    </li> 
-                </span> 
+                        <button type="button" class="btn btn-default btn-xs remove-item" id="{{ ingredient[0] }}">
+                            <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                        </button></span>
+                    </td> 
+                </tr>
             {% endfor %}
-            <br>
-        </ol>
+            </tbody>
+        </table>
     {% else %}
         <h4> No ingredients found in your shopping list. </h4>
     {% endif %}
 
 </body>
+
 
 
 <script src="https://code.jquery.com/jquery.js"></script>    
