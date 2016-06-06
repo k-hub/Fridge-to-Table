@@ -8,13 +8,13 @@
 
     <body>
         <!-- Display recipe title, image, measurements and respective ingredients, and instructions. -->
-        <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add to Favorites">
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h3 class="panel-title recipe-title {{ recipe.recipe_id }}"> {{ recipe.title }} </h3>
             </div>
             <div class="panel-body">
                 <img class="img-rounded img-responsive center-block" alt='{{ recipe.title }}' id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
+                <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add recipe to Favorites"><br>
                     <table class="table table-striped">
                       <thead>
                         <tr>
