@@ -3,19 +3,23 @@
 {% extends 'base.html' %}
     <head>
         <title>{% block title %} Results {% endblock title %}</title>
-    </head>
+<!--         <link rel="stylesheet" href="/static/css/search_resultsdb.css"/>
+ -->    </head>
+    
 {% block content %}
 
-
-            {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
-               <ol>
-                {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects -->
-                     <li>{{ recipe.title }}</li>
-                        <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>   
-                {% endfor%}  
-                </ol>
-            {% else %}
-                No recipes found
-            {% endif%}
+    {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
+    <div class="container">
+        <div class="row">
+        {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects -->
+             <div class="col-md-4"><div style="height: 70px;"> {{ recipe.title }}</div>
+                <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>   
+            </div>
+        {% endfor%}  
+        </div>
+    </div>
+    {% else %}
+        No recipes found
+    {% endif%}
 
 {% endblock %}

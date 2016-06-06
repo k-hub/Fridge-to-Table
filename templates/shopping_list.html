@@ -5,7 +5,7 @@
 
 {% block content %}
 <body> 
-    <h2> Shopping List </h2><br>
+    <h2> Shopping List </h2>
     {% if shopping_list %}
         <table class="table">
             <thead>
@@ -26,11 +26,10 @@
             </tbody>
         </table>
     {% else %}
-        <h4> No ingredients found in your shopping list. </h4>
+        <br><h4> No ingredients found in your shopping list. </h4>
     {% endif %}
 
 </body>
-
 
 
 <script src="https://code.jquery.com/jquery.js"></script>    
