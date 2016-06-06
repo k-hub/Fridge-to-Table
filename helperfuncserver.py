@@ -1,6 +1,6 @@
 """Helper functions for server.py."""
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
+from model import db, Diet, Ingredient, Recipe, RecipeIngredient
 from flask import session
 import re
 
@@ -69,12 +69,13 @@ def get_recipe_info(recipe_ids):
 
     return recipes
 
+
 def shopping_list_session():
     """Check if shopping_list is in the flask session.
 
     If it is not, then add it as a key to the session
     with an empy list as a value to store ingredients
-    that user adds to the shopping list.
+    that the user adds to the shopping list.
     """
 
     if "shopping_list" in session:
@@ -83,3 +84,18 @@ def shopping_list_session():
         shopping_list = session["shopping_list"] = []
 
     return shopping_list
+
+
+def favorites_session():
+    """Check if favorites is in the flask session.
+
+    If it is not, then add it as a key to session
+    with a empty list as a value to store recipes
+    that the user favorites."""
+
+    if "favorites" in session:
+        favorites = session["favorites"]
+    else:
+        favorites = session["favorites"] = []
+
+    return favorites
