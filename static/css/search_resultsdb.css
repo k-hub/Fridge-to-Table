@@ -1,4 +1,9 @@
-.recipe {
+.recipe-title {
     height: 30px;
     margin-top: 3em;
+}
+
+.recipe_image {
+    height: 250px;
+    width: 300px;
 }
