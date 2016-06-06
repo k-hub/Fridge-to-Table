@@ -1,3 +1,16 @@
 .form-control {
     height:40px;
 }
+
+.navbar-brand {
+    color:white;
+    font-weight: bolder;
+}
+
+.shopping-list {
+    font-weight: bolder;
+}
+
+.favorites {
+    font-weight: bolder;
+}
