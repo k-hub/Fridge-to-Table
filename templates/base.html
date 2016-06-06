@@ -1,48 +1,48 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet"
-          href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-    <link rel="stylesheet" href="/static/css/base.css"/>
+    <head>
+        <link rel="stylesheet"
+              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
+        <link rel="stylesheet" href="/static/css/base.css"/>
 
-    <!-- This block enables templates to link different stylesheets. -->
-    {% block head %}
-        <!-- This block enables templates to have different titles. --> 
-        <title>{% block title %} Fridge-to-Table {% endblock title %}</title>
-    {% endblock %}
+        <!-- This block enables templates to link different stylesheets. -->
+        {% block head %}
+            <!-- This block enables templates to have different titles. --> 
+            <title>{% block title %} Fridge-to-Table {% endblock title %}</title>
+        {% endblock %}
 
 
-</head>
+    </head>
 
-<body>
-    <div class="navbar navbar-inverse navbar-static-top">
-        <div class="container-fluid">
-            
-            <div class="navbar-header">
-                <a class="navbar-brand" href="/">Fridge-to-Table</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <form class="navbar-form navbar-left " style="width:auto" role="search" action="/search-results">
-                    <input type="text" name="ingredient-nav-search" placeholder="Search">
-                </form>
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a class="shopping-list" href="/shopping-list">Shopping List</a></li>
-                    <li><a class="favorites" href="/favorites">Favorites</a></li>
-                </ul>
+    <body>
+        <div class="navbar navbar-inverse navbar-static-top">
+            <div class="container-fluid">
                 
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/">Fridge-to-Table</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <form class="navbar-form navbar-left " style="width:auto" role="search" action="/search-results">
+                        <input type="text" name="ingredient-nav-search" placeholder="Search">
+                    </form>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li><a class="shopping-list" href="/shopping-list">Shopping List</a></li>
+                        <li><a class="favorites" href="/favorites">Favorites</a></li>
+                    </ul>
+                    
+                </div>
             </div>
         </div>
-    </div>
 
-    {% block content %}
-        NO ONE WILL SEE THIS
-    {% endblock %}
+        {% block content %}
+            NO ONE WILL SEE THIS
+        {% endblock %}
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <!-- // <script src="js/bootstrap.min.js"></script> -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
+        <!-- Include all compiled plugins (below), or include individual files as needed -->
+        <!-- // <script src="js/bootstrap.min.js"></script> -->
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 
-</body>
+    </body>
 
 </html>

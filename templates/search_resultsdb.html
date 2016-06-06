@@ -1,5 +1,4 @@
 <!-- Search results with recipes containing ingredient(s) of interest. -->
-
 {% extends 'base.html' %}
     <head>
        {% block head %} 
@@ -10,23 +9,22 @@
     </head>
     
 {% block content %}
-
-    {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
-    <div class="container">
-        <div class="row">
-        {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects. -->
-            <!-- Truncate recipe title if it is greater than 40 characters. -->
-            <div class="col-md-4"><div class="recipe"><a href="/recipe/{{ recipe.recipe_id }}">
-                {{ recipe.title|truncate(40) }}</a></div>
-                <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" 
-                    id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>
+    <body>
+        {% if recipes %}  <!--If there are recipes found with input ingredients then iterate through the list of recipe objects. -->
+        <div class="container">
+            <div class="row">
+                {% for recipe in recipes %}  <!-- Iterate through the list of lists of recipe objects. -->
+                    <!-- Truncate recipe title if it is greater than 40 characters. -->
+                    <div class="col-md-4"><div class="recipe"><a href="/recipe/{{ recipe.recipe_id }}">
+                        {{ recipe.title|truncate(40) }}</a></div>
+                        <a href="/recipe/{{ recipe.recipe_id }}"><img class="recipe_image" 
+                            id={{ recipe.recipe_id }} src="{{recipe.image}}" height="250" width="300"></a>
+                    </div>
+                {% endfor%}  
             </div>
-
-        {% endfor%}  
         </div>
-    </div>
-    {% else %}
-        No recipes found
-    {% endif%}
-
+        {% else %}
+            <h3> No recipes found </h3>
+        {% endif%}
+    </body>
 {% endblock %}
