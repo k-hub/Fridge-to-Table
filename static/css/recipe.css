@@ -1,7 +1,9 @@
 .recipe-title {
     text-align: center;
+    font-size: 22px;
 }
 
 .recipe-image {
     height:500px;
 }
+
