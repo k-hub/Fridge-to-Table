@@ -23,16 +23,17 @@ input[type="text"]
     font-size:24px;
 }
 
-.navbar-brand {
-    color:white;
+.name {
     font-weight: bolder;
 }
 
 .shopping-list {
+    font-size: 16px;
     font-weight: bolder;
 }
 
 .favorites {
+    font-size: 16px;
     font-weight: bolder;
 }
 
