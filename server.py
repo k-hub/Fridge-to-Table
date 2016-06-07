@@ -55,24 +55,8 @@ def results():
     else:
         diet = "any"
 
-
     # Get recipes that meet user indicated diet and any of the input ingredients.
     recipes = query_recipes(diet, ingredients)
-
-
-    # Original code before navbar search.
-    # # Get the ingredient(s) inputted by the user and pass as one
-    # # of the arguments in the query_recipes_by_diet.
-    # ingredients = request.args.get("ingredient")
-
-    # # Split the input ingredient(s) into a list.
-    # ingredients = ingredients.split(' ')
-
-    # # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
-    # diet = request.args.get("diet")
-
-    # # Get recipes that meet user indicated diet and any of the input ingredients.
-    # recipes = query_recipes(diet, ingredients)
 
     return render_template("search_resultsdb.html", recipes=recipes)
 
