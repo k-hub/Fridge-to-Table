@@ -14,21 +14,23 @@
             </div>
             <div class="panel-body">
                 <img class="img-rounded img-responsive center-block recipe-image" alt='{{ recipe.title }}' id="{{ recipe.recipe_id }}" src={{ recipe.image }}><br><br>
-                <input type="button" class="favorite-recipe" id="{{ recipe.recipe_id }}" value="Add recipe to Favorites"><br>
+                    <button type="button" class="btn btn-default btn-md favorite-recipe" id="{{ recipe.recipe_id }}">
+                        <span class="" aria-hidden="true"></span> Add to Favorites
+                    </button>   
                     <table class="table table-striped">
-                      <thead>
-                        <tr>
-                          <th>Ingredients</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                         <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
-                        {% for measurement, ingredient_id, ingredient in measurements_ingredients %} 
-                        <tr>
-                            <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> {{ measurement }} {{ ingredient }} </td>
-                        </tr>
-                        {% endfor %}<br> 
-                      </tbody>
+                        <thead>
+                            <tr>
+                                <th>Ingredients</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
+                            {% for measurement, ingredient_id, ingredient in measurements_ingredients %} 
+                            <tr>
+                                <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> {{ measurement }} {{ ingredient }} </td>
+                            </tr>
+                            {% endfor %}<br> 
+                        </tbody>
                     </table>
             <div class="panel-body">
                 {{ instructions }}
