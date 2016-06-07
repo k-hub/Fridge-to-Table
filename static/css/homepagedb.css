@@ -2,6 +2,8 @@ body {
     background: url("/static/img/homepagebg-copy.jpg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
+    font-family: 'Lato', sans-serif;
+    font-size: 16px;
 }
 
 .container-search {
@@ -35,3 +37,4 @@ input[type="text"]
 .favorites {
     font-weight: bolder;
 }
+
