@@ -5,7 +5,7 @@ from pprint import pprint
 import os
 from urllib import quote
 from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet, Diet
-# from server import app  # Need to comment out if running server.
+from server import app
 
 
 
@@ -197,8 +197,13 @@ def add_to_db(api_response):
 
 
 
-
-
+# Call function to seed database. Can add more recipes to database by calling
+# function in terminal or calling function in this file. Will need to drop database
+# and create it again if doing the latter.
+get_restricted_recipes(includeIngredients="chicken")
+get_restricted_recipes(includeIngredients="lamb")
+get_restricted_recipes(includeIngredients="pork")
+get_restricted_recipes(includeIngredients="beef")
 
 
 
