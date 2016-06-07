@@ -8,23 +8,25 @@
 
 {% block content %}
     <body>
-        <h2> Favorites </h2>
-            <table class="table">
-                <thead>
-                    <th><h4>Recipes:</h4></th>
-                </thead>
-                <tbody>
-                {% for recipe in recipes %}
-                    <tr>
-                        <td>
-                            <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a>
-                            <button type="button" class="btn btn-default btn-xs" aria-label="Left Align">
-                                <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                            </button>
-                        </td> 
-                    </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+        <div class="container-fluid">
+            <h2 style="font-weight:bold;"> Favorites </h2>
+                <table class="table">
+                    <thead>
+                        <th><h4 style="font-size:20px;">Recipes:</h4></th>
+                    </thead>
+                    <tbody>
+                    {% for recipe in recipes %}
+                        <tr>
+                            <td>
+                                <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a>
+                                <button type="button" class="btn btn-default btn-xs" aria-label="Left Align">
+                                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+                                </button>
+                            </td> 
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+        </div>
     </body>
 {% endblock %}
