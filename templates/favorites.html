@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
     <head>
         {% block head %}
+            <link rel="stylesheet" href="/static/css/favorites.css"/>
             <title>{% block title %} Favorites {% endblock title %}</title>
         {% endblock %}
 
@@ -9,10 +10,10 @@
 {% block content %}
     <body>
         <div class="container-fluid">
-            <h2 style="font-weight:bold;"> Favorites </h2>
+            <h2> Favorites </h2>
                 <table class="table">
                     <thead>
-                        <th><h4 style="font-size:20px;">Recipes:</h4></th>
+                        <th><h4>Recipes:</h4></th>
                     </thead>
                     <tbody>
                     {% for recipe in recipes %}
