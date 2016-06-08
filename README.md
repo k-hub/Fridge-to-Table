@@ -5,10 +5,10 @@ Fridge-to-Table is a web app, that finds recipes based on user input ingredients
 
 ###Table of Contents
 -----
-  - [Technologies Used](https://github.com/k-hub/Fridge-to-Table#technologiesused)
-  - [How to Use Application](https://github.com/k-hub/Fridge-to-Table#howtouseapplication)
+  - [Technologies Used](https://github.com/k-hub/Fridge-to-Table#technologies used)
+  - [How to Use Application](https://github.com/k-hub/Fridge-to-Table#how to use application)
   - [Installation](https://github.com/k-hub/Fridge-to-Table#installation)
-  - [Future Feature Implementations](https://github.com/k-hub/Fridge-to-Table#futurefeatureimplementations)
+  - [Future Feature Implementations](https://github.com/k-hub/Fridge-to-Table#future feature implementations)
 
 ### Techonologies Used
 -----
