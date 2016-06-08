@@ -1,4 +1,4 @@
-#Fridge-to-Table
+Fridge-to-Table
 -----
 
 Fridge-to-Table is a web app, that finds recipes based on user input ingredients. Recipes can also be filtered by user indicated diet restriction. Other features include adding ingredients to a shopping list and ability to favorite recipes. 
