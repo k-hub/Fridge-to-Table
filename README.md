@@ -1,8 +1,9 @@
-# Fridge-to-Table
+Fridge-to-Table
+=======
 
 Fridge-to-Table is a web app, that finds recipes based on user input ingredients. Recipes can also be filtered by user indicated diet restriction.
 
-### Table of Contents
+###Table of Contents
   - [Technologies Used](https://github.com/k-hub/Fridge-to-Table#technologiesused)
   - [How to Use Application](https://github.com/k-hub/Fridge-to-Table#howtouseapplication)
   - [Installation](https://github.com/k-hub/Fridge-to-Table#installation)
@@ -56,7 +57,7 @@ Get a secret key to use [Spoonacular's API](https://spoonacular.com/food-api). S
 ```
 export X_MASHABLE_KEY="your_secret_key_here"
 ```
-Create the database with PostgreSQL. In your terminal type:
+Create the database with PostgreSQL. In your terminal, type:
 ```
 createdb recipes
 ```
