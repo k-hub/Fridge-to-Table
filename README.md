@@ -30,15 +30,18 @@ Enter an ingredient or multiple ingredients into the search field. Select a diet
 ![](https://cloud.githubusercontent.com/assets/18278342/15878454/e9c92da4-2ccf-11e6-92e0-43909d0ed5d4.png)
 
 ![](https://cloud.githubusercontent.com/assets/18278342/15878459/f5fcd13e-2ccf-11e6-851c-852ad0a44b64.png)
+
 #### Add Ingredients and Remove Ingredients from Shopping List
 A user can add ingredients to a dynamically tracked shopping list without leaving the recipe page with jQuery and AJAX. 
 
 ![](https://cloud.githubusercontent.com/assets/18278342/15878491/32df3650-2cd0-11e6-8d70-119ad7efec69.png)
 
+-------
 A user can also remove ingredients from the shopping list endpoint. With an AJAX callback function, the endpoint automatically reloads the page when an ingredient has been deleted from the shopping list.
 
 ![](https://cloud.githubusercontent.com/assets/18278342/15878574/d2edde76-2cd0-11e6-9b83-dadbca157659.png)
 
+-------
 ### Installation
 Clone or fork this repo:
 ```
