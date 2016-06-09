@@ -147,7 +147,7 @@ def show_saved_recipes():
     return render_template("favorites.html", recipes=recipes)
 
 
-@app.route("/favorites", methods=["POST"])  # Route needs to be revised.
+@app.route("/favorites", methods=["POST"])
 def add_recipes():
     """Save recipe to favorites."""
 
