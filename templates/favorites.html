@@ -20,7 +20,7 @@
                         <tr>
                             <td>
                                 <a href="/recipe/{{ recipe[0] }}">{{ recipe[1] }}</a>
-                                <button type="button" class="btn btn-default btn-xs" aria-label="Left Align">
+                                <button type="button" class="btn btn-default btn-xs remove-item" id="{{ recipe[0] }}" aria-label="Left Align">
                                     <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
                                 </button>
                             </td> 
@@ -30,4 +30,8 @@
                 </table>
         </div>
     </body>
+
+    <script src="https://code.jquery.com/jquery.js"></script>    
+    <script src="/static/remove_recipes.js"></script>
+
 {% endblock %}
