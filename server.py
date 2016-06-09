@@ -10,8 +10,6 @@ from helperfuncserver import query_recipes, display_recipe, get_ingredient_info,
 
 import os
 
-import json
-
 # from send_sms import send_sms
 
 
@@ -77,13 +75,15 @@ def show_shopping_list():
     """Show user's shopping list."""
 
     # Call function to check or create a shopping list in the flask session.
+    # shopping_list will contain ingredient ids if not empty.
     shopping_list = shopping_list_session()
 
-    # List of ingredient ids in shopping list.
-    ingredient_ids = shopping_list
-
-    # get_ingredient_info returns a list of ingredient id and ingredient name tuples.
-    ingredients = get_ingredient_info(ingredient_ids)
+    # If shopping_list is not empty, then call get_ingredient_info.
+    # This returns a list of ingredient id and ingredient name tuples.
+    if shopping_list:
+        ingredients = get_ingredient_info(shopping_list)
+    else:
+        ingredients = shopping_list
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
@@ -157,6 +157,7 @@ def add_recipes():
     if recipe_id not in favorites:
         favorites.append(recipe_id)
 
+    # session.clear()
     # Render a template that will never display.
     return render_template("temp.html")
 
@@ -225,7 +226,7 @@ def add_recipes():
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.debug = False
+    app.debug = True
 
     connect_to_db(app)
 
