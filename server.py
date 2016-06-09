@@ -78,11 +78,12 @@ def show_shopping_list():
     # shopping_list will contain ingredient ids if not empty.
     shopping_list = shopping_list_session()
 
-    # If shopping_list is not empty, then call get_ingredient_info.
-    # This returns a list of ingredient id and ingredient name tuples.
+    # get_ingredient_info returns a list of ingredient id and ingredient
+    # name tuples if called.
     if shopping_list:
         ingredients = get_ingredient_info(shopping_list)
     else:
+        # ingredients is an empty list that will be passed into the template.
         ingredients = shopping_list
 
     return render_template("shopping_list.html", shopping_list=ingredients)
@@ -133,13 +134,15 @@ def show_saved_recipes():
     """Show user's bookmarked recipes."""
 
     # Call function to check or create favorites in the flask session.
+    # favorites will contain recipe ids if not empty.
     favorites = favorites_session()
 
-    # List of recipe ids in favorites.
-    recipe_ids = favorites
-
-    # get_recipe_info returns a list of recipe id and recipe title tuples.
-    recipes = get_recipe_info(recipe_ids)
+    # get_recipe_info returns a list of recipe id and recipe title tuples if called.
+    if favorites:
+        recipes = get_recipe_info(favorites)
+    else:
+        # recipes is an empty list that will be passed into the template.
+        recipes = favorites
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -157,14 +160,13 @@ def add_recipes():
     if recipe_id not in favorites:
         favorites.append(recipe_id)
 
-    # session.clear()
     # Render a template that will never display.
     return render_template("temp.html")
 
 
 
 ################################################################################
-# Routes that need to be worked on for future implentation are below this line. 
+# Routes that need to be worked on for future implentation are below this line.
 
 # ### This route needs to be fixed.
 # @app.route("/send-sms")
