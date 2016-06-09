@@ -122,7 +122,7 @@ def remove_ingredient():
     # Convert unicode to int.
     ingredient = int(ingredient)
 
-    # Remove the ingredient deleted from the shopping list view from the session.
+    # Remove the ingredient deleted from the shopping list endpoint from the session.
     session["shopping_list"].remove(ingredient)
 
     # Render a template that will never display.
@@ -163,6 +163,24 @@ def add_recipes():
     # Render a template that will never display.
     return render_template("temp.html")
 
+
+@app.route("/remove-from-favorites", methods=["POST"])
+def remove_recipe():
+    """Remove recipes from favorites session.
+
+    User will never visit this route.
+    """
+
+    recipe = request.form.get("recipe_id")
+
+    # Convert unicode to int.
+    recipe = int(recipe)
+
+    # Remove the recipe deleted from the favorites endpoint from the session.
+    session["favorites"].remove(recipe)
+
+    # Render a template that will never display.
+    return render_template("temp.html")
 
 
 ################################################################################
