@@ -32,7 +32,7 @@ class FlaskTestsRoutes(unittest.TestCase):
         """Test that index is rendering homepagedb.html."""
 
         result = self.client.get("/")
-        self.assertIn("Ingredients", result.data)
+        self.assertIn("Select Diet", result.data)
         self.assertEqual(result.status_code, 200)
 
 
@@ -75,7 +75,7 @@ class FlaskTestsRoutes(unittest.TestCase):
 
         server.get_ingredient_info = _mock_get_ingredient_info
         result = self.client.get("/shopping-list")
-        self.assertIn("Ingredients to buy:", result.data)
+        self.assertIn("Ingredients:", result.data)
 
 
     def test_shopping_list_post(self):
