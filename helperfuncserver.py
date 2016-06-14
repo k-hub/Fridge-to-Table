@@ -82,7 +82,6 @@ def shopping_list_session():
         shopping_list = session["shopping_list"]
     else:
         shopping_list = session["shopping_list"] = []
-
     return shopping_list
 
 
