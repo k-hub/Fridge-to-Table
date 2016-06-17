@@ -62,7 +62,8 @@ class RecipeIngredient(db.Model):
     recipe_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
     ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
-    measurement = db.Column(db.String(50), nullable=True)  # Change back to nullable=False
+    measurement_amount = db.Column(db.Integer, nullable=True)
+    measurement_unit = db.Column(db.String(50), nullable=True)
 
     def __repr__(self):
         """Represent RecipeIngredient objects as recipe_ingredient_id, recipe_id, and ingredient_id."""
@@ -150,7 +151,7 @@ class Substitution(db.Model):
 
 
 class SubstitutionIngredient(db.Model):
-    """"Association table for Substitution and Ingredient."""  # One substitution can be used for many ingredients and one ingredient can have many substitutions.
+    """Association table for Substitution and Ingredient."""  # One substitution can be used for many ingredients and one ingredient can have many substitutions.
 
     __tablename__ = "substitution_ingredients"
 
@@ -163,6 +164,83 @@ class SubstitutionIngredient(db.Model):
 
         return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(
             self.sub_ingredient_id, self.sub_id, self.ingredient_id)
+
+
+class User(db.Model):
+    """User information."""
+
+    __tablename__ = "users"
+
+    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    fname = db.Column(db.String(100), nullable=False)
+    lname = db.Column(db.String(100), nullable=False)
+    username = db.Column(db.String(100), nullable=False)
+    password = db.Column(db.String(100), nullable=False)
+
+    # Establish a relationship with favorites.
+    # Need to check this relationship.
+    favorites = db.relationship("Favorite",
+                                backref="users")
+
+    # Establish a relationship with shoppinglists.
+    shoppinglist = db.relationship("ShoppingList",
+                                    backref="users")
+
+    def __repr__(self):
+        """Represent User objects as user_id and username."""
+
+        return "<User user_id:{}, username:{}>".format(self.user_id, self.username)
+
+
+class Favorite(db.Model):
+    """Users favorited recipes. A user can favorite many recipes."""
+
+    __tablename__ = "favorites"
+
+    favorite_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
+
+    def __repr__(self):
+        """Represent Favorite objects as favorite_id, user_id, and recipe_id."""
+
+        return "<Favorite favorite_id:{}, user_id:{}, recipe_id:{}>".format(self.favorite_id, self.user_id, self.recipe_id)
+
+
+class ShoppingList(db.Model):
+    """Users shopping list. A user can have one shopping list."""
+
+    __tablename__ = "shoppinglists"
+
+    shoppinglist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+
+    ingredients = db.relationship("Ingredient",
+                        secondary="shoppinglist_ingredients",
+                        backref="shoppinglist")
+
+    def __repr__(self):
+        """Represent ShoppingList objects as shoppinglist_id and user_id"""
+
+        return "<ShoppingList shoppinglist_id:{}, user_id:{}>".format(self.shoppinglist_id, self.user_id)
+
+
+class ShoppingListIngredient(db.Model):
+    """Association table for ShoppingList and Ingredient. A shopping list can have many ingredients."""
+
+    __tablename__ = "shoppinglist_ingredients"
+
+    shoppinglist_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    shoppinglist_id = db.Column(db.Integer, db.ForeignKey("shoppinglists.shoppinglist_id"), nullable=False)
+    ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
+
+    def __repr__(self):
+        """Represent ShoppingListIngredient objects as shoppinglist_ingredient_id,
+        shoppinglist_id, and ingredient_id."""
+
+        return "<ShoppingListIngredient shoppinglist_ingredient_id:{}, shoppinglist_id:{}, ingredient_id:{}>".format(
+            self.shoppinglist_ingredient_id, self.shoppinglist_id, self.ingredient_id)
+
 
 # For future implementation.
 # class Course(db.Model):
@@ -215,14 +293,14 @@ def sample_data():
     db.session.commit()
 
 
-
-def connect_to_db(app, db_uri="postgresql:///recipes"):
+def connect_to_db(app, db_uri="postgresql:///recipes"):  #"postgresql:///recipes" "postgresql:///recipes"
     """Connect database to Flask app."""
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)
+
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
