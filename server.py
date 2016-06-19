@@ -77,6 +77,7 @@ def show_shopping_list():
     # Call function to check or create a shopping list in the flask session.
     # shopping_list will contain ingredient ids if not empty.
     shopping_list = shopping_list_session()
+    print "DEBUG shop:", shopping_list
 
     # get_ingredient_info returns a list of ingredient id and ingredient
     # name tuples if called.
@@ -183,6 +184,37 @@ def remove_recipe():
     return render_template("temp.html")
 
 
+@app.route('/register', methods=['GET'])
+def register_form():
+    pass
+
+
+@app.route('/register', methods=['POST'])
+def register_process():
+    pass
+
+
+@app.route('/login', methods=['GET'])
+def login_form():
+    """Show login form."""
+    pass
+
+@app.route('/login', methods=['POST'])
+def login_process():
+    """Process login."""
+    pass
+
+@app.route("/logout")
+def show_logout():
+    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+    pass
+
+
+@app.route("/users/<int:user_id>")
+"""Show user's profile that displays user's info, shopping lists, and bookmarks."""
+def user_detail(user_id):
+    pass
+
 ################################################################################
 # Routes that need to be worked on for future implentation are below this line.
 
@@ -215,18 +247,6 @@ def remove_recipe():
 
 #     return render_template("send_sms.html")
 
-
-# @app.route("/login")
-# def show_profile():
-#     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-
-#     pass
-
-# @app.route("/logout")
-# def show_logout():
-#     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-
-#     pass
 
 
 # @app.route("/profile")
