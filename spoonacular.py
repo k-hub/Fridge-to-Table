@@ -57,8 +57,8 @@ def get_restricted_recipes(diet="any",
             "fillIngredients" : "false",
             "includeIngredients" : includeIngredients,
             "limitLicense" : "false",
-            "number" : 100,
-            "offset" : 101,
+            "number" : 5,
+            "offset" : 6,
             "query" : query,
             "ranking" : 1
             # "excludeIngredients" : excludeIngredients,  # To be used for future implementation.
@@ -105,7 +105,9 @@ def get_recipe_info(recipe_id):
     ingredients = {}
 
     for ingred in recipe["extendedIngredients"]:
-        measurement = "{} {}".format(ingred["amount"], ingred["unit"])
+        # measurement = "{} {}".format(ingred["amount"], ingred["unit"])
+        # measurement is a tuple with of ingredient amount and unit.
+        measurement = (ingred["amount"], ingred["unit"])
         ingredients.setdefault(ingred["name"], measurement)
 
     # Get the recipe instructions by calling get_recipe_instructions.
@@ -116,6 +118,7 @@ def get_recipe_info(recipe_id):
     recipe_dict["image"] = recipe["image"]
     recipe_dict["vegan"] = recipe["vegan"]
     recipe_dict["vegetarian"] = recipe["vegetarian"]
+    # recipe_dict["ingredients"] is dictionary of ingredient names as keys with tuple values of ingredient amount and unit. 
     recipe_dict["ingredients"] = ingredients
     recipe_dict["instructions"] = instructions
 
@@ -176,6 +179,7 @@ def add_to_db(api_response):
             # recipe_info["ingredients"] is a key with a value that is a dictionary of ingredient-measurement pairs,
             # so need to use .items().
             for name, measurement in recipe_info["ingredients"].items():
+                # print "HERE:{}{}".format(name, measurement)
 
                 # Query ingredients table to check that ingredient does not exist in database.
                 # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database.
@@ -183,11 +187,16 @@ def add_to_db(api_response):
                     ingredient = Ingredient(name=name)
                     db.session.add(ingredient)
 
+                # print "DEBUG HERE: ", measurement[0]
+                # print "debug this: ", measurement[1]
+
                 # Query for the ingredient_id, which is unique, and use it to instantiate a RecipeIngredient object.
                 ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(name=name).one()
                 recipe_ingredient = RecipeIngredient(recipe_id=recipe_id,
                                                     ingredient_id=ingredient_id,
-                                                    measurement=measurement)
+                                                    measurement_amount=measurement[0],
+                                                    measurement_unit=measurement[1])
+                # print "DEBUG THIS:", recipe_ingredient
 
                 db.session.add(recipe_ingredient)
 
@@ -195,15 +204,6 @@ def add_to_db(api_response):
 
 
 
-
-
-# Call function to seed database. Can add more recipes to database by calling
-# function in terminal or calling function in this file. Will need to drop database
-# and create it again if doing the latter.
-get_restricted_recipes(includeIngredients="chicken")
-get_restricted_recipes(includeIngredients="lamb")
-get_restricted_recipes(includeIngredients="pork")
-get_restricted_recipes(includeIngredients="beef")
 
 
 
@@ -216,3 +216,21 @@ if __name__ == "__main__":  # Makes sure the server only runs if the script is e
 
     connect_to_db(app)
     print "Connected to DB."
+
+
+    # # Instantiate Diet objects.
+    # vegan = Diet(diet_code="vg", name="vegan")
+    # vegetarian = Diet(diet_code="v", name="vegetarian")
+    # pescetarian = Diet(diet_code="pes", name="pescetarian")
+    # any_diet = Diet(diet_code="a", name="any")
+    # paleo = Diet(diet_code="pal", name="paleo")
+
+    # db.session.add_all([vegan, vegetarian, pescetarian, any_diet, paleo])
+    # db.session.commit()
+
+    # # Call function to seed database. Can add more recipes to database by calling
+    # # function in terminal or calling function in this file. Will need to drop database
+    # # and create it again if doing the latter.
+    # get_restricted_recipes(includeIngredients="chicken")
+    # get_restricted_recipes(includeIngredients="pork")
+    # get_restricted_recipes(includeIngredients="beef")
