@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, User
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
@@ -197,13 +197,33 @@ def register_process():
 @app.route('/login', methods=['GET'])
 def login_form():
     """Show login form."""
-    pass
-    return render_template("login.html") 
+
+    return render_template("login.html")
+
 
 @app.route('/login', methods=['POST'])
 def login_process():
     """Process login."""
-    pass
+
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        flash("User not found")
+        return redirect("/login")
+
+    if user.password != password:
+        flash("Email and password do not match")
+        return redirect("/login")
+
+    session["user_id"] = user.user_id
+
+    flash("Logged in")
+    return redirect("/users/{}".format(user.user_id))
+
+
 
 @app.route("/logout")
 def show_logout():
@@ -214,7 +234,9 @@ def show_logout():
 @app.route("/users/<int:user_id>")
 def user_detail(user_id):
     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-    pass
+    
+    user = User.query.get(user_id)
+    return render_template("user.html", user=user)
 
 ################################################################################
 # Routes that need to be worked on for future implentation are below this line.
