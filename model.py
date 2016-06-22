@@ -174,7 +174,7 @@ class User(db.Model):
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fname = db.Column(db.String(100), nullable=False)
     lname = db.Column(db.String(100), nullable=False)
-    username = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
     # Establish a relationship with favorites.
@@ -187,9 +187,9 @@ class User(db.Model):
                                     backref="users")
 
     def __repr__(self):
-        """Represent User objects as user_id and username."""
+        """Represent User objects as user_id and email."""
 
-        return "<User user_id:{}, username:{}>".format(self.user_id, self.username)
+        return "<User user_id:{}, email:{}>".format(self.user_id, self.email)
 
 
 class Favorite(db.Model):
