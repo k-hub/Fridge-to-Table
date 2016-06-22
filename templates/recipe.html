@@ -24,10 +24,10 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- measurements_ingredients is a list of measurement, ingredient_id, ingredient tuples -->
-                            {% for measurement, ingredient_id, ingredient in measurements_ingredients %} 
+                            <!-- measurements_ingredients is a list of measurement_amount, measurement_unit, ingredient_id, ingredient tuples -->
+                            {% for measurement_amount, measurement_unit, ingredient_id, ingredient in measurements_ingredients %} 
                             <tr>
-                                <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> {{ measurement }} {{ ingredient }} </td>
+                                <td><button type="button" class="btn btn-default btn-xs" id="{{ ingredient_id }}"><span class="glyphicon glyphicon-plus" aria-hidden="true"></span></button> {{ measurement_amount }} {{ measurement_unit }} {{ ingredient }} </td>
                             </tr>
                             {% endfor %}<br> 
                         </tbody>
