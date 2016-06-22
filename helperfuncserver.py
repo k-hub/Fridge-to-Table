@@ -32,7 +32,8 @@ def display_recipe(recipe_id):
 
     # Perform this query to get the measurements, ingredients, and ingredient ids.
     # Display measurements and ingredients to user.
-    measurements_ingredients = db.session.query(RecipeIngredient.measurement,
+    measurements_ingredients = db.session.query(RecipeIngredient.measurement_amount,
+                                                RecipeIngredient.measurement_unit,
                                                 Ingredient.ingredient_id,
                                                 Ingredient.name).join(Recipe).join(Ingredient).filter(
                                                 Recipe.recipe_id == recipe_id).all()

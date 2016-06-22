@@ -62,7 +62,7 @@ class RecipeIngredient(db.Model):
     recipe_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
     ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
-    measurement_amount = db.Column(db.Integer, nullable=True)
+    measurement_amount = db.Column(db.Float, nullable=True)
     measurement_unit = db.Column(db.String(50), nullable=True)
 
     def __repr__(self):
@@ -293,7 +293,7 @@ def sample_data():
     db.session.commit()
 
 
-def connect_to_db(app, db_uri="postgresql:///recipes"):  #"postgresql:///recipes" "postgresql:///recipes"
+def connect_to_db(app, db_uri="postgresql:///newrecipes"):  #"postgresql:///recipes" "postgresql:///newrecipes"
     """Connect database to Flask app."""
 
     app.config['SQLALCHEMY_DATABASE_URI'] = db_uri

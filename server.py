@@ -198,6 +198,7 @@ def register_process():
 def login_form():
     """Show login form."""
     pass
+    return render_template("login.html") 
 
 @app.route('/login', methods=['POST'])
 def login_process():
@@ -211,8 +212,8 @@ def show_logout():
 
 
 @app.route("/users/<int:user_id>")
-"""Show user's profile that displays user's info, shopping lists, and bookmarks."""
 def user_detail(user_id):
+    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
     pass
 
 ################################################################################
