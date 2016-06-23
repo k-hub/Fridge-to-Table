@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, User
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, User
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
@@ -207,6 +207,7 @@ def register_process():
     email = request.form.get("email")
     password = request.form.get("password")
 
+    # User.query.filter_by(email=email).one()
     # Check if email exists in db before creating new
     # user record. If email found, notify user.
     try:
@@ -218,6 +219,16 @@ def register_process():
         user = User(fname=first_name, lname=last_name, email=email, password=password)
         db.session.add(user)
         db.session.commit()
+
+        # Instantiate a shopping list object for all new users. Each user can only have
+        # one shopping list.
+        shopping_list = ShoppingList(user_id=user.user_id)
+        db.session.add(shopping_list)
+        db.session.commit()
+
+        session["user"] = {"user_id": user.user_id,
+                           "shopping_list": shopping_list.shoppinglist_id}
+
         return redirect("/users/{}".format(user.user_id))
 
 
@@ -241,7 +252,11 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-    session["user_id"] = user.user_id
+    # Query for shopping list id of logged in user.
+    shopping_list = ShoppingList.query.filter_by(user_id=user.user_id).one()
+
+    session["user"] = {"user_id": user.user_id,
+                       "shopping_list": shopping_list.shoppinglist_id}
 
     flash("Logged in")
     return redirect("/users/{}".format(user.user_id))
@@ -257,8 +272,10 @@ def show_logout():
 @app.route("/users/<int:user_id>")
 def user_detail(user_id):
     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-    
+
     user = User.query.get(user_id)
+
+    print session
     return render_template("user.html", user=user)
 
 ################################################################################

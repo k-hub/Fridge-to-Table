@@ -4,7 +4,7 @@ import unirest
 from pprint import pprint
 import os
 from urllib import quote
-from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet, Diet
+from model import connect_to_db, db, Recipe, Ingredient, RecipeIngredient, RecipeDiet, Diet, User, ShoppingList
 from server import app
 
 
@@ -212,19 +212,19 @@ if __name__ == "__main__":  # Makes sure the server only runs if the script is e
     print "Connected to DB."
 
 
-    # Instantiate Diet objects.
-    vegan = Diet(diet_code="vg", name="vegan")
-    vegetarian = Diet(diet_code="v", name="vegetarian")
-    pescetarian = Diet(diet_code="pes", name="pescetarian")
-    any_diet = Diet(diet_code="a", name="any")
-    paleo = Diet(diet_code="pal", name="paleo")
+    # # Instantiate Diet objects.
+    # vegan = Diet(diet_code="vg", name="vegan")
+    # vegetarian = Diet(diet_code="v", name="vegetarian")
+    # pescetarian = Diet(diet_code="pes", name="pescetarian")
+    # any_diet = Diet(diet_code="a", name="any")
+    # paleo = Diet(diet_code="pal", name="paleo")
 
-    db.session.add_all([vegan, vegetarian, pescetarian, any_diet, paleo])
-    db.session.commit()
+    # db.session.add_all([vegan, vegetarian, pescetarian, any_diet, paleo])
+    # db.session.commit()
 
-    # Call function to seed database. Can add more recipes to database by calling
-    # function in terminal or calling function in this file. Will need to drop database
-    # and create it again if doing the latter.
-    get_restricted_recipes(includeIngredients="chicken")
-    get_restricted_recipes(includeIngredients="pork")
-    get_restricted_recipes(includeIngredients="beef")
+    # # Call function to seed database. Can add more recipes to database by calling
+    # # function in terminal or calling function in this file. Will need to drop database
+    # # and create it again if doing the latter.
+    # get_restricted_recipes(includeIngredients="chicken")
+    # get_restricted_recipes(includeIngredients="pork")
+    # get_restricted_recipes(includeIngredients="beef")
