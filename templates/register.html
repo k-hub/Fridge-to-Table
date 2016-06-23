@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+    <head>
+        {% block head %}
+            <title>{% block title %} Register at Fridge-to-Table {% endblock title %}</title>
+        {% endblock %}
+    </head>
+
+{% block content %}
+    <div class="container">
+
+        <form class="register" action="/register" method="POST">
+            <h2 class="register-heading">Please sign up for an account</h2>
+            <label for="input-first-name" class="sr-only">First name</label>
+            <input type="text" name="first_name" id="input-first-name" class="form-control" placeholder="First name" required autofocus><br>
+            <label for="input-last-name" class="sr-only">Last name</label>
+            <input type="text" name="last_name" id="input-last-name" class="form-control" placeholder="Last name" required><br>
+            <label for="input-email" class="sr-only">Email address</label>
+            <input type="email" name="email" id="inputEmail" class="form-control" placeholder="Email address" required><br>
+            <label for="input-password" class="sr-only">Password</label>
+            <input type="password" name="password" id="inputPassword" class="form-control" placeholder="Password" required><br>
+            <button class="btn btn-md btn-primary btn-block" type="submit">Sign me up</button>
+        </form>
+
+    </div>
+
+{% endblock content %}
