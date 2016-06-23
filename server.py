@@ -10,6 +10,7 @@ from helperfuncserver import query_recipes, display_recipe, get_ingredient_info,
 
 import os
 
+from sqlalchemy.orm.exc import NoResultFound
 # from send_sms import send_sms
 
 
@@ -199,7 +200,25 @@ def show_registration_form():
 
 @app.route("/register", methods=["POST"])
 def register_process():
-    pass
+    """Process registration form."""
+
+    first_name = request.form.get("first_name")
+    last_name = request.form.get("last_name")
+    email = request.form.get("email")
+    password = request.form.get("password")
+
+    # Check if email exists in db before creating new
+    # user record. If email found, notify user.
+    try:
+        User.query.filter_by(email=email).one()
+        flash("Email has already been registered. Please login.")
+        return redirect("/register")
+
+    except NoResultFound:
+        user = User(fname=first_name, lname=last_name, email=email, password=password)
+        db.session.add(user)
+        db.session.commit()
+        return redirect("/users/{}".format(user.user_id))
 
 
 @app.route("/login", methods=["GET"])
@@ -216,14 +235,10 @@ def login_process():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    user = User.query.filter_by(email=email).first()
-
-    if not user:
-        flash("User not found")
-        return redirect("/login")
-
-    if user.password != password:
-        flash("Email and password do not match")
+    try:
+        user = User.query.filter_by(email=email, password=password).one()
+    except NoResultFound:
+        flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
     session["user_id"] = user.user_id

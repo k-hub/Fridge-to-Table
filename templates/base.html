@@ -30,6 +30,7 @@
                         <input type="text" name="ingredient-nav-search" placeholder="Enter ingredients">
                     </form>
                     <ul class="nav navbar-nav navbar-right">
+                        <li><a class="login" href="/login">Login</a></li>
                         <li><a class="shopping-list" href="/shopping-list">Shopping List</a></li>
                         <li><a class="favorites" href="/favorites">Favorites</a></li>
                     </ul>
@@ -37,7 +38,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div id="alert">
         {% for flash in get_flashed_messages() %}
           <div class="alert alert-danger" style="width:90%; margin:0 auto;">{{ flash }}</div>
