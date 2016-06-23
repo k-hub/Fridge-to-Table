@@ -77,7 +77,6 @@ def show_shopping_list():
     # Call function to check or create a shopping list in the flask session.
     # shopping_list will contain ingredient ids if not empty.
     shopping_list = shopping_list_session()
-    print "DEBUG shop:", shopping_list
 
     # get_ingredient_info returns a list of ingredient id and ingredient
     # name tuples if called.
@@ -86,6 +85,14 @@ def show_shopping_list():
     else:
         # ingredients is an empty list that will be passed into the template.
         ingredients = shopping_list
+
+    # Check if user is logged in.
+    user_id = session.get("user_id")
+
+    # If user is logged in, query db for shopping list. Add or remove any 
+    # ingredients from the db the user adds/removes in the session. 
+    if user_id: 
+        pass
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
@@ -184,24 +191,25 @@ def remove_recipe():
     return render_template("temp.html")
 
 
-@app.route('/register', methods=['GET'])
-def register_form():
-    pass
+@app.route("/register", methods=["GET"])
+def show_registration_form():
+    """Show registration form."""
+    return render_template("register.html")
 
 
-@app.route('/register', methods=['POST'])
+@app.route("/register", methods=["POST"])
 def register_process():
     pass
 
 
-@app.route('/login', methods=['GET'])
+@app.route("/login", methods=["GET"])
 def login_form():
     """Show login form."""
 
     return render_template("login.html")
 
 
-@app.route('/login', methods=['POST'])
+@app.route("/login", methods=["POST"])
 def login_process():
     """Process login."""
 

@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+    <head>
+        {% block head %}
+            <title>{% block title %} Profile {% endblock title %}</title>
+        {% endblock %}
+    </head>
+
+{% block content %}
+    Hello, {{ user.fname }}
+{% endblock content %}
