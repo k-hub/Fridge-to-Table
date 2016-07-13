@@ -53,7 +53,7 @@ class FlaskTestsRoutes(unittest.TestCase):
 
 
     def test_recipe(self):
-        """Test that recipe is rednering recipe.html."""
+        """Test that recipe is renderring recipe.html."""
 
         def _mock_display_recipe(recipe_id):
             return [Recipe(recipe_id=1,
