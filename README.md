@@ -82,4 +82,4 @@ python server.py
 ```
 =====
 ### Future Feature Implementations
-Fridge-to-Table is the developer's first independent programming project. The developer had only a limited amount of time to complete this project. Future feature implementations include a food allergy filter, recommender system, ranked recipes, text shopping list, etc.
+Fridge-to-Table is the developer's first independent programming project. Future feature implementations include a food allergy filter, recommender system, ranked recipes, text shopping list, etc.
