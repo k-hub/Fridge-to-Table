@@ -32,21 +32,22 @@ def index():
 
 @app.route("/search-results")
 def results():
-    """Return search results for user's input ingredients."""
+    """Return search results for user's input ingredients.
+
+    There are two ways to search for recipes. The search bar on the homepage
+    or the search bar in the nav bar. 
+    """
 
     # If user uses the search field in the nav bar, get the input ingredient(s).
     if request.args.get("ingredient-nav-search"):
         ingredients = request.args.get("ingredient-nav-search")
 
-    # Get the ingredient(s) inputted by the user from the homepage and pass as one
-    # of the arguments in the query_recipes_by_diet.
+    # Get the ingredient(s) inputted by the user from the homepage.
     else:
         ingredients = request.args.get("ingredient")
 
-    # Split the input ingredient(s) into a list.
     ingredients = ingredients.split(' ')
 
-    # Get the user indicated diet to pass as an argument into query_recipes_by_diet.
     if request.args.get("diet"):
         diet = request.args.get("diet")
 
@@ -64,7 +65,6 @@ def results():
 def show_recipe(recipe_id):
     """Return recipe that user clicks on from /search_results."""
 
-    # Unpack returned values from display_recipe to be passed to template.
     recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
@@ -75,8 +75,6 @@ def show_recipe(recipe_id):
 def show_shopping_list():
     """Show user's shopping list."""
 
-    # Call function to check or create a shopping list in the flask session.
-    # shopping_list will contain ingredient ids if not empty.
     shopping_list = shopping_list_session()
 
     # get_ingredient_info returns a list of ingredient id and ingredient
@@ -84,15 +82,18 @@ def show_shopping_list():
     if shopping_list:
         ingredients = get_ingredient_info(shopping_list)
     else:
-        # ingredients is an empty list that will be passed into the template.
         ingredients = shopping_list
 
     # Check if user is logged in.
     user_id = session.get("user_id")
 
-    # If user is logged in, query db for shopping list. Add or remove any 
-    # ingredients from the db the user adds/removes in the session. 
-    if user_id: 
+#############################################
+    # Working on this route. Need to add shopping list items to database
+    # for logged in users.
+
+    # If user is logged in, query db for shopping list. Add or remove any
+    # ingredients from the db the user adds/removes in the session.
+    if user_id:
         pass
 
     return render_template("shopping_list.html", shopping_list=ingredients)
@@ -100,18 +101,17 @@ def show_shopping_list():
 
 @app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
-    """Add ingredients to shopping_list session."""
+    """Add ingredients to shopping_list session.
 
-    # Get the ingredient_id clicked by the user sent by AJAX.
+    The id(s) of the ingredient(s) clicked by the user will be added to the shopping_list.
+    """
+
     ingredient_id = request.form.get("ingredient_id")
 
-    # Convert unicode to int.
     ingredient_id = int(ingredient_id)
 
-    # Call function to check or create a shopping list in the flask session.
     shopping_list = shopping_list_session()
 
-    # Only append ingredients not currently in the shopping_list.
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
 
@@ -128,10 +128,8 @@ def remove_ingredient():
 
     ingredient = request.form.get("ingredient_id")
 
-    # Convert unicode to int.
     ingredient = int(ingredient)
 
-    # Remove the ingredient deleted from the shopping list endpoint from the session.
     session["shopping_list"].remove(ingredient)
 
     # Render a template that will never display.
@@ -150,7 +148,6 @@ def show_saved_recipes():
     if favorites:
         recipes = get_recipe_info(favorites)
     else:
-        # recipes is an empty list that will be passed into the template.
         recipes = favorites
 
     return render_template("favorites.html", recipes=recipes)
@@ -163,7 +160,6 @@ def add_recipes():
     recipe_id = request.form.get("recipe_id")
     recipe_id = int(recipe_id)
 
-    # Call function to check or create favorites in the flask session.
     favorites = favorites_session()
 
     if recipe_id not in favorites:
@@ -182,10 +178,8 @@ def remove_recipe():
 
     recipe = request.form.get("recipe_id")
 
-    # Convert unicode to int.
     recipe = int(recipe)
 
-    # Remove the recipe deleted from the favorites endpoint from the session.
     session["favorites"].remove(recipe)
 
     # Render a template that will never display.
@@ -195,6 +189,7 @@ def remove_recipe():
 @app.route("/register", methods=["GET"])
 def show_registration_form():
     """Show registration form."""
+
     return render_template("register.html")
 
 
@@ -207,9 +202,6 @@ def register_process():
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # User.query.filter_by(email=email).one()
-    # Check if email exists in db before creating new
-    # user record. If email found, notify user.
     try:
         User.query.filter_by(email=email).one()
         flash("Email has already been registered. Please login.")
@@ -262,7 +254,6 @@ def login_process():
     return redirect("/users/{}".format(user.user_id))
 
 
-
 @app.route("/logout")
 def show_logout():
     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
@@ -275,7 +266,8 @@ def user_detail(user_id):
 
     user = User.query.get(user_id)
 
-    print session
+    print session  # For debugging.
+
     return render_template("user.html", user=user)
 
 ################################################################################
@@ -309,19 +301,6 @@ def user_detail(user_id):
 
 
 #     return render_template("send_sms.html")
-
-
-
-# @app.route("/profile")
-# def show_user_profile():
-#     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-
-#     pass
-
-
-
-
-
 
 
 
