@@ -8,7 +8,6 @@ import re
 def query_recipes(diet, ingredients):
     """Query for recipes by diet and ingredients."""
 
-    # Query for recipes in the database that meet user indicated diet and any of the input ingredients.
     recipes = Recipe.query.filter(Recipe.diets.any(
                                   Diet.name == diet)).filter(
                                   Recipe.ingredients.any(
@@ -30,8 +29,6 @@ def display_recipe(recipe_id):
     # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
     instructions = re.sub('<[^>]*>', '', instructions)
 
-    # Perform this query to get the measurements, ingredients, and ingredient ids.
-    # Display measurements and ingredients to user.
     measurements_ingredients = db.session.query(RecipeIngredient.measurement_amount,
                                                 RecipeIngredient.measurement_unit,
                                                 Ingredient.ingredient_id,
@@ -46,7 +43,6 @@ def get_ingredient_info(ingredient_ids):
 
     ingredients = []
 
-    # Get the ingredient names for the ingredients in the shopping_list.
     for ingredient_id in ingredient_ids:
         ingredient = db.session.query(Ingredient.ingredient_id,
                                       Ingredient.name).filter_by(
@@ -61,7 +57,6 @@ def get_recipe_info(recipe_ids):
 
     recipes = []
 
-    # Query database for recipe titles by recipe_id.
     for recipe_id in recipe_ids:
         recipe = db.session.query(Recipe.recipe_id,
                                   Recipe.title).filter_by(
