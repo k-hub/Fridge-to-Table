@@ -21,12 +21,12 @@ class Recipe(db.Model):
     instructions = db. Column(db.String(20000), nullable=True)
 
 
-    ingredients = db.relationship("Ingredient", # Establish a relationship with ingredients.
-                                    secondary="recipe_ingredients",  # The association table is the secondary argument.
-                                    backref="recipes")  # Uses the secondary argument for the reverse relationship between recipes and ingredients.
+    ingredients = db.relationship("Ingredient",
+                                    secondary="recipe_ingredients",
+                                    backref="recipes")
 
 
-    diets = db.relationship("Diet",  # Establish a relationship with diets.
+    diets = db.relationship("Diet",
                                 secondary="recipe_diets",
                                 backref="recipes")
 
@@ -151,7 +151,7 @@ class Substitution(db.Model):
 
 
 class SubstitutionIngredient(db.Model):
-    """Association table for Substitution and Ingredient."""  # One substitution can be used for many ingredients and one ingredient can have many substitutions.
+    """Association table for Substitution and Ingredient."""
 
     __tablename__ = "substitution_ingredients"
 
@@ -177,12 +177,10 @@ class User(db.Model):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
 
-    # Establish a relationship with favorites.
-    # Need to check this relationship.
+    # Check this relationship.
     favorites = db.relationship("Favorite",
                                 backref="users")
 
-    # Establish a relationship with shoppinglists.
     shoppinglist = db.relationship("ShoppingList",
                                     backref="users")
 
@@ -260,7 +258,6 @@ def sample_data():
     Diet.query.delete()
     RecipeDiet.query.delete()
 
-    # Add sample recipe, ingredient, and diet.
     rsb = Recipe(recipe_id=1,
                  title="strawberry banana smoothie",
                  image="test.jpg",
