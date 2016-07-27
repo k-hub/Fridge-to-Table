@@ -1,54 +1,27 @@
-<!-- Homepage with search field for ingredients that will be used to query db. -->
+{% extends 'base.html' %}
     <head>
-        <link rel="stylesheet"
-              href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"/>
-        <link rel="stylesheet" href="/static/css/homepagedb.css"/>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
-        <link rel="icon" href="/static/img/spoon-fork-logo.png" type="image/png" sizes="16x16">
-
-        <title>Fridge-to-Table</title> 
+        {% block head %}
+            <link rel="stylesheet" href="/static/css/homepagedb.css"/>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/css/bootstrap-select.min.css">
+            <title>{% block title %} {% endblock title %}</title>
+        {% endblock %}
     </head>
-    <body>
 
-        <div class="navbar navbar-inverse navbar-static-top">
-            <div class="container-fluid">
-
-                <div class="navbar-header">
-                    <a class="navbar-brand name" href="/">Fridge-to-Table</a>
-                </div>
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav navbar-right">
-                        <li><a class="shopping-list" href="/shopping-list">Shopping List</a></li>
-                        <li><a class="favorites" href="/favorites">Favorites</a></li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
+{% block content %}
+    <body class="homepage">
         <div class="container-search">
             <form action="/search-results">
-                <input type="text" class="form-control" name="ingredient" id="ingredient-search" placeholder="e.g. chicken apple" value="potato onion"><br>
+                <input type="text" class="form-control" name="ingredient" id="ingredient-search" placeholder="e.g. chicken apple"><br>
                 
                 <label for="dropdown-diet"></label><br>
                 <select class="selectpicker" name="diet">
                     <option value="any">Select Diet</option>
                     <option value="vegan">Vegan</option>
                     <option value="vegetarian">Vegetarian</option>
-                    <option value="paleo">Paleo</option>
-                    <option value="pescetarian">Pescetarian</option>
                 </select><br>
                 <!-- <input type="submit" style="visibility: hidden;"> -->
             </form>
-            
         </div>
-
-
-                   
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script> 
-        <!-- Include all compiled plugins (below), or include individual files as needed -->
-        <!-- <script src="js/bootstrap.min.js"></script> -->
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.10.0/js/bootstrap-select.min.js"></script>
-
     </body>
+
+{% endblock %}

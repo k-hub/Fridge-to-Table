@@ -1,16 +1,17 @@
 body {
-    background: url("/static/img/homepagebg-copy.jpg");
-    background-size: 100% 100%;
-    background-repeat: no-repeat;
+  background-image: url("/static/img/homepagebg-copy.jpg");
+  background-position: center center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-color: #a6a6a6;
 }
-
 .container-search {
     position: fixed;
     top: 50%;
     left: 40%;
     margin-top: -50px;
     margin-left: -100px;
-
 }
 
 #ingredient-search {
@@ -18,22 +19,6 @@ body {
     width:500px;
 }
 
-input[type="text"]
-{
+input[type="text"] {
     font-size:24px;
 }
-
-.name {
-    font-weight: bolder;
-}
-
-.shopping-list {
-    font-size: 16px;
-    font-weight: bolder;
-}
-
-.favorites {
-    font-size: 16px;
-    font-weight: bolder;
-}
-
