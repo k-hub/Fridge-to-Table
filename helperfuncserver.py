@@ -23,9 +23,7 @@ def display_recipe(recipe_id):
 
     instructions = recipe.instructions
 
-    # Remove HTML tags from instructions with regex. Expression means to match strings
-    # that start with < that don't match characters in the following set [^>].
-    # * means to match 0 or more of the preceding token. The last character of the string being >.
+    # Remove HTML tags from instruction.
     # Source: http://stackoverflow.com/questions/3662142/how-to-remove-tags-from-a-string-in-python-using-regular-expressions-not-in-ht
     instructions = re.sub('<[^>]*>', '', instructions)
 
