@@ -8,6 +8,7 @@ Fridge-to-Table is a web app, that finds recipes based on user input ingredients
   - [Technologies Used](https://github.com/k-hub/Fridge-to-Table#technologies-used)
   - [How to Use Application](https://github.com/k-hub/Fridge-to-Table#how-to-use-application)
   - [Installation](https://github.com/k-hub/Fridge-to-Table#installation)
+  - [Testing and Coverage](https://github.com/k-hub/Fridge-to-Table#testing-and-coverage)
   - [Future Feature Implementations](https://github.com/k-hub/Fridge-to-Table#future-feature-implementations)
 
 ### Techonologies Used
@@ -80,6 +81,24 @@ Run the app:
 ```
 python server.py
 ```
+=====
+### Testing and Coverage
+Unit testing, integration testing, and end-to-end testing have been implemented.
+Enter the following into the command line to run tests:
+```
+coverage run --source=. --omit="env/*,send_sms.py,spoonacular.py" tests.py
+```
+Enter the following to get coverage report:
+```
+coverage report -m
+```
+To perform end-to-end testing with Selenium Webdriver for Chrome, follow the [setup instructions](https://sites.google.com/a/chromium.org/chromedriver/getting-started).
+Then execute the following command:
+```
+python seltest.py
+```
+
+
 =====
 ### Future Feature Implementations
 Fridge-to-Table is the developer's first independent programming project. Future feature implementations include a food allergy filter, recommender system, ranked recipes, text shopping list, etc.
