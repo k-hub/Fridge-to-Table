@@ -1,4 +1,6 @@
-"""Use Spooncular API to send get requests and to add recipe information to database."""
+"""Use Spooncular API to send get requests and to add recipe information to database.
+This file should be executed only once.
+"""
 
 import unirest
 from pprint import pprint
@@ -22,17 +24,15 @@ def header():
 def get_recipe_instructions(source_url):
     """Get recipe instructions from the source URL."""
 
-    # Encode source URL to be concatentated with get request.
     encode_source = quote(source_url, safe='')
 
     response = unirest.get(PREFIX + "extract?forceExtraction=false&url=" + encode_source,
                             headers=header()
                             )
 
-    # response.body is a dictionary containing a key "instructions".
     instructions = response.body["instructions"]
 
-    # Some recipes have None values for their instructions from Spoonacular. s
+    # Some recipes have None values for their instructions from Spoonacular.
     # If they are None, then return the source_url to redirect user to the original recipe source.
     if instructions:
         return instructions
@@ -69,15 +69,13 @@ def get_restricted_recipes(diet="any",
     response = unirest.get(PREFIX + "searchComplex", params=payload,
                             headers=header()
                             )
-    # The HTTP status code.
+
     print "\nSTATUS:\n", response.code
 
-    # The HTTP headers.
     print "\nHEADERS:\n", response.headers
 
     pprint(response.body["results"])
 
-    # Call function to add recipes, ingredients, diet information to database.
     add_to_db(response.body["results"])
 
 
@@ -87,7 +85,7 @@ def get_recipe_info(recipe_id):
     to instantiate objects in add_to_db.
 
     Returns the recipe id, title, image, whether it is vegan and/or vegetarian,
-    all ingredients and respecitve measurements in the recipe, and the instructions.
+    all ingredients and respective measurements in the recipe, and the instructions.
     Using this particular API call gives all ingredients in the recipe. To get the
     instructions for a recipe, get_recipe_instructions is used.
     """
@@ -105,11 +103,9 @@ def get_recipe_info(recipe_id):
     ingredients = {}
 
     for ingred in recipe["extendedIngredients"]:
-        # measurement is a tuple with of ingredient amount and unit.
         measurement = (ingred["amount"], ingred["unit"])
         ingredients.setdefault(ingred["name"], measurement)
 
-    # Get the recipe instructions by calling get_recipe_instructions.
     instructions = get_recipe_instructions(recipe["sourceUrl"])
 
     recipe_dict["id"] = recipe["id"]
@@ -117,7 +113,6 @@ def get_recipe_info(recipe_id):
     recipe_dict["image"] = recipe["image"]
     recipe_dict["vegan"] = recipe["vegan"]
     recipe_dict["vegetarian"] = recipe["vegetarian"]
-    # recipe_dict["ingredients"] is dictionary of ingredient names as keys with tuple values of ingredient amount and unit. 
     recipe_dict["ingredients"] = ingredients
     recipe_dict["instructions"] = instructions
 
@@ -130,6 +125,8 @@ def add_to_db(api_response):
     This function is called in get_restricted_recipes. The argument
     passed into this function will be the response from
     get_restricted_recipes.
+
+    Only add recipes that do not exist in the database.
     """
 
     # response is a list of recipe dictionaries
@@ -137,18 +134,14 @@ def add_to_db(api_response):
 
     for recipe_dict in response:
 
-        # Query recipes table to check that recipe does not exist in database.
-        # If it does not, then instantiate a Recipe object and add it to the recipes table in the database.
         if not db.session.query(Recipe.title).filter_by(title=recipe_dict["title"]).all():
 
-            # Get the recipe_id to pass into get_recipe_info function.
             recipe_id = recipe_dict["id"]
 
             # Returns a dictionary with recipe id, title, image,
             # vegan/vegeatarian info, ingredients, instructions.
             recipe_info = get_recipe_info(recipe_id)
 
-            # Instantiate a Recipe object.
             recipe = Recipe(recipe_id=recipe_info["id"],
                             title=recipe_info["title"],
                             image=recipe_info["image"],
@@ -160,12 +153,10 @@ def add_to_db(api_response):
             db.session.commit()
 
             # Instantiate RecipeDiet objects for each recipe. Each recipe can have more than one diet_code.
-            # Any recipes that are vegan will have a diet_code "vg".
             if recipe_info["vegan"]:
                 diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="vg")
                 db.session.add(diet)
 
-            # Any recipes that are vegan will have a diet_code "v".
             if recipe_info["vegetarian"]:
                 diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="v")
                 db.session.add(diet)
@@ -174,18 +165,13 @@ def add_to_db(api_response):
             diet = RecipeDiet(recipe_id=recipe_info["id"], diet_code="a")
             db.session.add(diet)
 
-
-            # recipe_info["ingredients"] is a key with a value that is a dictionary of ingredient-measurement pairs,
-            # so need to use .items().
             for name, measurement in recipe_info["ingredients"].items():
-                # Query ingredients table to check that ingredient does not exist in database.
-                # If it does not, instantiate an Ingredient object and add it to the ingredients table in the database.
                 if not db.session.query(Ingredient.name).filter_by(name=name).all():
                     ingredient = Ingredient(name=name)
                     db.session.add(ingredient)
 
 
-                # Query for the ingredient_id, which is unique, and use it to instantiate a RecipeIngredient object.
+                # Need the ingredient_id to instantiate a RecipeIngredient object.
                 ingredient_id = db.session.query(Ingredient.ingredient_id).filter_by(name=name).one()
                 recipe_ingredient = RecipeIngredient(recipe_id=recipe_id,
                                                     ingredient_id=ingredient_id,
