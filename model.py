@@ -1,11 +1,10 @@
 """Creating models in my db."""
-
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from flask.ext.security import UserMixin, RoleMixin
 
 
-db = SQLAlchemy()  # Instantiating a db oject of the class SQLAlchemy.
-
+db = SQLAlchemy()
 
 class Recipe(db.Model):
     """Recipes and recipe information."""
@@ -166,7 +165,7 @@ class SubstitutionIngredient(db.Model):
             self.sub_ingredient_id, self.sub_id, self.ingredient_id)
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     """User information."""
 
     __tablename__ = "users"
@@ -176,6 +175,13 @@ class User(db.Model):
     lname = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
+    active = db.Column(db.Boolean())
+    confirmed_at = db.Column(db.DateTime())
+
+    roles = db.relationship("Role", 
+                            secondary="roles_users",
+                            backref=db.backref("users", lazy="dynamic"))
+
 
     # Check this relationship.
     favorites = db.relationship("Favorite",
@@ -189,6 +195,33 @@ class User(db.Model):
 
         return "<User user_id:{}, email:{}>".format(self.user_id, self.email)
 
+
+class Role(db.Model, RoleMixin):
+    """Role information that users may have."""
+
+    __tablename__ = "roles"
+
+    role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    name = db.Column(db.String(100), unique=True)
+    description = db.Column(db.String(255))
+
+    def __repr__(self):
+        """Represent user roles as role_id and name."""
+
+        return "<Role role_id:{}, email:{}>".format(self.role_id, self.name)
+
+
+class UserRole(db.Model):
+    """Association table for Uesr and Role."""
+
+    __tablename__ = "roles_users"
+
+    user_role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'), nullable=False)
+    role_id = db.Column(db.Integer(), db.ForeignKey('roles.role_id'), nullable=False)
+
+    def __repr__(self):
+        return "<UserRole user_role_id:{}>".format(self.user_role_id)
 
 class Favorite(db.Model):
     """Users favorited recipes. A user can favorite many recipes."""
