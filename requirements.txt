@@ -9,7 +9,12 @@ decorator==4.0.9
 Django==1.9.6
 Flask==0.10.1
 Flask-DebugToolbar==0.10.0
+Flask-Login==0.3.2
+Flask-Mail==0.9.1
+Flask-Principal==0.4.0
+Flask-Security==1.7.5
 Flask-SQLAlchemy==2.1
+Flask-WTF==0.12
 gnureadline==6.3.3
 greenlet==0.4.9
 httpie==0.9.3
@@ -19,6 +24,7 @@ ipython-genutils==0.1.0
 itsdangerous==0.24
 Jinja2==2.8
 MarkupSafe==0.23
+passlib==1.6.5
 pathlib2==2.1.0
 pexpect==4.0.1
 pickleshare==0.7.2
@@ -37,3 +43,4 @@ twilio==5.4.0
 Unirest==1.1.7
 wcwidth==0.1.6
 Werkzeug==0.11.9
+WTForms==2.1
