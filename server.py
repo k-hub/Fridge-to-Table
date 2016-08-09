@@ -4,15 +4,18 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, User
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, User, Role
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
 import os
 
 from sqlalchemy.orm.exc import NoResultFound
-# from send_sms import send_sms
 
+from flask.ext.security import login_required
+from flask.ext.login import LoginManager
+
+# from send_sms import send_sms
 
 
 app = Flask(__name__)
@@ -22,6 +25,13 @@ app.secret_key = os.environ["APP_SECRET_KEY"]
 # Raises an error if error made in Jinja2.
 app.jinja_env.undefined = StrictUndefined
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login_form'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
 
 @app.route("/")
 def index():
@@ -35,7 +45,7 @@ def results():
     """Return search results for user's input ingredients.
 
     There are two ways to search for recipes. The search bar on the homepage
-    or the search bar in the nav bar. 
+    or the search bar in the nav bar.
     """
 
     # If user uses the search field in the nav bar, get the input ingredient(s).
@@ -51,7 +61,7 @@ def results():
     if request.args.get("diet"):
         diet = request.args.get("diet")
 
-    # Default diet to "any" for navbar search.
+    # Default diet for navbar search.
     else:
         diet = "any"
 
@@ -84,8 +94,15 @@ def show_shopping_list():
     else:
         ingredients = shopping_list
 
-    # Check if user is logged in.
-    user_id = session.get("user_id")
+    if session.get("user"):
+        print session["user"]
+
+
+
+
+
+    # # Check if user is logged in.
+    # user_id = session.get("user_id")
 
 #############################################
     # Working on this route. Need to add shopping list items to database
@@ -93,8 +110,8 @@ def show_shopping_list():
 
     # If user is logged in, query db for shopping list. Add or remove any
     # ingredients from the db the user adds/removes in the session.
-    if user_id:
-        pass
+    # if user_id:
+    #     pass
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
@@ -114,6 +131,7 @@ def add_to_shopping_list():
 
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
+        print "post ingredient to list", shopping_list
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -137,6 +155,7 @@ def remove_ingredient():
 
 
 @app.route("/favorites")
+@login_required  # Need to debug
 def show_saved_recipes():
     """Show user's bookmarked recipes."""
 
@@ -149,6 +168,7 @@ def show_saved_recipes():
         recipes = get_recipe_info(favorites)
     else:
         recipes = favorites
+        print "entered else recipes", favorites
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -164,6 +184,7 @@ def add_recipes():
 
     if recipe_id not in favorites:
         favorites.append(recipe_id)
+        print "adding recipe", favorites
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -212,14 +233,13 @@ def register_process():
         db.session.add(user)
         db.session.commit()
 
-        # Instantiate a shopping list object for all new users. Each user can only have
-        # one shopping list.
-        shopping_list = ShoppingList(user_id=user.user_id)
-        db.session.add(shopping_list)
-        db.session.commit()
+        # # Instantiate a shopping list object for all new users. Each user can only have
+        # # one shopping list.
+        # shopping_list = ShoppingList(user_id=user.user_id)
+        # db.session.add(shopping_list)
+        # db.session.commit()
 
-        session["user"] = {"user_id": user.user_id,
-                           "shopping_list": shopping_list.shoppinglist_id}
+        session["user"] = {"user_id": user.user_id}
 
         return redirect("/users/{}".format(user.user_id))
 
@@ -244,11 +264,10 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-    # Query for shopping list id of logged in user.
-    shopping_list = ShoppingList.query.filter_by(user_id=user.user_id).one()
+    # # Query for shopping list id of logged in user.
+    # shopping_list = ShoppingList.query.filter_by(user_id=user.user_id).one()
 
-    session["user"] = {"user_id": user.user_id,
-                       "shopping_list": shopping_list.shoppinglist_id}
+    session["user"] = {"user_id": user.user_id}
 
     flash("Logged in")
     return redirect("/users/{}".format(user.user_id))
@@ -256,7 +275,7 @@ def login_process():
 
 @app.route("/logout")
 def show_logout():
-    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+    """Show logout message."""
     pass
 
 
