@@ -2,6 +2,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from flask.ext.security import UserMixin, RoleMixin
+from datetime import datetime
 
 
 db = SQLAlchemy()
@@ -176,7 +177,7 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(100), nullable=False)
     password = db.Column(db.String(100), nullable=False)
     active = db.Column(db.Boolean())
-    confirmed_at = db.Column(db.DateTime())
+    confirmed_at = db.Column(db.DateTime(), default=datetime.utcnow)
 
     roles = db.relationship("Role", 
                             secondary="roles_users",
@@ -189,6 +190,19 @@ class User(db.Model, UserMixin):
 
     shoppinglist = db.relationship("ShoppingList",
                                     backref="users")
+
+
+    def is_authenticated(self):
+        return True
+ 
+    def is_active(self):
+        return True
+ 
+    def is_anonymous(self):
+        return False
+ 
+    def get_id(self):
+        return unicode(self.id)
 
     def __repr__(self):
         """Represent User objects as user_id and email."""
