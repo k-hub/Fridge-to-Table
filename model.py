@@ -189,18 +189,17 @@ class User(db.Model, UserMixin):
                                 backref="users")
 
     shoppinglist = db.relationship("ShoppingList",
-                                    backref="users")
-
+                                   backref="users")
 
     def is_authenticated(self):
         return True
- 
+
     def is_active(self):
         return True
- 
+
     def is_anonymous(self):
         return False
- 
+
     def get_id(self):
         return unicode(self.id)
 
@@ -236,6 +235,7 @@ class UserRole(db.Model):
 
     def __repr__(self):
         return "<UserRole user_role_id:{}>".format(self.user_role_id)
+
 
 class Favorite(db.Model):
     """Users favorited recipes. A user can favorite many recipes."""
