@@ -31,7 +31,7 @@ login_manager.login_view = 'login_form'
 
 @login_manager.user_loader
 def load_user(user_id):
-    return User.get(user_id)
+    return User.query.get(int(user_id))
 
 @app.route("/")
 def index():
@@ -241,7 +241,7 @@ def register_process():
 
         session["user"] = {"user_id": user.user_id}
 
-        return redirect("/users/{}".format(user.user_id))
+        return redirect("/login")
 
 
 @app.route("/login", methods=["GET"])
