@@ -232,6 +232,7 @@ def register_process():
         user = User(fname=first_name, lname=last_name, email=email, password=password)
         db.session.add(user)
         db.session.commit()
+        flash("User successfully registered")
 
         # # Instantiate a shopping list object for all new users. Each user can only have
         # # one shopping list.
