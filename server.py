@@ -1,6 +1,6 @@
 from jinja2 import StrictUndefined
 
-from flask import Flask, render_template, request, redirect, session, jsonify, flash
+from flask import Flask, render_template, request, redirect, session, jsonify, flash, g
 
 from flask_debugtoolbar import DebugToolbarExtension
 
@@ -13,7 +13,7 @@ import os
 from sqlalchemy.orm.exc import NoResultFound
 
 from flask.ext.security import login_required
-from flask.ext.login import LoginManager
+from flask.ext.login import LoginManager, logout_user, current_user, login_user
 
 # from send_sms import send_sms
 
@@ -30,8 +30,8 @@ login_manager.init_app(app)
 login_manager.login_view = 'login_form'
 
 @login_manager.user_loader
-def load_user(user_id):
-    return User.query.get(int(user_id))
+def load_user(id):
+    return User.query.get(int(id))
 
 @app.route("/")
 def index():
@@ -102,7 +102,7 @@ def show_shopping_list():
 
 
     # # Check if user is logged in.
-    # user_id = session.get("user_id")
+    # id = session.get("id")
 
 #############################################
     # Working on this route. Need to add shopping list items to database
@@ -110,7 +110,7 @@ def show_shopping_list():
 
     # If user is logged in, query db for shopping list. Add or remove any
     # ingredients from the db the user adds/removes in the session.
-    # if user_id:
+    # if id:
     #     pass
 
     return render_template("shopping_list.html", shopping_list=ingredients)
@@ -236,11 +236,11 @@ def register_process():
 
         # # Instantiate a shopping list object for all new users. Each user can only have
         # # one shopping list.
-        # shopping_list = ShoppingList(user_id=user.user_id)
+        # shopping_list = ShoppingList(id=user.id)
         # db.session.add(shopping_list)
         # db.session.commit()
 
-        session["user"] = {"user_id": user.user_id}
+        session["user"] = {"id": user.id}
 
         return redirect("/login")
 
@@ -265,26 +265,47 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-    # # Query for shopping list id of logged in user.
-    # shopping_list = ShoppingList.query.filter_by(user_id=user.user_id).one()
-
-    session["user"] = {"user_id": user.user_id}
-
+    login_user(user)
     flash("Logged in")
-    return redirect("/users/{}".format(user.user_id))
+
+    session["user"] = {"id": user.id}
+
+    # # Query for shopping list id of logged in user.
+    # shopping_list = ShoppingList.query.filter_by(id=user.id).one()
+
+    return redirect("/users/{}".format(user.id))
 
 
 @app.route("/logout")
-def show_logout():
-    """Show logout message."""
-    pass
+def logout():
+    """Logout user."""
+
+    logout_user()
+    return redirect("/")
 
 
-@app.route("/users/<int:user_id>")
-def user_detail(user_id):
+@app.before_request
+def before_request():
+    g.user = current_user
+    print "CURRENT", g.user
+
+# @app.before_request
+# def load_user():
+#     if session["id"]:
+#         user = User.query.filter_by(username=session["id"]).first()
+#     else:
+#         user = {"name": "Guest"}
+
+#     g.user = user
+
+
+
+
+@app.route("/users/<int:id>")
+def user_detail(id):
     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
-    user = User.query.get(user_id)
+    user = User.query.get(id)
 
     print session  # For debugging.
 
