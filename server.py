@@ -259,19 +259,20 @@ def login_process():
     email = request.form.get("email")
     password = request.form.get("password")
 
+    remember = False
+    if 'remember' in request.form:
+        remember = True
+
     try:
         user = User.query.filter_by(email=email, password=password).one()
     except NoResultFound:
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-    login_user(user)
+    login_user(user, remember= remember)
     flash("Logged in")
 
     session["user"] = {"id": user.id}
-
-    # # Query for shopping list id of logged in user.
-    # shopping_list = ShoppingList.query.filter_by(id=user.id).one()
 
     return redirect("/users/{}".format(user.id))
 
