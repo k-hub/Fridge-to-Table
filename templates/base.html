@@ -29,7 +29,14 @@
                         <input type="text" name="ingredient-nav-search" placeholder="Enter ingredients">
                     </form>
                     <ul class="nav navbar-nav navbar-right">
-                        <li><a class="login" href="/login">Login</a></li>
+                        {% if g.user.is_authenticated %}
+                            <li><a class="logout" href="/logout">Logout</a></li>
+                        {% endif %}
+
+                        {% if not g.user.is_authenticated %}
+                            <li><a class="login" href="/login">Login</a></li>
+                        {% endif %}
+
                         <li><a class="shopping-list" href="/shopping-list">Shopping List</a></li>
                         <li><a class="favorites" href="/favorites">Favorites</a></li>
                     </ul>
