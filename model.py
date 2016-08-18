@@ -171,7 +171,7 @@ class User(db.Model, UserMixin):
 
     __tablename__ = "users"
 
-    user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fname = db.Column(db.String(100), nullable=False)
     lname = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
@@ -204,9 +204,9 @@ class User(db.Model, UserMixin):
         return unicode(self.id)
 
     def __repr__(self):
-        """Represent User objects as user_id and email."""
+        """Represent User objects as id and email."""
 
-        return "<User user_id:{}, email:{}>".format(self.user_id, self.email)
+        return "<User id:{}, email:{}>".format(self.id, self.email)
 
 
 class Role(db.Model, RoleMixin):
@@ -230,7 +230,7 @@ class UserRole(db.Model):
     __tablename__ = "roles_users"
 
     user_role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer(), db.ForeignKey('users.user_id'), nullable=False)
+    id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
     role_id = db.Column(db.Integer(), db.ForeignKey('roles.role_id'), nullable=False)
 
     def __repr__(self):
@@ -243,13 +243,13 @@ class Favorite(db.Model):
     __tablename__ = "favorites"
 
     favorite_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     recipe_id = db.Column(db.Integer, db.ForeignKey("recipes.recipe_id"), nullable=False)
 
     def __repr__(self):
-        """Represent Favorite objects as favorite_id, user_id, and recipe_id."""
+        """Represent Favorite objects as favorite_id, id, and recipe_id."""
 
-        return "<Favorite favorite_id:{}, user_id:{}, recipe_id:{}>".format(self.favorite_id, self.user_id, self.recipe_id)
+        return "<Favorite favorite_id:{}, id:{}, recipe_id:{}>".format(self.favorite_id, self.id, self.recipe_id)
 
 
 class ShoppingList(db.Model):
@@ -258,16 +258,16 @@ class ShoppingList(db.Model):
     __tablename__ = "shoppinglists"
 
     shoppinglist_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, db.ForeignKey("users.user_id"), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
 
     ingredients = db.relationship("Ingredient",
                         secondary="shoppinglist_ingredients",
                         backref="shoppinglist")
 
     def __repr__(self):
-        """Represent ShoppingList objects as shoppinglist_id and user_id"""
+        """Represent ShoppingList objects as shoppinglist_id and id"""
 
-        return "<ShoppingList shoppinglist_id:{}, user_id:{}>".format(self.shoppinglist_id, self.user_id)
+        return "<ShoppingList shoppinglist_id:{}, id:{}>".format(self.shoppinglist_id, self.id)
 
 
 class ShoppingListIngredient(db.Model):
