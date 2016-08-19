@@ -269,6 +269,7 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
+
     login_user(user, remember= remember)
     flash("Logged in")
 
@@ -288,18 +289,7 @@ def logout():
 @app.before_request
 def before_request():
     g.user = current_user
-    print "CURRENT", g.user
-
-# @app.before_request
-# def load_user():
-#     if session["id"]:
-#         user = User.query.filter_by(username=session["id"]).first()
-#     else:
-#         user = {"name": "Guest"}
-
-#     g.user = user
-
-
+    print "CURRENT", g.user  # for debugging
 
 
 @app.route("/users/<int:id>")
@@ -312,37 +302,6 @@ def user_detail(id):
 
     return render_template("user.html", user=user)
 
-################################################################################
-# Routes that need to be worked on for future implentation are below this line.
-
-# ### This route needs to be fixed.
-# @app.route("/send-sms")
-# def send_sms_shopping_list():
-
-#     shopping_list = session["shopping_list"]
-
-#     ingredients = []
-
-#     # Get the ingredient names for the ingredients in the shopping_list.
-#     for ingredient_id in shopping_list:
-#         ingredient = db.session.query(Ingredient.name ).filter_by(ingredient_id=ingredient_id).one()
-#         ingredients.append(str(ingredient[0]))  # ingredient is a tuple so get the first index and convert unicode to string.
-
-#     if len(ingredients) > 1:
-#         ingredients = ", ".join(ingredients)
-#     else:
-#         ingredients = "".join(ingredients)
-
-#     # print ingredients
-
-#     sender = request.args.get("sender_number")
-#     recipient = request.args.get("recipient_number")
-
-#     # Add conditional statement here. If user hits submit, then call send_sms.
-#     # send_sms(ingredients)  # Will send a text message with the shopping list.
-
-
-#     return render_template("send_sms.html")
 
 
 
