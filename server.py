@@ -33,6 +33,7 @@ login_manager.login_view = 'login_form'
 def load_user(id):
     return User.query.get(int(id))
 
+
 @app.route("/")
 def index():
     """Return Homepage."""
@@ -94,8 +95,8 @@ def show_shopping_list():
     else:
         ingredients = shopping_list
 
-    if session.get("user"):
-        print session["user"]
+    # if session.get("user"):
+    #     print session["user"]
 
 
 
@@ -132,6 +133,7 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
         print "post ingredient to list", shopping_list
+    print "SESSION", session
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -169,6 +171,7 @@ def show_saved_recipes():
     else:
         recipes = favorites
         print "entered else recipes", favorites
+    print 'SESSION', session
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -240,7 +243,7 @@ def register_process():
         # db.session.add(shopping_list)
         # db.session.commit()
 
-        session["user"] = {"id": user.id}
+        # session["user"] = {"id": user.id}
 
         return redirect("/login")
 
@@ -273,7 +276,7 @@ def login_process():
     login_user(user, remember= remember)
     flash("Logged in")
 
-    session["user"] = {"id": user.id}
+    # session["user"] = {"id": user.id}
 
     return redirect("/users/{}".format(user.id))
 
@@ -282,7 +285,9 @@ def login_process():
 def logout():
     """Logout user."""
 
-    logout_user()
+    # logout_user()
+    del session['id']
+    print "LOGGED OUT", session
     return redirect("/")
 
 
@@ -297,8 +302,6 @@ def user_detail(id):
     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
     user = User.query.get(id)
-
-    print session  # For debugging.
 
     return render_template("user.html", user=user)
 

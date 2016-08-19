@@ -184,7 +184,6 @@ class User(db.Model, UserMixin):
                             backref=db.backref("users", lazy="dynamic"))
 
 
-    # Check this relationship.
     favorites = db.relationship("Favorite",
                                 backref="users")
 
