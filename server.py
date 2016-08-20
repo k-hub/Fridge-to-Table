@@ -246,7 +246,6 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-
     login_user(user, remember= remember)
     flash("Logged in")
 
