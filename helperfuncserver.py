@@ -49,17 +49,19 @@ def get_ingredient_info(ingredient_ids):
 
     return ingredients
 
-
+### Working on below function
 def get_recipe_info(recipe_ids):
     """Store recipe ids and respective names in a list."""
 
-    recipes = []
+    # recipes = []
+    shopping_list_session()
 
     for recipe_id in recipe_ids:
         recipe = db.session.query(Recipe.recipe_id,
                                   Recipe.title).filter_by(
                                   recipe_id=recipe_id).one()
-        recipes.append(recipe)
+        
+        # recipes.append(recipe)
 
     return recipes
 

@@ -137,7 +137,7 @@ def remove_ingredient():
     # Render a template that will never display.
     return render_template("temp.html")
 
-
+#### Working on favorites session and respective helper functions.
 @app.route("/favorites")
 @login_required  # Need to debug
 def show_saved_recipes():
@@ -161,6 +161,12 @@ def show_saved_recipes():
 @app.route("/favorites", methods=["POST"])
 def add_recipes():
     """Save recipe to favorites."""
+
+    try:
+        if session["user_id"]:
+            pass
+    except:
+        print "NEED TO LOGIN", session
 
     recipe_id = request.form.get("recipe_id")
     recipe_id = int(recipe_id)
@@ -246,7 +252,7 @@ def login_process():
         flash("The email address or password you entered is incorrect.")
         return redirect("/login")
 
-    login_user(user, remember= remember)
+    login_user(user, remember=remember)
     flash("Logged in")
 
     return redirect("/users/{}".format(user.id))
