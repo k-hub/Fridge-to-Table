@@ -95,24 +95,7 @@ def show_shopping_list():
     else:
         ingredients = shopping_list
 
-    # if session.get("user"):
-    #     print session["user"]
-
-
-
-
-
-    # # Check if user is logged in.
-    # id = session.get("id")
-
-#############################################
-    # Working on this route. Need to add shopping list items to database
-    # for logged in users.
-
-    # If user is logged in, query db for shopping list. Add or remove any
-    # ingredients from the db the user adds/removes in the session.
-    # if id:
-    #     pass
+    print 'SESSION SHOPPING', session  # for debugging
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
@@ -133,7 +116,6 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
         print "post ingredient to list", shopping_list
-    print "SESSION", session
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -171,7 +153,7 @@ def show_saved_recipes():
     else:
         recipes = favorites
         print "entered else recipes", favorites
-    print 'SESSION', session
+    print 'SESSION FAV', session
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -237,14 +219,6 @@ def register_process():
         db.session.commit()
         flash("User successfully registered")
 
-        # # Instantiate a shopping list object for all new users. Each user can only have
-        # # one shopping list.
-        # shopping_list = ShoppingList(id=user.id)
-        # db.session.add(shopping_list)
-        # db.session.commit()
-
-        # session["user"] = {"id": user.id}
-
         return redirect("/login")
 
 
@@ -276,8 +250,6 @@ def login_process():
     login_user(user, remember= remember)
     flash("Logged in")
 
-    # session["user"] = {"id": user.id}
-
     return redirect("/users/{}".format(user.id))
 
 
@@ -285,9 +257,19 @@ def login_process():
 def logout():
     """Logout user."""
 
-    # logout_user()
-    del session['id']
-    print "LOGGED OUT", session
+    logout_user()
+    try:
+        if session['shopping_list']:
+            del session['shopping_list']
+    except:
+        pass
+
+    try:
+        if session['favorites']:
+            del session['favorites']
+    except:
+        pass
+
     return redirect("/")
 
 
