@@ -152,8 +152,6 @@ def show_saved_recipes():
         recipes = get_recipe_info(favorites)
     else:
         recipes = favorites
-        print "entered else recipes", favorites
-    print 'SESSION FAV', session
 
     return render_template("favorites.html", recipes=recipes)
 
@@ -176,6 +174,7 @@ def add_recipes():
     if recipe_id not in favorites:
         favorites.append(recipe_id)
         print "adding recipe", favorites
+        print "FAVE SESSION", session
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -255,7 +254,7 @@ def login_process():
     login_user(user, remember=remember)
     flash("Logged in")
 
-    return redirect("/users/{}".format(user.id))
+    return redirect("/")
 
 
 @app.route("/logout")
@@ -284,13 +283,13 @@ def before_request():
     print "CURRENT", g.user  # for debugging
 
 
-@app.route("/users/<int:id>")
-def user_detail(id):
-    """Show user's profile that displays user's info, shopping lists, and bookmarks."""
+# @app.route("/users/<int:id>")
+# def user_detail(id):
+#     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
 
-    user = User.query.get(id)
+#     user = User.query.get(id)
 
-    return render_template("user.html", user=user)
+#     return render_template("user.html", user=user)
 
 
 
