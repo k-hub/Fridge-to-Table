@@ -14,4 +14,4 @@ function get_ingredient_id(evt) {
         $.post("/shopping-list", ingredientId);
     };
 
-$("button").on("click", get_ingredient_id);
+$(".add-ingredient").on("click", get_ingredient_id);
