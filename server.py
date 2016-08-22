@@ -38,6 +38,7 @@ def load_user(id):
 def index():
     """Return Homepage."""
 
+    print "INDEX SESSION", session #for debugging
     return render_template("homepagedb.html")
 
 
@@ -118,6 +119,10 @@ def add_to_shopping_list():
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
         print "post ingredient to list", shopping_list # for debugging
+
+    # if 
+    #     ShoppingList.query.filter_by(id=user.id).one().shoppinglist_id    
+
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -261,7 +266,11 @@ def login_process():
         return redirect("/login")
 
     login_user(user, remember=remember)
-    flash("Successfully logged in")
+
+    session["current_session"] = {"user": user.id,
+                                  "shoppinglist_id": ShoppingList.query.filter_by(id=user.id).one().shoppinglist_id}
+
+    flash("Successfully logged in.")
 
     return redirect("/")
 
@@ -272,14 +281,20 @@ def logout():
 
     logout_user()
     try:
-        if session['shopping_list']:
-            del session['shopping_list']
+        if session["current_session"]:
+            del session["current_session"]
     except:
         pass
 
     try:
-        if session['favorites']:
-            del session['favorites']
+        if session["shopping_list"]:
+            del session["shopping_list"]
+    except:
+        pass
+
+    try:
+        if session["favorites"]:
+            del session["favorites"]
     except:
         pass
 
