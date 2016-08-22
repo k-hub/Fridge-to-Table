@@ -37,8 +37,6 @@ def load_user(id):
 @app.route("/")
 def index():
     """Return Homepage."""
-
-    print "INDEX SESSION", session #for debugging
     return render_template("homepagedb.html")
 
 
@@ -79,8 +77,6 @@ def show_recipe(recipe_id):
 
     recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
-    print "RECIPE SESSION", session # for debugging
-
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
                             measurements_ingredients=measurements_ingredients)
 
@@ -90,25 +86,25 @@ def show_shopping_list():
     """Show user's shopping list."""
 
     shopping_list = shopping_list_session()
-
-    if session["current_session"]:
-        user_id = session["current_session"]["user"]
-        shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
-        # saved_ingredients returns a list of tuples.
-        saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
-                                             shoppinglist_id=shoppinglist_id).all()
-        if saved_ingredients:
-            saved_ingredient_ids = [ingredient_id for ingredient in saved_ingredients for ingredient_id in ingredient]
     try:
-        if shopping_list and saved_ingredient_ids:
-            # Convert to set to avoid adding duplicate items to existing shopping list.
-            shopping_list = set(shopping_list)
-            for saved_ingredient_id in saved_ingredient_ids:
-                shopping_list.add(saved_ingredient_id)
-            shopping_list = list(shopping_list)
-        else:
-            for saved_ingredient_id in saved_ingredient_ids:
-                shopping_list.append(saved_ingredient_id)
+        if session["current_session"]:
+            user_id = session["current_session"]["user"]
+            shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
+            # saved_ingredients returns a list of tuples.
+            saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
+                                                 shoppinglist_id=shoppinglist_id).all()
+            if saved_ingredients:
+                saved_ingredient_ids = [ingredient_id for ingredient in saved_ingredients for ingredient_id in ingredient]
+
+            if shopping_list and saved_ingredient_ids:
+                # Convert to set to avoid adding duplicate items to existing shopping list.
+                shopping_list = set(shopping_list)
+                for saved_ingredient_id in saved_ingredient_ids:
+                    shopping_list.add(saved_ingredient_id)
+                shopping_list = list(shopping_list)
+            else:
+                for saved_ingredient_id in saved_ingredient_ids:
+                    shopping_list.append(saved_ingredient_id)
     except:
         pass
 
@@ -119,14 +115,27 @@ def show_shopping_list():
     else:
         ingredients = shopping_list
 
+    try:
+        if session["current_session"]:
+            shoppinglist_id = session["current_session"]["shoppinglist_id"]
+            for ingredient_id in shopping_list:
+                try:
+                    ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id,
+                                                           ingredient_id=ingredient_id).one()
+                except NoResultFound:
+                    add_ingredient = ShoppingListIngredient(shoppinglist_id=shoppinglist_id,
+                                                            ingredient_id=ingredient_id)
+                    db.session.add(add_ingredient)
+                    db.session.commit()
+    except:
+        pass
+
+
     print 'SESSION SHOPPING', session  # for debugging
 
     return render_template("shopping_list.html", shopping_list=ingredients)
 
 
-
-######## Need to fix bug. If user adds ingredients to list before logging in, then chooses to log in later,
-######## items in shopping list should be added to db.
 @app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
     """Add ingredients to shopping_list session and database.
@@ -143,22 +152,6 @@ def add_to_shopping_list():
 
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
-        print "post ingredient to list", shopping_list # for debugging
-
-    try:
-        if session["current_session"]:
-            shoppinglist_id = session["current_session"]["shoppinglist_id"]
-            for ingredient_id in shopping_list:
-                try:
-                    ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id,
-                                                           ingredient_id=ingredient_id).one()
-                except NoResultFound:
-                    add_ingredient = ShoppingListIngredient(shoppinglist_id=shoppinglist_id,
-                                                            ingredient_id=ingredient_id)
-                    db.session.add(add_ingredient)
-                    db.session.commit()
-    except:
-        pass
 
     # Render a template that will never display.
     return render_template("temp.html")
