@@ -216,14 +216,21 @@ def register_process():
     password = request.form.get("password")
 
     try:
-        User.query.filter_by(email=email).one()
+        user = User.query.filter_by(email=email).one()
         flash("Email has already been registered. Please login.")
         return redirect("/register")
 
     except NoResultFound:
-        user = User(fname=first_name, lname=last_name, email=email, password=password)
-        db.session.add(user)
+        new_user = User(fname=first_name, lname=last_name, email=email, password=password, active=True)
+        db.session.add(new_user)
         db.session.commit()
+
+        user = User.query.filter_by(email=email).one()
+
+        shopping_list = ShoppingList(id=user.id)
+        db.session.add(shopping_list)
+        db.session.commit()
+
         flash("User successfully registered.")
 
         return redirect("/login")
