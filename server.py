@@ -91,25 +91,24 @@ def show_shopping_list():
 
     shopping_list = shopping_list_session()
 
-    try:
-        if session["current_session"]:
-            user_id = session["current_session"]["user"]
-            shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
-            # saved_ingredients returns a list of tuples.
-            saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
-                                                 shoppinglist_id=shoppinglist_id).all()
-
+    if session["current_session"]:
+        user_id = session["current_session"]["user"]
+        shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
+        # saved_ingredients returns a list of tuples.
+        saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
+                                             shoppinglist_id=shoppinglist_id).all()
+        if saved_ingredients:
             saved_ingredient_ids = [ingredient_id for ingredient in saved_ingredients for ingredient_id in ingredient]
-
-            if shopping_list:
-                # Convert to set to avoid adding duplicate items to existing shopping list.
-                shopping_list = set(shopping_list)
-                for saved_ingredient_id in saved_ingredient_ids:
-                    shopping_list.add(saved_ingredient_id)
-                shopping_list = list(shopping_list)
-            else:
-                for saved_ingredient_id in saved_ingredient_ids:
-                    shopping_list.append(saved_ingredient_id)
+    try:
+        if shopping_list and saved_ingredient_ids:
+            # Convert to set to avoid adding duplicate items to existing shopping list.
+            shopping_list = set(shopping_list)
+            for saved_ingredient_id in saved_ingredient_ids:
+                shopping_list.add(saved_ingredient_id)
+            shopping_list = list(shopping_list)
+        else:
+            for saved_ingredient_id in saved_ingredient_ids:
+                shopping_list.append(saved_ingredient_id)
     except:
         pass
 
