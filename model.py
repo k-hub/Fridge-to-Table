@@ -44,10 +44,6 @@ class Ingredient(db.Model):
     ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
 
-    types = db.relationship("Type",
-                            secondary="ingredient_types",
-                            backref="ingredients")
-
     def __repr__(self):
         """Represent Ingredient objects as ingredient_id and name."""
 
@@ -102,70 +98,6 @@ class RecipeDiet(db.Model):
         return "<RecipeDiet recipe_id:{}, diet_code:{}>".format(self.recipe_id, self.diet_code)
 
 
-class Type(db.Model):  # This table will be used to make custom recipes.
-    """Type of ingredient ie. vegetable, fruit, grain, etc. Will be used for intolerances."""
-
-    __tablename__ = "types"
-
-    type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    name = db.Column(db.String(100), unique=True, nullable=False)
-
-    def __repr__(self):
-        """Represent Type objects as type_id and name."""
-
-        return "<Type type_id={} name={}>".format(self.type_id, self.name)
-
-
-class IngredientType(db.Model):
-    """Association table for Ingredient and Type."""
-
-    __tablename__ = "ingredient_types"
-
-    ingredient_type_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    type_id = db.Column(db.Integer, db.ForeignKey("types.type_id"), nullable=False)
-    ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
-
-    def __repr__(self):
-        """Represent IngredientType objects as ingredient_type_id, type_id, and ingredient_id."""
-
-        return "<IngredientType ingredient_type_id:{}, type_id:{}, ingredient_id:{}>".format(
-            self.ingredient_type_id, self.type_id, self.ingredient_id)
-
-
-class Substitution(db.Model):
-    """Ingredient substitutions."""
-
-    __tablename__ = "substitutions"
-
-    sub_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    sub_name = db.Column(db.String(100), unique=True, nullable=False)
-
-    ingredients = db.relationship("Ingredient",
-                                secondary="substitution_ingredients",
-                                backref="substitutions")
-
-    def __repr__(self):
-        """Represent Substitution object as substitution_id and sub_name."""
-
-        return "<Substitution sub_id:{}, sub_name:{}>".format(self.sub_id, self.sub_name)
-
-
-class SubstitutionIngredient(db.Model):
-    """Association table for Substitution and Ingredient."""
-
-    __tablename__ = "substitution_ingredients"
-
-    sub_ingredient_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    sub_id = db.Column(db.Integer, db.ForeignKey("substitutions.sub_id"), nullable=False)
-    ingredient_id = db.Column(db.Integer, db.ForeignKey("ingredients.ingredient_id"), nullable=False)
-
-    def __repr__(self):
-        """Represent SubstitutionIngredient objects as sub_ingredient_id, sub_id, ingredient_id."""
-
-        return "<SubstitutionIngredient sub_ingredient_id:{}, sub_id:{}, ingredient_id:{}>".format(
-            self.sub_ingredient_id, self.sub_id, self.ingredient_id)
-
-
 class User(db.Model, UserMixin):
     """User information."""
 
@@ -189,6 +121,7 @@ class User(db.Model, UserMixin):
 
     shoppinglist = db.relationship("ShoppingList",
                                    backref="users")
+
 
     def is_authenticated(self):
         return True
@@ -229,8 +162,8 @@ class UserRole(db.Model):
     __tablename__ = "roles_users"
 
     user_role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    id = db.Column(db.Integer(), db.ForeignKey('users.id'), nullable=False)
-    role_id = db.Column(db.Integer(), db.ForeignKey('roles.role_id'), nullable=False)
+    id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    role_id = db.Column(db.Integer, db.ForeignKey("roles.role_id"), nullable=False)
 
     def __repr__(self):
         return "<UserRole user_role_id:{}>".format(self.user_role_id)
@@ -284,14 +217,6 @@ class ShoppingListIngredient(db.Model):
 
         return "<ShoppingListIngredient shoppinglist_ingredient_id:{}, shoppinglist_id:{}, ingredient_id:{}>".format(
             self.shoppinglist_ingredient_id, self.shoppinglist_id, self.ingredient_id)
-
-
-# For future implementation.
-# class Course(db.Model):
-#     pass
-
-# class RecipeCourse(db.Model):
-#     pass
 
 
 def sample_data():
