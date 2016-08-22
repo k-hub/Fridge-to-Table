@@ -78,6 +78,8 @@ def show_recipe(recipe_id):
 
     recipe, instructions, measurements_ingredients = display_recipe(recipe_id)
 
+    print "RECIPE SESSION", session # for debugging
+
     return render_template("recipe.html", recipe=recipe, instructions=instructions,
                             measurements_ingredients=measurements_ingredients)
 
@@ -157,15 +159,14 @@ def show_saved_recipes():
 
 
 @app.route("/favorites", methods=["POST"])
-@login_required
 def add_recipes():
     """Save recipe to favorites."""
 
-    # try:
-    #     if session["user_id"]:
-    #         pass
-    # except:
-    #     print "NEED TO LOGIN", session
+    try:
+        if session["user_id"]:
+            pass
+    except:
+        flash("Please login to save recipe.")
 
     recipe_id = request.form.get("recipe_id")
     recipe_id = int(recipe_id)
@@ -223,7 +224,7 @@ def register_process():
         user = User(fname=first_name, lname=last_name, email=email, password=password)
         db.session.add(user)
         db.session.commit()
-        flash("User successfully registered")
+        flash("User successfully registered.")
 
         return redirect("/login")
 
