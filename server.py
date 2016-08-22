@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, ShoppingListIngredient, User, Role
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, ShoppingListIngredient, Favorite, User, Role
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
@@ -126,7 +126,7 @@ def add_to_shopping_list():
             shoppinglist_id = session["current_session"]["shoppinglist_id"]
             for ingredient_id in shopping_list:
                 try:
-                    ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id, 
+                    ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id,
                                                            ingredient_id=ingredient_id).one()
                 except NoResultFound:
                     add_ingredient = ShoppingListIngredient(shoppinglist_id=shoppinglist_id,
@@ -177,7 +177,7 @@ def show_saved_recipes():
 
 @app.route("/favorites", methods=["POST"])
 def add_recipes():
-    """Save recipe to favorites."""
+    """Save recipe to favorites and database."""
 
     try:
         if session["user_id"]:
@@ -194,6 +194,19 @@ def add_recipes():
         favorites.append(recipe_id)
         print "adding recipe", favorites # for debugging
         print "FAVE SESSION", session # for debugging
+
+    try:
+        if session["current_session"]:
+            user_id = session["current_session"]["user"]
+            for recipe_id in favorites:
+                try:
+                    Favorite.query.filter_by(id=user_id, recipe_id=recipe_id).one()
+                except NoResultFound:
+                    add_recipe = Favorite(id=user_id, recipe_id=recipe_id)
+                    db.session.add(add_recipe)
+                    db.session.commit()
+    except:
+        pass
 
     # Render a template that will never display.
     return render_template("temp.html")
