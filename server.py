@@ -234,6 +234,15 @@ def remove_recipe():
 
     session["favorites"].remove(recipe)
 
+    try:
+        if session["current_session"]:
+            user_id = session["current_session"]["user"]
+            db.session.query(Favorite).filter_by(id=user_id,
+                                                 recipe_id=recipe).delete()
+            db.session.commit()
+    except:
+        pass
+
     # Render a template that will never display.
     return render_template("temp.html")
 
