@@ -153,6 +153,15 @@ def remove_ingredient():
 
     session["shopping_list"].remove(ingredient)
 
+    try:
+        if session["current_session"]:
+            shoppinglist_id = session["current_session"]["shoppinglist_id"]
+            db.session.query(ShoppingListIngredient).filter_by(shoppinglist_id=shoppinglist_id,
+                                                               ingredient_id=ingredient).delete()
+            db.session.commit()
+    except:
+        pass
+
     # Render a template that will never display.
     return render_template("temp.html")
 
