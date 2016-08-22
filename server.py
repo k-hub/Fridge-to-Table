@@ -91,6 +91,27 @@ def show_shopping_list():
 
     shopping_list = shopping_list_session()
 
+    try:
+        if session["current_session"]:
+            user_id = session["current_session"]["user"]
+            shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
+            saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
+                                                 shoppinglist_id=shoppinglist_id).all()
+
+            saved_ingredient_ids = [ingredient_id for ingredient in saved_ingredients for ingredient_id in ingredient]
+
+            if shopping_list:
+                # Convert to set to avoid adding duplicate items to existing shopping list.
+                shopping_list = set(shopping_list)
+                for saved_ingredient_id in saved_ingredient_ids:
+                    shopping_list.add(saved_ingredient_id)
+                shopping_list = list(shopping_list)
+            else:
+                for saved_ingredient_id in saved_ingredient_ids:
+                    shopping_list.append(saved_ingredient_id)
+    except:
+        pass
+
     # get_ingredient_info returns a list of ingredient id and ingredient
     # name tuples if called.
     if shopping_list:
