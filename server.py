@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, redirect, session, jsonify, f
 
 from flask_debugtoolbar import DebugToolbarExtension
 
-from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, User, Role
+from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient, ShoppingList, ShoppingListIngredient, User, Role
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
@@ -105,9 +105,10 @@ def show_shopping_list():
 
 @app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
-    """Add ingredients to shopping_list session.
+    """Add ingredients to shopping_list session and database.
 
     The id(s) of the ingredient(s) clicked by the user will be added to the shopping_list.
+    The id(s) will also be added to the user's shopping_list in the database.
     """
 
     ingredient_id = request.form.get("ingredient_id")
@@ -120,9 +121,20 @@ def add_to_shopping_list():
         shopping_list.append(ingredient_id)
         print "post ingredient to list", shopping_list # for debugging
 
-    # if 
-    #     ShoppingList.query.filter_by(id=user.id).one().shoppinglist_id    
-
+    try:
+        if session["current_session"]:
+            shoppinglist_id = session["current_session"]["shoppinglist_id"]
+            for ingredient_id in shopping_list:
+                try:
+                    ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id, 
+                                                           ingredient_id=ingredient_id).one()
+                except NoResultFound:
+                    add_ingredient = ShoppingListIngredient(shoppinglist_id=shoppinglist_id,
+                                                            ingredient_id=ingredient_id)
+                    db.session.add(add_ingredient)
+                    db.session.commit()
+    except:
+        pass
 
     # Render a template that will never display.
     return render_template("temp.html")
