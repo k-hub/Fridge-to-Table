@@ -254,7 +254,7 @@ def login_process():
         return redirect("/login")
 
     login_user(user, remember=remember)
-    flash("Logged in")
+    flash("Successfully logged in")
 
     return redirect("/")
 
