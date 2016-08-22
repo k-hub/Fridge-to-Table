@@ -117,7 +117,7 @@ def add_to_shopping_list():
 
     if ingredient_id not in shopping_list:
         shopping_list.append(ingredient_id)
-        print "post ingredient to list", shopping_list
+        print "post ingredient to list", shopping_list # for debugging
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -175,8 +175,8 @@ def add_recipes():
 
     if recipe_id not in favorites:
         favorites.append(recipe_id)
-        print "adding recipe", favorites
-        print "FAVE SESSION", session
+        print "adding recipe", favorites # for debugging
+        print "FAVE SESSION", session # for debugging
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -285,13 +285,6 @@ def before_request():
     print "CURRENT", g.user  # for debugging
 
 
-# @app.route("/users/<int:id>")
-# def user_detail(id):
-#     """Show user's profile that displays user's info, shopping lists, and bookmarks."""
-
-#     user = User.query.get(id)
-
-#     return render_template("user.html", user=user)
 
 
 
