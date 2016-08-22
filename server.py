@@ -56,7 +56,7 @@ def results():
     else:
         ingredients = request.args.get("ingredient")
 
-    ingredients = ingredients.split(' ')
+    ingredients = ingredients.split(',')
 
     if request.args.get("diet"):
         diet = request.args.get("diet")
