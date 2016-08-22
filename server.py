@@ -217,6 +217,19 @@ def show_saved_recipes():
     else:
         recipes = favorites
 
+    try:
+        if session["current_session"]:
+            user_id = session["current_session"]["user"]
+            for recipe_id in favorites:
+                try:
+                    Favorite.query.filter_by(id=user_id, recipe_id=recipe_id).one()
+                except NoResultFound:
+                    add_recipe = Favorite(id=user_id, recipe_id=recipe_id)
+                    db.session.add(add_recipe)
+                    db.session.commit()
+    except:
+        pass
+
     return render_template("favorites.html", recipes=recipes)
 
 
@@ -239,19 +252,6 @@ def add_recipes():
         favorites.append(recipe_id)
         print "adding recipe", favorites # for debugging
         print "FAVE SESSION", session # for debugging
-
-    try:
-        if session["current_session"]:
-            user_id = session["current_session"]["user"]
-            for recipe_id in favorites:
-                try:
-                    Favorite.query.filter_by(id=user_id, recipe_id=recipe_id).one()
-                except NoResultFound:
-                    add_recipe = Favorite(id=user_id, recipe_id=recipe_id)
-                    db.session.add(add_recipe)
-                    db.session.commit()
-    except:
-        pass
 
     # Render a template that will never display.
     return render_template("temp.html")
