@@ -92,3 +92,10 @@ def favorites_session():
         favorites = session["favorites"] = []
 
     return favorites
+
+
+
+
+
+
+

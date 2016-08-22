@@ -83,9 +83,14 @@ def show_recipe(recipe_id):
 
 @app.route("/shopping-list")
 def show_shopping_list():
-    """Show user's shopping list."""
+    """Show user's shopping list.
+
+    Shopping list will show user's saved ingredients and any new ingredients
+    added in current session.
+    """
 
     shopping_list = shopping_list_session()
+
     try:
         if session["current_session"]:
             user_id = session["current_session"]["user"]
@@ -115,9 +120,11 @@ def show_shopping_list():
     else:
         ingredients = shopping_list
 
+    # Add saved ingredients to db.
     try:
         if session["current_session"]:
             shoppinglist_id = session["current_session"]["shoppinglist_id"]
+
             for ingredient_id in shopping_list:
                 try:
                     ShoppingListIngredient.query.filter_by(shoppinglist_id=shoppinglist_id,
@@ -130,18 +137,14 @@ def show_shopping_list():
     except:
         pass
 
-
-    print 'SESSION SHOPPING', session  # for debugging
-
     return render_template("shopping_list.html", shopping_list=ingredients)
 
 
 @app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
-    """Add ingredients to shopping_list session and database.
+    """Add ingredients to shopping_list session.
 
     The id(s) of the ingredient(s) clicked by the user will be added to the shopping_list.
-    The id(s) will also be added to the user's shopping_list in the database.
     """
 
     ingredient_id = request.form.get("ingredient_id")
@@ -159,7 +162,7 @@ def add_to_shopping_list():
 
 @app.route("/remove-from-shopping-list", methods=["POST"])
 def remove_ingredient():
-    """Remove ingredients from shopping list session.
+    """Remove ingredients from shopping list session and database.
 
     User will never visit this route.
     """
@@ -186,9 +189,12 @@ def remove_ingredient():
 @app.route("/favorites")
 @login_required
 def show_saved_recipes():
-    """Show user's bookmarked recipes."""
+    """Show user's bookmarked recipes.
 
-    # Call function to check or create favorites in the flask session.
+    Favorites will show user's saved recipes and any new recipes added in
+    current session.
+    """
+
     # favorites will contain recipe ids if not empty.
     favorites = favorites_session()
 
@@ -235,7 +241,7 @@ def show_saved_recipes():
 
 @app.route("/favorites", methods=["POST"])
 def add_recipes():
-    """Save recipe to favorites and database."""
+    """Save recipe to favorites session."""
 
     try:
         if session["user_id"]:
@@ -250,8 +256,6 @@ def add_recipes():
 
     if recipe_id not in favorites:
         favorites.append(recipe_id)
-        print "adding recipe", favorites # for debugging
-        print "FAVE SESSION", session # for debugging
 
     # Render a template that will never display.
     return render_template("temp.html")
@@ -259,7 +263,7 @@ def add_recipes():
 
 @app.route("/remove-from-favorites", methods=["POST"])
 def remove_recipe():
-    """Remove recipes from favorites session.
+    """Remove recipes from favorites session and database.
 
     User will never visit this route.
     """
