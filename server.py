@@ -95,6 +95,7 @@ def show_shopping_list():
         if session["current_session"]:
             user_id = session["current_session"]["user"]
             shoppinglist_id = ShoppingList.query.filter_by(id=user_id).one().shoppinglist_id
+            # saved_ingredients returns a list of tuples.
             saved_ingredients = db.session.query(ShoppingListIngredient.ingredient_id).filter_by(
                                                  shoppinglist_id=shoppinglist_id).all()
 
@@ -124,6 +125,9 @@ def show_shopping_list():
     return render_template("shopping_list.html", shopping_list=ingredients)
 
 
+
+######## Need to fix bug. If user adds ingredients to list before logging in, then chooses to log in later,
+######## items in shopping list should be added to db.
 @app.route("/shopping-list", methods=["POST"])
 def add_to_shopping_list():
     """Add ingredients to shopping_list session and database.
@@ -195,6 +199,25 @@ def show_saved_recipes():
     # Call function to check or create favorites in the flask session.
     # favorites will contain recipe ids if not empty.
     favorites = favorites_session()
+
+    if session["current_session"]:
+        user_id = session["current_session"]["user"]
+        # recipes returns a list of tuples.
+        recipes = db.session.query(Favorite.recipe_id).filter_by(id=user_id).all()
+        if recipes:
+            recipe_ids = [recipe_id for recipe in recipes for recipe_id in recipe]
+
+    try:
+        if favorites and recipe_ids:
+            favorites = set(favorites)
+            for recipe_id in recipe_ids:
+                favorites.add(recipe_id)
+            favorites = list(favorites)
+        else:
+            for recipe_id in recipe_ids:
+                favorites.append(recipe_id)
+    except:
+        pass
 
     # get_recipe_info returns a list of recipe id and recipe title tuples if called.
     if favorites:
