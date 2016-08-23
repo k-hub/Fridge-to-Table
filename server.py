@@ -56,7 +56,14 @@ def results():
     else:
         ingredients = request.args.get("ingredient")
 
-    ingredients = ingredients.split(',')
+    ingredients = ingredients.lower().split(',')
+
+    # User can enter singular/plural version of ingredient. Need to handle variations.
+    all_ingredients = []
+    for ingredient in ingredients:
+        all_ingredients.extend(db.session.query(Ingredient).filter(Ingredient.name.like(ingredient + '%')).all())
+
+    all_ingredients = [ingredient.name for ingredient in all_ingredients]
 
     if request.args.get("diet"):
         diet = request.args.get("diet")
@@ -66,7 +73,7 @@ def results():
         diet = "any"
 
     # Get recipes that meet user indicated diet and any of the input ingredients.
-    recipes = query_recipes(diet, ingredients)
+    recipes = query_recipes(diet, all_ingredients)
 
     return render_template("search_resultsdb.html", recipes=recipes)
 
