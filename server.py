@@ -1,3 +1,5 @@
+import os
+
 from jinja2 import StrictUndefined
 
 from flask import Flask, render_template, request, redirect, session, jsonify, flash, g
@@ -8,8 +10,6 @@ from model import connect_to_db, db, Diet, Ingredient, Recipe, RecipeIngredient,
 
 from helperfuncserver import query_recipes, display_recipe, get_ingredient_info, get_recipe_info, shopping_list_session, favorites_session
 
-import os
-
 from sqlalchemy.orm.exc import NoResultFound
 
 from flask.ext.security import login_required
@@ -19,7 +19,9 @@ from flask.ext.login import LoginManager, logout_user, current_user, login_user
 
 app = Flask(__name__)
 
-app.config["APP_SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "ilovetoeat74")
+# app.secret_key = os.environ["APP_SECRET_KEY"]
+app.config["APP_SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "supersecret!")
+
 
 # Raises an error if error made in Jinja2.
 app.jinja_env.undefined = StrictUndefined
