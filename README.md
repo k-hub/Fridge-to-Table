@@ -44,7 +44,7 @@ A user can add ingredients to a dynamically tracked shopping list without leavin
 =====
 A user can also remove ingredients from the shopping list endpoint. With an AJAX callback function, the endpoint automatically reloads the page when an ingredient has been deleted from the shopping list.
 
-![](https://cloud.githubusercontent.com/assets/18278342/17884829/2c636b76-68cf-11e6-837b-de107841b377.png)
+![](https://cloud.githubusercontent.com/assets/18278342/17884980/f2797eb8-68cf-11e6-9dee-c49d8c3ae889.png)
 
 =====
 ### Installation
