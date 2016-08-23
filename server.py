@@ -402,11 +402,13 @@ def before_request():
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
-    app.debug = True
 
     connect_to_db(app)
 
-    # Use the DebugToolbar
-    DebugToolbarExtension(app)
+    PORT = int(os.environ.get("PORT", 5000))
 
-    app.run()
+    app.run(host="0.0.0.0", port=PORT)
+
+    # app.debug = False
+    # # Use the DebugToolbar
+    # DebugToolbarExtension(app)
