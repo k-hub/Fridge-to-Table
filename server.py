@@ -19,7 +19,7 @@ from flask.ext.login import LoginManager, logout_user, current_user, login_user
 
 app = Flask(__name__)
 
-app.config["APP_SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "abcdef123")
+app.config["APP_SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "ilovetoeat74")
 
 # Raises an error if error made in Jinja2.
 app.jinja_env.undefined = StrictUndefined
