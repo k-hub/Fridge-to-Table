@@ -261,10 +261,10 @@ def sample_data():
     db.session.commit()
 
 
-def connect_to_db(app, db_uri="postgresql:///ftt"):
-    """Connect database to Flask app."""
+def connect_to_db(app, db_uri=None):
+    """Connect app to database."""
 
-    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+    app.config['SQLALCHEMY_DATABASE_URI'] = db_uri or "postgresql:///ftt"
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     db.app = app
     db.init_app(app)

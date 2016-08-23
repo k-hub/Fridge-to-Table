@@ -19,7 +19,7 @@ from flask.ext.login import LoginManager, logout_user, current_user, login_user
 
 app = Flask(__name__)
 
-app.secret_key = os.environ["APP_SECRET_KEY"]
+app.config["APP_SECRET_KEY"] = os.environ.get("FLASK_SECRET_KEY", "abcdef123")
 
 # Raises an error if error made in Jinja2.
 app.jinja_env.undefined = StrictUndefined
@@ -395,20 +395,23 @@ def before_request():
     g.user = current_user
 
 
-
+@app.route("/error")
+def error():
+    raise Exception("Error!")
 
 
 
 
 
 if __name__ == "__main__":  # Makes sure the server only runs if the script is executed directly from the Python interpreter and not used as an imported module.
+    connect_to_db(app, os.environ.get("DATABASE_URL"))
 
-    connect_to_db(app)
-
+    DEBUG = "NO_DEBUG" not in os.environ
     PORT = int(os.environ.get("PORT", 5000))
 
-    app.run(host="0.0.0.0", port=PORT)
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
 
+    # connect_to_db(app)
     # app.debug = False
     # # Use the DebugToolbar
     # DebugToolbarExtension(app)
