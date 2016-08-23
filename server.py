@@ -393,8 +393,6 @@ def logout():
 @app.before_request
 def before_request():
     g.user = current_user
-    print "CURRENT", g.user  # for debugging
-
 
 
 
