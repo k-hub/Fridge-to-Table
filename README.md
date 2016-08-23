@@ -31,20 +31,20 @@ Fridge-to-Table is a web app, that finds recipes based on user input ingredients
 #### Search for Recipes
 Enter an ingredient or multiple ingredients into the search field. Select a diet from the dropdown menu to filter results. When the form is submitted, the ingredient name(s) and diet information are used as arguments for a function that performs a single query in the database powered by PostgreSQL. The database was seeded with recipes from Spoonacular.
 
-![](https://cloud.githubusercontent.com/assets/18278342/15878454/e9c92da4-2ccf-11e6-92e0-43909d0ed5d4.png)
+![](https://cloud.githubusercontent.com/assets/18278342/17884719/a5935c8c-68ce-11e6-8897-4f7d226210f5.png)
 
-![](https://cloud.githubusercontent.com/assets/18278342/15878459/f5fcd13e-2ccf-11e6-851c-852ad0a44b64.png)
+![](https://cloud.githubusercontent.com/assets/18278342/17884737/bbaa0ff2-68ce-11e6-83b3-b795895077fa.png)
 
 =====
 #### Add Ingredients and Remove Ingredients from Shopping List
 A user can add ingredients to a dynamically tracked shopping list without leaving the recipe page with jQuery and AJAX. 
 
-![](https://cloud.githubusercontent.com/assets/18278342/15878491/32df3650-2cd0-11e6-8d70-119ad7efec69.png)
+![](https://cloud.githubusercontent.com/assets/18278342/17884824/24f71554-68cf-11e6-9f43-3c588b5fe8ea.png)
 
 =====
 A user can also remove ingredients from the shopping list endpoint. With an AJAX callback function, the endpoint automatically reloads the page when an ingredient has been deleted from the shopping list.
 
-![](https://cloud.githubusercontent.com/assets/18278342/15878574/d2edde76-2cd0-11e6-9b83-dadbca157659.png)
+![](https://cloud.githubusercontent.com/assets/18278342/17884980/f2797eb8-68cf-11e6-9dee-c49d8c3ae889.png)
 
 =====
 ### Installation
