@@ -15,7 +15,6 @@ from sqlalchemy.orm.exc import NoResultFound
 from flask.ext.security import login_required
 from flask.ext.login import LoginManager, logout_user, current_user, login_user
 
-# from send_sms import send_sms
 
 
 app = Flask(__name__)
